@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.BookAppointmentPage"
+             x:Name="Root"
+             x:DataType="vm:BookAppointmentViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ContentPage.Resources>
+        <conv:ChipBgConverter x:Key="ChipBg"/>
+        <conv:ChipBorderConverter x:Key="ChipBorder"/>
+        <conv:ChipTextConverter x:Key="ChipText"/>
+        <conv:InverseBoolToBoolConverter x:Key="NotBool"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Request Appointment" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Service Type -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Service Type" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <FlexLayout Wrap="Wrap" JustifyContent="Start">
+                    <Frame BackgroundColor="{Binding SelectedServiceType, Converter={StaticResource ChipBg}, ConverterParameter='Medical'}"
+                           BorderColor="{Binding SelectedServiceType, Converter={StaticResource ChipBorder}, ConverterParameter='Medical'}"
+                           CornerRadius="18" Padding="14,8" Margin="0,0,8,8" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Medical"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Medical" TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Medical'}"/>
+                    </Frame>
+
+                    <Frame BackgroundColor="{Binding SelectedServiceType, Converter={StaticResource ChipBg}, ConverterParameter='Dental'}"
+                           BorderColor="{Binding SelectedServiceType, Converter={StaticResource ChipBorder}, ConverterParameter='Dental'}"
+                           CornerRadius="18" Padding="14,8" Margin="0,0,8,8" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Dental"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Dental" TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Dental'}"/>
+                    </Frame>
+
+                    <Frame BackgroundColor="{Binding SelectedServiceType, Converter={StaticResource ChipBg}, ConverterParameter='Follow-up'}"
+                           BorderColor="{Binding SelectedServiceType, Converter={StaticResource ChipBorder}, ConverterParameter='Follow-up'}"
+                           CornerRadius="18" Padding="14,8" Margin="0,0,8,8" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Follow-up"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Follow-up" TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Follow-up'}"/>
+                    </Frame>
+
+                    <Frame BackgroundColor="{Binding SelectedServiceType, Converter={StaticResource ChipBg}, ConverterParameter='Cert Request'}"
+                           BorderColor="{Binding SelectedServiceType, Converter={StaticResource ChipBorder}, ConverterParameter='Cert Request'}"
+                           CornerRadius="18" Padding="14,8" Margin="0,0,8,8" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Cert Request"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Cert Request" TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Cert Request'}"/>
+                    </Frame>
+                </FlexLayout>
+            </VerticalStackLayout>
+
+            <!-- MEDICAL: Reason for Visit -->
+            <VerticalStackLayout IsVisible="{Binding IsMedical}" Spacing="8">
+                <Label Text="Reason for Visit" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding MedicalReasons}" SelectedItem="{Binding SelectedMedicalReason}" Title="Select Reason for Visit" VerticalOptions="Center"/>
+                </Frame>
+
+                <VerticalStackLayout IsVisible="{Binding ShowOtherReason}" Spacing="8" Margin="0,10,0,0">
+                    <Label Text="Please describe your reason for visit" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                        <Editor Placeholder="Describe your reason..." Text="{Binding OtherReasonText}" HeightRequest="80"/>
+                    </Frame>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- DENTAL: Dental Service -->
+            <VerticalStackLayout IsVisible="{Binding IsDental}" Spacing="8">
+                <Label Text="Dental Service" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding DentalServices}" SelectedItem="{Binding SelectedDentalService}" Title="Select Dental Service" VerticalOptions="Center"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- DENTAL CONSULTATION: Walk-in info -->
+            <Frame IsVisible="{Binding IsDentalConsultation}" BackgroundColor="#EAF6F4" BorderColor="#0F9B8E" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Dental Consultation" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                    <Label Text="Walk-in consultation. No appointment is required. Please visit the clinic during operating hours." FontSize="13" TextColor="#4A5B63"/>
+                    <Button Text="View Clinic Hours" BackgroundColor="#0F9B8E" TextColor="White" CornerRadius="20" HeightRequest="44" Margin="0,6,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- FOLLOW-UP -->
+            <VerticalStackLayout IsVisible="{Binding IsFollowUp}" Spacing="8">
+                <Label Text="Follow-Up Reason" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding FollowUpReasons}" SelectedItem="{Binding SelectedFollowUpReason}" Title="Select Follow-Up Reason" VerticalOptions="Center"/>
+                </Frame>
+
+                <Label Text="Additional Notes" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,10,0,0"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Additional notes (optional)" Text="{Binding AdditionalNotes}" HeightRequest="80"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- CERT REQUEST -->
+            <VerticalStackLayout IsVisible="{Binding IsCertRequest}" Spacing="8">
+                <Label Text="Certificate Type" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding CertificateTypes}" SelectedItem="{Binding SelectedCertificateType}" Title="Select Certificate Type" VerticalOptions="Center"/>
+                </Frame>
+
+                <Label Text="Purpose / Reason for Request" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,10,0,0"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Enter purpose or reason..." Text="{Binding CertificatePurpose}" HeightRequest="80"/>
+                </Frame>
+
+                <Label Text="No medical consultation is required for this request unless determined by clinic policy."
+                       FontSize="12" TextColor="#6B7684" Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- DATE / TIME (shared across Medical, Dental w/ schedule, Follow-up, Cert) -->
+            <VerticalStackLayout IsVisible="{Binding ShowDateTimeSection}" Spacing="10">
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Select Date" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                    <Label Grid.Column="1" Text="{Binding DateRangeLabel}" FontSize="12" TextColor="#0F9B8E" FontAttributes="Bold"/>
+                </Grid>
+                <FlexLayout BindableLayout.ItemsSource="{Binding DateChips}" Wrap="Wrap" JustifyContent="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DateChip">
+                            <Frame BackgroundColor="{Binding IsSelected, Converter={StaticResource ChipBg}}"
+                                   BorderColor="{Binding IsSelected, Converter={StaticResource ChipBorder}}"
+                                   CornerRadius="12" Padding="10,8" Margin="0,0,8,8" HasShadow="False" WidthRequest="60">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectDateCommand}" CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding DayLabel}" FontSize="11" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding DayNumber}" FontSize="16" FontAttributes="Bold" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <Label Text="Select Time Slot" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,10,0,0"/>
+                <FlexLayout BindableLayout.ItemsSource="{Binding TimeChips}" Wrap="Wrap" JustifyContent="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TimeChip">
+                            <Frame BackgroundColor="{Binding IsSelected, Converter={StaticResource ChipBg}}"
+                                   BorderColor="{Binding IsSelected, Converter={StaticResource ChipBorder}}"
+                                   CornerRadius="12" Padding="10,8" Margin="0,0,8,8" HasShadow="False"
+                                   Opacity="{Binding IsBooked, Converter={StaticResource NotBool}}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectTimeCommand}" CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="{Binding Time}" FontSize="13" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}"/>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+            </VerticalStackLayout>
+
+            <!-- Submit -->
+            <Button Text="Request Appointment"
+                    Command="{Binding ConfirmCommand}"
+                    IsVisible="{Binding IsDentalConsultation, Converter={StaticResource NotBool}}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

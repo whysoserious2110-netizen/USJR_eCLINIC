@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.WelcomePage"
+             x:DataType="vm:WelcomeViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <Grid RowDefinitions="*, Auto" Padding="40,0">
+
+        <VerticalStackLayout Grid.Row="0"
+                              VerticalOptions="Center"
+                              HorizontalOptions="Center"
+                              Spacing="20">
+
+            <Frame BackgroundColor="#D5F5EF"
+                   WidthRequest="110"
+                   HeightRequest="110"
+                   CornerRadius="24"
+                   Padding="0"
+                   HasShadow="False"
+                   HorizontalOptions="Center">
+                <Label Text="&#128737;"
+                       FontSize="46"
+                       TextColor="#0F9B8E"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
+            <Label Text="USJ-R e-Clinic"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#12212E"
+                   HorizontalOptions="Center"/>
+
+            <Label Text="Your Health, Our Priority"
+                   FontSize="15"
+                   TextColor="#6B7684"
+                   HorizontalOptions="Center"/>
+
+            <Button Text="Sign in"
+                    Command="{Binding SignInCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"
+                    WidthRequest="260"
+                    Margin="0,20,0,0"/>
+            
+
+        </VerticalStackLayout>
+
+        <Label Grid.Row="1"
+               Text="UNIVERSITY OF SAN JOSE - RECOLETOS"
+               FontSize="11"
+               CharacterSpacing="1"
+               TextColor="#A0A8B2"
+               HorizontalOptions="Center"
+               Margin="0,0,0,30"/>
+
+    </Grid>
+</ContentPage>

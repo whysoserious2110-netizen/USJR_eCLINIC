@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.WriteRxPage"
+             x:DataType="vm:WriteRxViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Write Prescription" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
+                            ItemDisplayBinding="{Binding DisplayName}" Title="Select patient" VerticalOptions="Center"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Medicine Name" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                    <Entry Placeholder="e.g., Paracetamol" Text="{Binding MedicineName}" VerticalOptions="Center"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Dosage" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                    <Entry Placeholder="e.g., 500mg, 3x daily" Text="{Binding Dosage}" VerticalOptions="Center"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Instructions (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="e.g., Take after meals" Text="{Binding Instructions}" HeightRequest="70"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Dispensing Type" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Frame Grid.Column="0" BackgroundColor="{Binding IsClinicGiven, Converter={StaticResource ChipBg}}"
+                           BorderColor="{Binding IsClinicGiven, Converter={StaticResource ChipBorder}}"
+                           CornerRadius="12" Padding="0" HeightRequest="46" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleGivenTypeCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Clinic-Given" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold"
+                               TextColor="{Binding IsClinicGiven, Converter={StaticResource ChipText}}"/>
+                    </Frame>
+                    <Frame Grid.Column="1" BackgroundColor="White" BorderColor="#E2E6EA"
+                           CornerRadius="12" Padding="0" HeightRequest="46" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleGivenTypeCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Take-Home" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" TextColor="#12212E"/>
+                    </Frame>
+                </Grid>
+            </VerticalStackLayout>
+
+            <Button Text="Save Prescription"
+                    Command="{Binding SavePrescriptionCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

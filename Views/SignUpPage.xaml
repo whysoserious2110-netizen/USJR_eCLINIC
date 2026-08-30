@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.SignUpPage"
+             x:DataType="vm:SignUpViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ContentPage.Resources>
+        <conv:RoleSelectedConverter x:Key="RoleBgConverter"/>
+        <conv:RoleSelectedTextColorConverter x:Key="RoleTextConverter"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="25,50,25,30" Spacing="0">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,20">
+                <Label Grid.Column="0"
+                       Text="&#8592;"
+                       FontSize="22"
+                       TextColor="#0F9B8E"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1"
+                       Text="Create Account"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#12212E"
+                       Margin="10,0,0,0"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Role pills -->
+            <Label Text="Select your University Role"
+                   FontSize="13"
+                   FontAttributes="Bold"
+                   TextColor="#12212E"
+                   Margin="0,0,0,10"/>
+
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" Margin="0,0,0,20">
+
+                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Student'}"
+                       BorderColor="#0F9B8E" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Student"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="Student" FontAttributes="Bold"
+                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Student'}"/>
+                </Frame>
+
+                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Faculty'}"
+                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Faculty"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="Faculty"
+                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Faculty'}"/>
+                </Frame>
+
+                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Admin Personnel'}"
+                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Admin Personnel"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="Admin Personnel"
+                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Admin Personnel'}"/>
+                </Frame>
+
+                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Non-Teaching'}"
+                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Non-Teaching"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="Non-Teaching"
+                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Non-Teaching'}"/>
+                </Frame>
+
+                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='R.E.A.D.S. Scholar'}"
+                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="R.E.A.D.S. Scholar"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="R.E.A.D.S. Scholar"
+                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='R.E.A.D.S. Scholar'}"/>
+                </Frame>
+
+            </FlexLayout>
+
+            <!-- Dynamic ID field -->
+            <Label Text="{Binding IdLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+                <Entry Placeholder="e.g., 2022-10492" Text="{Binding IdNumber}" VerticalOptions="Center"/>
+            </Frame>
+
+            <!-- Program / Department -->
+            <Label Text="Program / Department" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+                <Entry Placeholder="e.g., BS Information Technology" Text="{Binding ProgramOrDepartment}" VerticalOptions="Center"/>
+            </Frame>
+
+            <!-- Full Name -->
+            <Label Text="Full Name (Last, First, M.I.)" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+                <Entry Placeholder="Dela Cruz, Juan A." Text="{Binding FullName}" VerticalOptions="Center"/>
+            </Frame>
+
+            <!-- Email -->
+            <Label Text="Email Address" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+                <Entry Placeholder="juan.delacruz@usjr.edu.ph" Text="{Binding Email}" Keyboard="Email" VerticalOptions="Center"/>
+            </Frame>
+
+            <!-- Password -->
+            <Label Text="Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0" Placeholder="Enter your password"
+                           Text="{Binding Password}" IsPassword="{Binding IsPasswordHidden}"
+                           VerticalOptions="Center"/>
+                    <CheckBox Grid.Column="1"
+                              IsChecked="{Binding IsPasswordHidden, Converter={StaticResource InvertedBoolConverter}}"
+                              Color="#0F9B8E"
+                              VerticalOptions="Center">
+                        <CheckBox.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TogglePasswordVisibilityCommand}"/>
+                        </CheckBox.GestureRecognizers>
+                    </CheckBox>
+                </Grid>
+            </Frame>
+
+            <!-- Confirm Password -->
+            <Label Text="Confirm Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
+                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,4">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0" Placeholder="Re-enter your password"
+                           Text="{Binding ConfirmPassword}" IsPassword="{Binding IsConfirmPasswordHidden}"
+                           VerticalOptions="Center"/>
+                    <CheckBox Grid.Column="1"
+                              IsChecked="{Binding IsConfirmPasswordHidden, Converter={StaticResource InvertedBoolConverter}}"
+                              Color="#0F9B8E"
+                              VerticalOptions="Center">
+                        <CheckBox.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleConfirmPasswordVisibilityCommand}"/>
+                        </CheckBox.GestureRecognizers>
+                    </CheckBox>
+                </Grid>
+            </Frame>
+
+            <!-- Live password match feedback -->
+            <Label Text="{Binding PasswordMatchMessage}"
+                   TextColor="{Binding PasswordMatchColor}"
+                   FontSize="12"
+                   Margin="4,4,0,20"/>
+
+            <!-- Privacy policy -->
+            <HorizontalStackLayout Spacing="8" Margin="0,0,0,24">
+                <CheckBox IsChecked="{Binding AgreedToPrivacyPolicy}" Color="#0F9B8E"/>
+                <Label Text="I agree to the USJ-R Health Service Data Privacy Policy"
+                       FontSize="13" TextColor="#12212E" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <!-- Create Account -->
+            <Button Text="Create Account"
+                    Command="{Binding RegisterCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

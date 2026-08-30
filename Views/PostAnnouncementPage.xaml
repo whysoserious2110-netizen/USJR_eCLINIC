@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.PostAnnouncementPage"
+             x:DataType="vm:PostAnnouncementViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Post Announcement (Staff)" FontSize="18" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <Label Text="TEMPORARY: this will move into the Nurse/R.E.A.D.S. dashboard once built."
+               FontSize="11" TextColor="#D9A441" FontAttributes="Italic"/>
+
+        <Label Text="Target Audience" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+            <Picker ItemsSource="{Binding TargetRoles}" SelectedItem="{Binding SelectedTargetRole}" VerticalOptions="Center"/>
+        </Frame>
+
+        <Label Text="Message" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+            <Editor Placeholder="e.g., Annual physical examination is ongoing at the Main Campus Clinic." Text="{Binding Message}" HeightRequest="100"/>
+        </Frame>
+
+        <Button Text="Post Announcement"
+                Command="{Binding PostCommand}"
+                BackgroundColor="#0F9B8E"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="26"
+                HeightRequest="54"/>
+
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.TodaysVisitsPage"
+             x:Name="Root"
+             x:DataType="vm:TodaysVisitsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Today's Visits" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <VerticalStackLayout IsVisible="{Binding HasVisits, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No visits scheduled today" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Visits}" IsVisible="{Binding HasVisits}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:TodaysVisitItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}" CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                            <Frame Grid.Column="0" BackgroundColor="#D5F5EF" CornerRadius="10"
+                                   Padding="6" WidthRequest="52" HeightRequest="52" HasShadow="False">
+                                <Label Text="{Binding TimeDisplay}" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"
+                                       HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding ChiefComplaint, StringFormat='C/O: {0}'}" FontSize="12" TextColor="#6B7684"/>
+                            </VerticalStackLayout>
+                            <Frame Grid.Column="2" BackgroundColor="{Binding StatusColor}" CornerRadius="10"
+                                   Padding="10,3" HasShadow="False" VerticalOptions="Start">
+                                <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
+                            </Frame>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

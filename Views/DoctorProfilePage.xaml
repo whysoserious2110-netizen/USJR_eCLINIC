@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.DoctorProfilePage"
+             x:DataType="vm:DoctorProfileViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
+
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Doctor Profile" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="Edit" FontSize="14" FontAttributes="Bold" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleEditCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"
+                       BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
+                    <Grid>
+                        <Label Text="&#128100;" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                        <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
+                    </Grid>
+                </Frame>
+
+                <Label Text="Change photo" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangePhotoCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="{Binding FullName}" FontSize="18" FontAttributes="Bold" TextColor="#12212E" HorizontalOptions="Center"/>
+                <Frame BackgroundColor="#D5F5EF" Padding="10,3" CornerRadius="10" HasShadow="False">
+                    <Label Text="DOCTOR" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- Professional Info -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Professional Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Full Name" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding FullName}" IsEnabled="{Binding IsEditing}" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Specialization" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding Specialization}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., General Medicine" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="PRC License No." FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Text="{Binding LicenseNumber}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., PRC-0123456" FontSize="14" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Years of Experience" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Text="{Binding YearsOfExperience}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., 8" Keyboard="Numeric" FontSize="14" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Department / Assigned Clinic" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding Department}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Clinic - Medical" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Contact Info -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Contact Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Email" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding Email}" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Mobile Number" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding MobileNumber}" IsEnabled="{Binding IsEditing}" Placeholder="+63 9XX XXX XXXX" Keyboard="Telephone" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Schedule -->
+            <!-- Schedule -->
+            <!-- Clinic Information -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Clinic Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Clinic" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding Department}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., USJ-R Clinic" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Position" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding Position}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., University Physician" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Consultation Schedule" FontSize="11" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding ConsultationSchedule}" IsEnabled="{Binding IsEditing}"
+                   Placeholder="e.g., Monday – Friday" FontSize="14" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Status" FontSize="11" TextColor="#9AA4AE"/>
+                        <Frame BackgroundColor="#D5F5EF" Padding="10,4" CornerRadius="10" HasShadow="False" HorizontalOptions="Start">
+                            <Label Text="{Binding EmploymentStatus}" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Save Changes"
+                    Command="{Binding SaveCommand}"
+                    IsVisible="{Binding IsEditing}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="50"
+                    Margin="0,10,0,0"/>
+
+            <Button Text="Log Out"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#E05B5B"
+                    FontAttributes="Bold"
+                    BorderColor="#E05B5B"
+                    BorderWidth="1"
+                    CornerRadius="26"
+                    HeightRequest="50"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

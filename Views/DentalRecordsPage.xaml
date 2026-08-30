@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.DentalRecordsPage"
+             x:Name="Root"
+             x:DataType="vm:DentalRecordsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Dental Records" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <VerticalStackLayout IsVisible="{Binding HasRecords, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#129688;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No dental records yet" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="Your dental visit history will appear here after a clinic visit." FontSize="12" TextColor="#9AA4AE"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="30,0,30,0"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Records}" IsVisible="{Binding HasRecords}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:DentalRecordListItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <VerticalStackLayout Spacing="10">
+
+                            <!-- Badge + Date -->
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Frame Grid.Column="0" BackgroundColor="#FDE6EC" CornerRadius="10"
+                                       Padding="10,4" HasShadow="False" HorizontalOptions="Start">
+                                    <Label Text="DENTAL VISIT" FontSize="10" FontAttributes="Bold" TextColor="#D14C74"/>
+                                </Frame>
+                                <Label Grid.Column="1" Text="{Binding DateDisplay}" FontSize="12" TextColor="#9AA4AE"
+                                       HorizontalOptions="End" VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Exam Findings -->
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="EXAM FINDINGS" FontSize="10" TextColor="#9AA4AE" FontAttributes="Bold"/>
+                                <Label Text="{Binding ExamFindings}" FontSize="14" FontAttributes="Bold" TextColor="#12212E"/>
+                            </VerticalStackLayout>
+
+                            <!-- Diagnosis -->
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="DIAGNOSIS" FontSize="10" TextColor="#9AA4AE" FontAttributes="Bold"/>
+                                <Label Text="{Binding Diagnosis}" FontSize="14" FontAttributes="Bold" TextColor="#12212E"/>
+                            </VerticalStackLayout>
+
+                            <!-- Treatment Rendered -->
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="TREATMENT RENDERED" FontSize="10" TextColor="#9AA4AE" FontAttributes="Bold"/>
+                                <Label Text="{Binding TreatmentRendered}" FontSize="13" TextColor="#4A5560"/>
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" BackgroundColor="#EEF1F3" Margin="0,4,0,0"/>
+
+                            <!-- Care instructions + Details -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="{Binding CareInstructions}" FontSize="12"
+                                       TextColor="#D9534F" VerticalOptions="Center"
+                                       IsVisible="{Binding CareInstructions, Converter={StaticResource StringNotEmpty}}"/>
+                                <Label Grid.Column="1" Text="Details" FontSize="13" FontAttributes="Bold"
+                                       TextColor="#0F9B8E" VerticalOptions="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.ViewDetailsCommand}" CommandParameter="{Binding .}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

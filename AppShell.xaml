@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="USJR_eCLINIC.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:USJR_eCLINIC.Views"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.BackgroundColor="#F7F8FA"
+    Shell.ForegroundColor="#12212E"
+    Shell.NavBarIsVisible="False">
+
+    <ShellContent
+        Title="Welcome"
+        ContentTemplate="{DataTemplate views:WelcomePage}"
+        Route="WelcomePage" />
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="LoginPage" />
+
+    <ShellContent
+        Title="Sign Up"
+        ContentTemplate="{DataTemplate views:SignUpPage}"
+        Route="SignUpPage" />
+
+    <ShellContent
+    Title="Home"
+    ContentTemplate="{DataTemplate views:HomePage}"
+    Route="HomePage" />
+
+    <ShellContent
+    Title="Book Appointment"
+    ContentTemplate="{DataTemplate views:BookAppointmentPage}"
+    Route="BookAppointmentPage" />
+
+    <ShellContent
+    Title="Medical Records"
+    ContentTemplate="{DataTemplate views:MedicalRecordsPage}"
+    Route="MedicalRecordsPage" />
+
+    <ShellContent
+    Title="Dental Records"
+    ContentTemplate="{DataTemplate views:DentalRecordsPage}"
+    Route="DentalRecordsPage" />
+
+    <ShellContent
+    Title="Prescriptions"
+    ContentTemplate="{DataTemplate views:PrescriptionsPage}"
+    Route="PrescriptionsPage" />
+
+    <ShellContent
+    Title="Profile"
+    ContentTemplate="{DataTemplate views:ProfilePage}"
+    Route="ProfilePage" />
+
+    <ShellContent
+    Title="Notifications"
+    ContentTemplate="{DataTemplate views:NotificationsPage}"
+    Route="NotificationsPage" />
+
+    <ShellContent
+    Title="My Appointments"
+    ContentTemplate="{DataTemplate views:AppointmentsPage}"
+    Route="AppointmentsPage" />
+
+    <ShellContent
+    Title="Post Announcement"
+    ContentTemplate="{DataTemplate views:PostAnnouncementPage}"
+    Route="PostAnnouncementPage" />
+
+    <ShellContent
+    Title="Doctor Dashboard"
+    ContentTemplate="{DataTemplate views:DoctorDashboardPage}"
+    Route="DoctorDashboardPage" />
+
+    <ShellContent
+    Title="Doctor Profile"
+    ContentTemplate="{DataTemplate views:DoctorProfilePage}"
+    Route="DoctorProfilePage" />
+
+
+    <ShellContent
+    Title="Today's Visits"
+    ContentTemplate="{DataTemplate views:TodaysVisitsPage}"
+    Route="TodaysVisitsPage" />
+
+    <ShellContent
+    Title="Write Prescription"
+    ContentTemplate="{DataTemplate views:WriteRxPage}"
+    Route="WriteRxPage" />
+
+    <ShellContent
+    Title="Patients"
+    ContentTemplate="{DataTemplate views:PatientsListPage}"
+    Route="PatientsListPage" />
+
+    <ShellContent
+    Title="Patient Detail"
+    ContentTemplate="{DataTemplate views:PatientDetailPage}"
+    Route="PatientDetailPage" />
+
+
+
+</Shell>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.NotificationsPage"
+             x:DataType="vm:NotificationsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Notifications" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <VerticalStackLayout IsVisible="{Binding HasNotifications, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128276;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No notifications yet" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="Reminders and updates about your appointments will appear here." FontSize="12" TextColor="#9AA4AE"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="30,0,30,0"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Notifications}" IsVisible="{Binding HasNotifications}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:NotificationListItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="{Binding Title}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                <Ellipse Grid.Column="1" WidthRequest="8" HeightRequest="8" Fill="#0F9B8E"
+                                         VerticalOptions="Center" IsVisible="{Binding IsRead, Converter={StaticResource BoolInverter}}"/>
+                            </Grid>
+                            <Label Text="{Binding Message}" FontSize="13" TextColor="#6B7684"/>
+                            <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

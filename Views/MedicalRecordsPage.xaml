@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.MedicalRecordsPage"
+             x:DataType="vm:MedicalRecordsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Medical Records" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <VerticalStackLayout IsVisible="{Binding HasRecords, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128203;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No medical records yet" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="Your consultation history will appear here after a clinic visit." FontSize="12" TextColor="#9AA4AE"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="30,0,30,0"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Records}" IsVisible="{Binding HasRecords}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:MedicalRecordListItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding DateDisplay}" FontSize="12" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding ChiefComplaint}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                            <Label FontSize="13" TextColor="#6B7684">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Diagnosis: " FontAttributes="Bold"/>
+                                        <Span Text="{Binding Diagnosis}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label FontSize="13" TextColor="#6B7684">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Treatment: " FontAttributes="Bold"/>
+                                        <Span Text="{Binding Treatment}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label FontSize="12" TextColor="#9AA4AE" IsVisible="{Binding FollowUpNotes, Converter={StaticResource StringNotEmpty}}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Follow-up: " FontAttributes="Bold"/>
+                                        <Span Text="{Binding FollowUpNotes}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

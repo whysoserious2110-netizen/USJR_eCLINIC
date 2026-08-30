@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.PatientDetailPage"
+             x:DataType="vm:PatientDetailViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Patient Record" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Patient header -->
+            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
+                    <Label FontSize="12" TextColor="#0F9B8E">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding PatientRole}"/>
+                                <Span Text=" · "/>
+                                <Span Text="{Binding PatientIdNumber}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Medical Records -->
+            <Label Text="Medical Records" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
+
+            <Label Text="No medical records on file." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasMedicalRecords, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding MedicalRecords}" IsVisible="{Binding HasMedicalRecords}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:MedicalRecordListItem">
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding ChiefComplaint}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                <Label FontSize="12" TextColor="#6B7684">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Diagnosis: " FontAttributes="Bold"/>
+                                            <Span Text="{Binding Diagnosis}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="12" TextColor="#6B7684">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Treatment: " FontAttributes="Bold"/>
+                                            <Span Text="{Binding Treatment}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding AttendingStaff, StringFormat='Attending: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Prescriptions -->
+            <Label Text="Prescriptions" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+
+            <Label Text="No prescriptions on file." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasPrescriptions, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding Prescriptions}" IsVisible="{Binding HasPrescriptions}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PrescriptionListItem">
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="{Binding MedicineName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                    <Frame Grid.Column="1" BackgroundColor="{Binding LabelColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
+                                        <Label Text="{Binding LabelText}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="{Binding Dosage}" FontSize="12" TextColor="#6B7684"/>
+                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.ConsultationPage"
+             x:DataType="vm:ConsultationViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Consultation" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Patient info -->
+            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientRole}" FontSize="12" TextColor="#0F9B8E"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Chief Complaint" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Text="{Binding ChiefComplaint}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Diagnosis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Enter diagnosis" Text="{Binding Diagnosis}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Treatment" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Enter treatment given" Text="{Binding Treatment}" HeightRequest="80"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Follow-Up Notes (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Any follow-up instructions" Text="{Binding FollowUpNotes}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <Button Text="Save Consultation"
+                    Command="{Binding SaveConsultationCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

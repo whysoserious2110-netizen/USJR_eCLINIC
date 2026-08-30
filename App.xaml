@@ -1,0 +1,23 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:USJR_eCLINIC"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             
+             x:Class="USJR_eCLINIC.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+            <conv:InverseBoolToBoolConverter x:Key="BoolInverter"/>
+            <conv:StringNotEmptyConverter x:Key="StringNotEmpty"/>
+            <conv:ImagePathConverter x:Key="ImagePathConv"/>
+            <conv:TabTextColorConverter x:Key="TabTextColor"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
