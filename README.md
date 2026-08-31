@@ -6,7 +6,7 @@ application aims to reduce dependence on paper-based patient records by providin
 organized platform for managing patient profiles, clinic appointments, consultations, medical and dental
 records, prescriptions, and related clinic services.
 
-In a university environment,the clinic handlesstudents and university personnel who may requiremedical
+In a university environment,the clinic handles students and university personnel who may requiremedical
 consultations, nursing assistance, dental services, or other clinic support. Managing these records
 manually can result in delays, misplaced documents, repetitive data entry, and difficulty retrieving
 previous patient information. The USJ-R E-Clinic addresses these challenges by providing authorized users
