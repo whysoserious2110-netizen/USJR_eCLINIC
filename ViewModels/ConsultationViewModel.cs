@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace USJR_eCLINIC.ViewModels;
@@ -25,6 +26,11 @@ public partial class ConsultationViewModel : ObservableObject
 
     [ObservableProperty]
     private string followUpNotes = string.Empty;
+
+    [ObservableProperty] private string bloodPressure = string.Empty;
+    [ObservableProperty] private string temperature = string.Empty;
+    [ObservableProperty] private string pulseRate = string.Empty;
+    [ObservableProperty] private string respiratoryRate = string.Empty;
 
     public ConsultationViewModel(int appointmentId, string patientEmail, string patientName, string patientRole, string prefillComplaint)
     {
@@ -54,18 +60,24 @@ public partial class ConsultationViewModel : ObservableObject
             Diagnosis = Diagnosis,
             Treatment = Treatment,
             FollowUpNotes = FollowUpNotes,
-            AttendingStaff = doctor?.FullName ?? "Doctor"
+            AttendingStaff = doctor?.FullName ?? "Doctor",
+            BloodPressure = BloodPressure,
+            Temperature = Temperature,
+            PulseRate = PulseRate,
+            RespiratoryRate = RespiratoryRate
         };
 
         await Services.MedicalRecordService.Instance.AddAsync(record);
-        await Services.AppointmentService.Instance.MarkCompletedAsync(_appointmentId);
+
+        if (_appointmentId > 0)
+            await Services.AppointmentService.Instance.MarkCompletedAsync(_appointmentId);
 
         await Services.NotificationService.Instance.AddAsync(
             _patientEmail,
             "Consultation Completed",
             $"Dr. {doctor?.FullName} has completed your consultation. Your medical record has been updated.");
 
-        await Shell.Current.DisplayAlert("Saved", "Consultation recorded and appointment marked as completed.", "OK");
+        await Shell.Current.DisplayAlert("Saved", "Consultation recorded.", "OK");
         await Shell.Current.Navigation.PopAsync();
     }
 

@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.NotificationsPage"
+             x:Name="Root"
              x:DataType="vm:NotificationsViewModel"
              BackgroundColor="#F7F8FA">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="12">
 
         <Grid ColumnDefinitions="Auto,*">
             <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
@@ -17,6 +18,10 @@
             <Label Grid.Column="1" Text="Notifications" FontSize="20" FontAttributes="Bold"
                    TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
         </Grid>
+
+        <Label Text="Swipe left on a notification to delete it"
+               FontSize="11" TextColor="#9AA4AE" FontAttributes="Italic"
+               IsVisible="{Binding HasNotifications}"/>
 
         <VerticalStackLayout IsVisible="{Binding HasNotifications, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
@@ -29,18 +34,28 @@
         <CollectionView ItemsSource="{Binding Notifications}" IsVisible="{Binding HasNotifications}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:NotificationListItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <VerticalStackLayout Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="{Binding Title}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Ellipse Grid.Column="1" WidthRequest="8" HeightRequest="8" Fill="#0F9B8E"
-                                         VerticalOptions="Center" IsVisible="{Binding IsRead, Converter={StaticResource BoolInverter}}"/>
-                            </Grid>
-                            <Label Text="{Binding Message}" FontSize="13" TextColor="#6B7684"/>
-                            <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
-                        </VerticalStackLayout>
-                    </Frame>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Delete" BackgroundColor="#E05B5B"
+                                           Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeleteNotificationCommand}"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="{Binding Title}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                    <Ellipse Grid.Column="1" WidthRequest="8" HeightRequest="8" Fill="#0F9B8E"
+                                             VerticalOptions="Center" IsVisible="{Binding IsRead, Converter={StaticResource BoolInverter}}"/>
+                                </Grid>
+                                <Label Text="{Binding Message}" FontSize="13" TextColor="#6B7684"/>
+                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

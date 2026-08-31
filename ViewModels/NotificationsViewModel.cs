@@ -6,6 +6,7 @@ namespace USJR_eCLINIC.ViewModels;
 
 public partial class NotificationListItem : ObservableObject
 {
+    public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string DateDisplay { get; set; } = string.Empty;
@@ -31,6 +32,7 @@ public partial class NotificationsViewModel : ObservableObject
         {
             Notifications.Add(new NotificationListItem
             {
+                Id = n.Id,
                 Title = n.Title,
                 Message = n.Message,
                 DateDisplay = n.DateCreated.ToString("MMM dd, yyyy · h:mm tt"),
@@ -45,4 +47,18 @@ public partial class NotificationsViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
+
+    
+    [RelayCommand]
+    private async Task DeleteNotification(NotificationListItem item)
+    {
+        bool confirm = await Shell.Current.DisplayAlert("Delete Notification?", "This will move the notification to trash. It will be permanently deleted after 30 days.", "Delete", "Cancel");
+        if (!confirm) return;
+
+        await Services.NotificationService.Instance.SoftDeleteAsync(item.Id);
+
+        var user = Services.AuthService.Instance.CurrentUser;
+        if (user != null)
+            await RefreshAsync();
+    }
 }

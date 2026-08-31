@@ -4,10 +4,21 @@ using System.Collections.ObjectModel;
 
 namespace USJR_eCLINIC.ViewModels;
 
+public partial class MedicineEntry : ObservableObject
+{
+    [ObservableProperty] private string medicineName = string.Empty;
+    [ObservableProperty] private string dosage = string.Empty;
+    [ObservableProperty] private string instructions = string.Empty;
+    [ObservableProperty] private bool isClinicGiven = true;
+
+    [RelayCommand]
+    private void ToggleGivenType() => IsClinicGiven = !IsClinicGiven;
+}
+
 public partial class PatientOption : ObservableObject
 {
     public string Email { get; set; } = string.Empty;
-    public string DisplayName { get; set; } = string.Empty; // "Juan Dela Cruz — Student"
+    public string DisplayName { get; set; } = string.Empty;
 }
 
 public partial class WriteRxViewModel : ObservableObject
@@ -17,20 +28,11 @@ public partial class WriteRxViewModel : ObservableObject
     [ObservableProperty]
     private PatientOption? selectedPatient;
 
-    [ObservableProperty]
-    private string medicineName = string.Empty;
-
-    [ObservableProperty]
-    private string dosage = string.Empty;
-
-    [ObservableProperty]
-    private string instructions = string.Empty;
-
-    [ObservableProperty]
-    private bool isClinicGiven = true;
+    public ObservableCollection<MedicineEntry> Medicines { get; } = new();
 
     public WriteRxViewModel()
     {
+        Medicines.Add(new MedicineEntry());
         _ = LoadPatientsAsync();
     }
 
@@ -50,7 +52,14 @@ public partial class WriteRxViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ToggleGivenType() => IsClinicGiven = !IsClinicGiven;
+    private void AddAnotherMedicine() => Medicines.Add(new MedicineEntry());
+
+    [RelayCommand]
+    private void RemoveMedicine(MedicineEntry entry)
+    {
+        if (Medicines.Count > 1)
+            Medicines.Remove(entry);
+    }
 
     [RelayCommand]
     private async Task SavePrescription()
@@ -61,38 +70,44 @@ public partial class WriteRxViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(MedicineName) || string.IsNullOrWhiteSpace(Dosage))
+        var validEntries = Medicines.Where(m => !string.IsNullOrWhiteSpace(m.MedicineName) && !string.IsNullOrWhiteSpace(m.Dosage)).ToList();
+
+        if (validEntries.Count == 0)
         {
-            await Shell.Current.DisplayAlert("Missing info", "Please enter medicine name and dosage.", "OK");
+            await Shell.Current.DisplayAlert("Missing info", "Please enter at least one medicine with a dosage.", "OK");
             return;
         }
 
         var doctor = Services.AuthService.Instance.CurrentUser;
+        var now = DateTime.Now;
 
-        var prescription = new Models.Prescription
+        foreach (var med in validEntries)
         {
-            PatientEmail = SelectedPatient.Email,
-            DatePrescribed = DateTime.Now,
-            MedicineName = MedicineName,
-            Dosage = Dosage,
-            Instructions = Instructions,
-            IsClinicGiven = IsClinicGiven,
-            PrescribedBy = doctor?.FullName ?? "Doctor"
-        };
+            var prescription = new Models.Prescription
+            {
+                PatientEmail = SelectedPatient.Email,
+                DatePrescribed = now,
+                MedicineName = med.MedicineName,
+                Dosage = med.Dosage,
+                Instructions = med.Instructions,
+                IsClinicGiven = med.IsClinicGiven,
+                PrescribedBy = doctor?.FullName ?? "Doctor"
+            };
 
-        await Services.PrescriptionService.Instance.AddAsync(prescription);
+            await Services.PrescriptionService.Instance.AddAsync(prescription);
+        }
+
+        var medicineNames = string.Join(", ", validEntries.Select(m => m.MedicineName));
 
         await Services.NotificationService.Instance.AddAsync(
             SelectedPatient.Email,
             "New Prescription",
-            $"Dr. {doctor?.FullName} has prescribed {MedicineName} ({Dosage}). Check your Prescriptions for details.");
+            $"Dr. {doctor?.FullName} has prescribed: {medicineNames}. Check your Prescriptions for details.");
 
         await Shell.Current.DisplayAlert("Saved", "Prescription has been recorded.", "OK");
 
-        MedicineName = string.Empty;
-        Dosage = string.Empty;
-        Instructions = string.Empty;
-        IsClinicGiven = true;
+        // Pop back to Doctor Dashboard specifically (1 level back from Write Rx)
+        await Shell.Current.Navigation.PopAsync();
     }
 
     [RelayCommand]

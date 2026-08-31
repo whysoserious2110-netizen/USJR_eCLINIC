@@ -28,14 +28,7 @@ public class NotificationService
         });
     }
 
-    public async Task<List<Notification>> GetForUserAsync(string recipientEmail)
-    {
-        var all = await _db.Table<Notification>().ToListAsync();
-        return all
-            .Where(n => n.RecipientEmail.Equals(recipientEmail, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(n => n.DateCreated)
-            .ToList();
-    }
+   
 
 
 
@@ -53,6 +46,36 @@ public class NotificationService
             n.IsRead = true;
             await _db.UpdateAsync(n);
         }
+    }
+
+    public async Task<List<Notification>> GetForUserAsync(string recipientEmail)
+    {
+        await PurgeExpiredAsync();
+
+        var all = await _db.Table<Notification>().ToListAsync();
+        return all
+            .Where(n => n.RecipientEmail.Equals(recipientEmail, StringComparison.OrdinalIgnoreCase) && !n.IsDeleted)
+            .OrderByDescending(n => n.DateCreated)
+            .ToList();
+    }
+
+    public async Task SoftDeleteAsync(int notificationId)
+    {
+        var notif = await _db.Table<Notification>().Where(n => n.Id == notificationId).FirstOrDefaultAsync();
+        if (notif == null) return;
+
+        notif.IsDeleted = true;
+        notif.DeletedOn = DateTime.Now;
+        await _db.UpdateAsync(notif);
+    }
+
+    private async Task PurgeExpiredAsync()
+    {
+        var all = await _db.Table<Notification>().ToListAsync();
+        var expired = all.Where(n => n.IsDeleted && n.DeletedOn.HasValue && n.DeletedOn.Value.AddDays(30) <= DateTime.Now);
+
+        foreach (var n in expired)
+            await _db.DeleteAsync(n);
     }
 
 

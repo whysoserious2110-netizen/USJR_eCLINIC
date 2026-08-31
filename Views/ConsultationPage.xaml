@@ -27,6 +27,31 @@
                 </VerticalStackLayout>
             </Frame>
 
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14" HasShadow="False">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Vital Signs" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="10">
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <Label Text="Blood Pressure" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="e.g., 120/80" Text="{Binding BloodPressure}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <Label Text="Temperature" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="e.g., 36.8°C" Text="{Binding Temperature}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <Label Text="Pulse Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="e.g., 78 bpm" Text="{Binding PulseRate}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <Label Text="Respiratory Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="e.g., 16/min" Text="{Binding RespiratoryRate}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+
             <VerticalStackLayout Spacing="6">
                 <Label Text="Chief Complaint" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">

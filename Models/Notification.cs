@@ -12,4 +12,6 @@ public class Notification
     public string Message { get; set; } = string.Empty;
     public DateTime DateCreated { get; set; } = DateTime.Now;
     public bool IsRead { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedOn { get; set; }
 }

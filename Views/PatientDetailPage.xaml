@@ -7,7 +7,7 @@
              BackgroundColor="#F7F8FA">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
 
             <Grid ColumnDefinitions="Auto,*">
                 <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
@@ -15,33 +15,79 @@
                         <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Grid.Column="1" Text="Patient Record" FontSize="20" FontAttributes="Bold"
+                <Label Grid.Column="1" Text="Patient Records" FontSize="20" FontAttributes="Bold"
                        TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
             </Grid>
 
-            <!-- Patient header -->
-            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-                    <Label FontSize="12" TextColor="#0F9B8E">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{Binding PatientRole}"/>
-                                <Span Text=" · "/>
-                                <Span Text="{Binding PatientIdNumber}"/>
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+            <!-- 1. Patient Information -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Frame Grid.Column="0" WidthRequest="56" HeightRequest="56" CornerRadius="28" Padding="0"
+                               BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
+                            <Grid>
+                                <Label Text="&#128100;" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                                <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
+                            </Grid>
+                        </Frame>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
+                            <Label FontSize="12" TextColor="#9AA4AE">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding PatientRole}"/>
+                                        <Span Text=" · "/>
+                                        <Span Text="{Binding PatientIdNumber}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" BackgroundColor="#EEF1F3"/>
+
+                    <Label Text="{Binding PatientProgram}" FontSize="13" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientEmail2}" FontSize="13" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientMobile}" FontSize="13" TextColor="#12212E"/>
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Medical Records -->
-            <Label Text="Medical Records" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
+            <!-- 2. Medical History -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Medical History" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
 
-            <Label Text="No medical records on file." FontSize="13" TextColor="#9AA4AE"
-                   IsVisible="{Binding HasMedicalRecords, Converter={StaticResource BoolInverter}}"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="Blood Type" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding BloodType}" FontSize="13" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Allergies" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding Allergies}" FontSize="13" TextColor="#D9534F"/>
+                        </VerticalStackLayout>
+                    </Grid>
 
-            <CollectionView ItemsSource="{Binding MedicalRecords}" IsVisible="{Binding HasMedicalRecords}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Known Medical Conditions" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding MedicalConditions}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Current Medications" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding CurrentMedications}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 3. Previous Consultation -->
+            <Label Text="Previous Consultation" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
+            <Label Text="No consultations on file." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasConsultations, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding Consultations}" IsVisible="{Binding HasConsultations}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:MedicalRecordListItem">
                         <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
@@ -49,6 +95,25 @@
                             <VerticalStackLayout Spacing="4">
                                 <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
                                 <Label Text="{Binding ChiefComplaint}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                <Label Text="{Binding AttendingStaff, StringFormat='Attending: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- 4. Diagnosis & Treatment -->
+            <Label Text="Diagnosis &amp; Treatment" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No diagnosis or treatment records yet." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasConsultations, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding Consultations}" IsVisible="{Binding HasConsultations}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:MedicalRecordListItem">
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
                                 <Label FontSize="12" TextColor="#6B7684">
                                     <Label.FormattedText>
                                         <FormattedString>
@@ -65,16 +130,16 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Text="{Binding AttendingStaff, StringFormat='Attending: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding FollowUpNotes, StringFormat='Follow-up: {0}'}" FontSize="11" TextColor="#9AA4AE"
+                                       IsVisible="{Binding FollowUpNotes, Converter={StaticResource StringNotEmpty}}"/>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Prescriptions -->
-            <Label Text="Prescriptions" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
-
+            <!-- 5. Prescription -->
+            <Label Text="Prescription" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
             <Label Text="No prescriptions on file." FontSize="13" TextColor="#9AA4AE"
                    IsVisible="{Binding HasPrescriptions, Converter={StaticResource BoolInverter}}"/>
 

@@ -8,24 +8,28 @@ public partial class PatientDetailViewModel : ObservableObject
 {
     private readonly string _patientEmail;
 
-    [ObservableProperty]
-    private string patientName = string.Empty;
+    // Patient Information
+    [ObservableProperty] private string patientName = string.Empty;
+    [ObservableProperty] private string patientRole = string.Empty;
+    [ObservableProperty] private string patientIdNumber = string.Empty;
+    [ObservableProperty] private string patientEmail2 = string.Empty;
+    [ObservableProperty] private string patientMobile = string.Empty;
+    [ObservableProperty] private string patientProgram = string.Empty;
+    [ObservableProperty] private string profileImagePath = string.Empty;
 
-    [ObservableProperty]
-    private string patientRole = string.Empty;
+    // Consultations
+    public ObservableCollection<MedicalRecordListItem> Consultations { get; } = new();
+    [ObservableProperty] private bool hasConsultations;
 
-    [ObservableProperty]
-    private string patientIdNumber = string.Empty;
+    // Medical History (from patient's own profile clinical info)
+    [ObservableProperty] private string bloodType = string.Empty;
+    [ObservableProperty] private string allergies = string.Empty;
+    [ObservableProperty] private string medicalConditions = string.Empty;
+    [ObservableProperty] private string currentMedications = string.Empty;
 
-    public ObservableCollection<MedicalRecordListItem> MedicalRecords { get; } = new();
-
-    [ObservableProperty]
-    private bool hasMedicalRecords;
-
+    // Prescriptions
     public ObservableCollection<PrescriptionListItem> Prescriptions { get; } = new();
-
-    [ObservableProperty]
-    private bool hasPrescriptions;
+    [ObservableProperty] private bool hasPrescriptions;
 
     public PatientDetailViewModel(string patientEmail, string patientName, string patientRole, string patientIdNumber)
     {
@@ -39,12 +43,24 @@ public partial class PatientDetailViewModel : ObservableObject
 
     private async Task LoadAsync()
     {
-        var records = await Services.MedicalRecordService.Instance.GetForPatientAsync(_patientEmail);
+        var account = await Services.AuthService.Instance.GetAccountByEmailAsync(_patientEmail);
+        if (account != null)
+        {
+            PatientEmail2 = account.Email;
+            PatientMobile = account.MobileNumber;
+            PatientProgram = account.ProgramOrDepartment;
+            ProfileImagePath = account.ProfileImagePath;
+            BloodType = account.BloodType;
+            Allergies = account.Allergies;
+            MedicalConditions = account.MedicalConditions;
+            CurrentMedications = account.CurrentMedications;
+        }
 
-        MedicalRecords.Clear();
+        var records = await Services.MedicalRecordService.Instance.GetForPatientAsync(_patientEmail);
+        Consultations.Clear();
         foreach (var r in records)
         {
-            MedicalRecords.Add(new MedicalRecordListItem
+            Consultations.Add(new MedicalRecordListItem
             {
                 Id = r.Id,
                 DateDisplay = r.ConsultationDate.ToString("MMM dd, yyyy"),
@@ -55,10 +71,9 @@ public partial class PatientDetailViewModel : ObservableObject
                 AttendingStaff = r.AttendingStaff
             });
         }
-        HasMedicalRecords = MedicalRecords.Count > 0;
+        HasConsultations = Consultations.Count > 0;
 
         var prescriptions = await Services.PrescriptionService.Instance.GetForPatientAsync(_patientEmail);
-
         Prescriptions.Clear();
         foreach (var p in prescriptions)
         {
@@ -77,4 +92,6 @@ public partial class PatientDetailViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
+
+    
 }
