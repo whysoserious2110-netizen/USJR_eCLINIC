@@ -16,8 +16,30 @@ public partial class QueueItem : ObservableObject
     public string Location { get; set; } = "Main Campus Clinic";
 }
 
+
+public partial class CertRequestItem : ObservableObject
+{
+    public int AppointmentId { get; set; }
+    public string PatientEmail { get; set; } = string.Empty;
+    public string PatientName { get; set; } = string.Empty;
+    public string CertificateType { get; set; } = string.Empty;
+    public string Purpose { get; set; } = string.Empty;
+    public string DateDisplay { get; set; } = string.Empty;
+}
+
+
+
 public partial class DoctorDashboardViewModel : ObservableObject
 {
+
+
+    public ObservableCollection<CertRequestItem> PendingCertRequests { get; } = new();
+
+    [ObservableProperty]
+    private bool hasCertRequests;
+
+
+
     [ObservableProperty]
     private string doctorName = string.Empty;
 
@@ -35,12 +57,23 @@ public partial class DoctorDashboardViewModel : ObservableObject
     [ObservableProperty]
     private bool hasQueueItems;
 
+    [ObservableProperty]
+    private int unreadNotificationCount;
+
+    [ObservableProperty]
+    private bool hasUnreadNotifications;
+
     public async Task RefreshAsync()
     {
         var user = Services.AuthService.Instance.CurrentUser;
         if (user == null) return;
 
         DoctorName = user.FullName;
+
+
+
+        UnreadNotificationCount = await Services.NotificationService.Instance.GetUnreadCountAsync(user.Email);
+        HasUnreadNotifications = UnreadNotificationCount > 0;
 
         var announcement = await Services.AnnouncementService.Instance.GetActiveForRoleAsync("Doctor");
         if (announcement != null)
@@ -77,6 +110,26 @@ public partial class DoctorDashboardViewModel : ObservableObject
         }
 
         HasQueueItems = ImmediateQueue.Count > 0;
+
+
+        var certRequests = await Services.AppointmentService.Instance.GetCertRequestsAsync();
+
+        PendingCertRequests.Clear();
+        foreach (var appt in certRequests)
+        {
+            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(appt.PatientEmail);
+
+            PendingCertRequests.Add(new CertRequestItem
+            {
+                AppointmentId = appt.Id,
+                PatientEmail = appt.PatientEmail,
+                PatientName = patient?.FullName ?? appt.PatientEmail,
+                CertificateType = appt.SubService,
+                Purpose = appt.ReasonOrPurpose,
+                DateDisplay = appt.VisitDate.ToString("MMM dd, yyyy")
+            });
+        }
+        HasCertRequests = PendingCertRequests.Count > 0;
     }
 
     [RelayCommand]
@@ -84,27 +137,30 @@ public partial class DoctorDashboardViewModel : ObservableObject
     => await Shell.Current.Navigation.PushAsync(new Views.TodaysVisitsPage());
 
     [RelayCommand]
+    private async Task GoToNotifications()
+    => await Shell.Current.Navigation.PushAsync(new Views.NotificationsPage());
+
+
+    [RelayCommand]
     private async Task GoToPatientRecords()
-    => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage());
+    => await Shell.Current.Navigation.PushAsync(new Views.MyPatientsPage());
 
     [RelayCommand]
     private async Task GoToWriteRx()
     => await Shell.Current.Navigation.PushAsync(new Views.WriteRxPage());
 
+    [RelayCommand]
+    private async Task OpenIssueCertificate(CertRequestItem item)
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.IssueCertificatePage(
+            item.AppointmentId, item.PatientEmail, item.PatientName, item.CertificateType, item.Purpose));
+    }
+
+
 
     [RelayCommand]
-    private async Task GoToConsultation()
-    {
-        if (ImmediateQueue.Count == 0)
-        {
-            await Shell.Current.DisplayAlert("No patients in queue", "There are no patients waiting for consultation today.", "OK");
-            return;
-        }
-
-        await Shell.Current.Navigation.PushAsync(new Views.ConsultationPage(
-            ImmediateQueue[0].AppointmentId, ImmediateQueue[0].PatientEmail,
-            ImmediateQueue[0].PatientName, ImmediateQueue[0].PatientRole, ImmediateQueue[0].ChiefComplaint));
-    }
+    private async Task GoToAnnouncements()
+    => await Shell.Current.Navigation.PushAsync(new Views.PostAnnouncementPage());
 
     [RelayCommand]
     private async Task GoToPatients()
@@ -112,7 +168,7 @@ public partial class DoctorDashboardViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoToAppointments()
-        => await Shell.Current.DisplayAlert("Appointments", "Coming soon.", "OK");
+    => await Shell.Current.Navigation.PushAsync(new Views.DoctorAppointmentsPage());
 
     [RelayCommand]
     
@@ -126,4 +182,10 @@ public partial class DoctorDashboardViewModel : ObservableObject
         await Shell.Current.Navigation.PushAsync(new Views.ConsultationPage(
             item.AppointmentId, item.PatientEmail, item.PatientName, item.PatientRole, item.ChiefComplaint));
     }
+
+
+
+
+
+
 }

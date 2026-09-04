@@ -6,6 +6,27 @@ namespace USJR_eCLINIC.ViewModels;
 
 public partial class BookAppointmentViewModel : ObservableObject
 {
+    private static readonly HashSet<DateTime> SchoolHolidays = new()
+    {
+        new DateTime(2026, 8, 6),
+        new DateTime(2026, 8, 19),
+        new DateTime(2026, 8, 21),
+        new DateTime(2026, 8, 28),
+        new DateTime(2026, 8, 31),
+        new DateTime(2026, 9, 9),
+        new DateTime(2026, 10, 2),
+        new DateTime(2026, 10, 31),
+        new DateTime(2026, 11, 1),
+        new DateTime(2026, 11, 2),
+        new DateTime(2026, 11, 30),
+        new DateTime(2026, 12, 8),
+        new DateTime(2026, 12, 19),
+        new DateTime(2027, 1, 22),
+        new DateTime(2027, 1, 23),
+    };
+
+    private bool IsSchoolHoliday(DateTime date) => SchoolHolidays.Contains(date.Date);
+
     // ---- Service Type ----
     public ObservableCollection<string> ServiceTypes { get; } = new()
     {
@@ -72,18 +93,22 @@ public partial class BookAppointmentViewModel : ObservableObject
     [ObservableProperty]
     private string certificatePurpose = string.Empty;
 
-    // ---- Date / Time ----
-    public ObservableCollection<DateChip> DateChips { get; } = new();
-    public ObservableCollection<TimeChip> TimeChips { get; } = new();
+    // ---- Date ----
+    [ObservableProperty]
+    private DateTime pickerDate = DateTime.Today.AddDays(1);
 
     [ObservableProperty]
-    private DateChip? selectedDateChip;
+    private DateTime? selectedDate;
+
+    public string DateDisplayText => SelectedDate.HasValue ? SelectedDate.Value.ToString("MMM dd, yyyy (ddd)") : "Select a date";
+
+    public bool HasSelectedDate => SelectedDate.HasValue;
+
+    // ---- Time (dropdown) ----
+    public ObservableCollection<string> AvailableTimeOptions { get; } = new();
 
     [ObservableProperty]
-    private TimeChip? selectedTimeChip;
-
-    [ObservableProperty]
-    private string dateRangeLabel = string.Empty;
+    private string? selectedTimeOption;
 
     public bool ShowDateTimeSection =>
         (IsMedical) ||
@@ -93,7 +118,6 @@ public partial class BookAppointmentViewModel : ObservableObject
 
     public BookAppointmentViewModel()
     {
-        RegenerateDateChips();
     }
 
     partial void OnSelectedServiceTypeChanged(string value)
@@ -104,7 +128,6 @@ public partial class BookAppointmentViewModel : ObservableObject
         OnPropertyChanged(nameof(IsCertRequest));
         OnPropertyChanged(nameof(ShowDateTimeSection));
         ResetSelections();
-        RegenerateDateChips();
     }
 
     partial void OnSelectedMedicalReasonChanged(string value)
@@ -115,7 +138,39 @@ public partial class BookAppointmentViewModel : ObservableObject
         OnPropertyChanged(nameof(IsDentalConsultation));
         OnPropertyChanged(nameof(IsDentalWithSchedule));
         OnPropertyChanged(nameof(ShowDateTimeSection));
-        RegenerateDateChips();
+    }
+
+    partial void OnPickerDateChanged(DateTime value) => _ = HandleDatePickedAsync(value);
+
+    private async Task HandleDatePickedAsync(DateTime date)
+    {
+        if (!ShowDateTimeSection) return;
+
+        var allowedDays = GetAllowedDays();
+        bool isPast = date.Date < DateTime.Today;
+        bool isAvailable = allowedDays.Contains(date.DayOfWeek) && !isPast && !IsSchoolHoliday(date);
+
+        if (!isAvailable)
+        {
+            SelectedDate = null;
+            AvailableTimeOptions.Clear();
+            SelectedTimeOption = null;
+            OnPropertyChanged(nameof(HasSelectedDate));
+            OnPropertyChanged(nameof(DateDisplayText));
+
+            string reason = IsSchoolHoliday(date) ? "This date is a school holiday." :
+                             isPast ? "Please pick a future date." :
+                             "This service is not available on the selected day. Please choose a different date.";
+
+            await Shell.Current.DisplayAlert("Date Not Available", reason, "OK");
+            return;
+        }
+
+        SelectedDate = date;
+        OnPropertyChanged(nameof(HasSelectedDate));
+        OnPropertyChanged(nameof(DateDisplayText));
+
+        await RegenerateTimeOptionsAsync(date);
     }
 
     private void ResetSelections()
@@ -124,9 +179,12 @@ public partial class BookAppointmentViewModel : ObservableObject
         SelectedMedicalReason = string.Empty;
         SelectedFollowUpReason = string.Empty;
         SelectedCertificateType = string.Empty;
-        SelectedDateChip = null;
-        SelectedTimeChip = null;
-        TimeChips.Clear();
+        SelectedDate = null;
+        SelectedTimeOption = null;
+        AvailableTimeOptions.Clear();
+        PickerDate = DateTime.Today.AddDays(1);
+        OnPropertyChanged(nameof(HasSelectedDate));
+        OnPropertyChanged(nameof(DateDisplayText));
     }
 
     [RelayCommand]
@@ -162,7 +220,6 @@ public partial class BookAppointmentViewModel : ObservableObject
             };
         }
 
-        // Follow-up and Cert Request: general clinic days
         return new() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
     }
 
@@ -193,72 +250,13 @@ public partial class BookAppointmentViewModel : ObservableObject
             };
         }
 
-        // Follow-up / Cert Request
         return (new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0));
     }
 
-    private void RegenerateDateChips()
+    private async Task RegenerateTimeOptionsAsync(DateTime date)
     {
-        DateChips.Clear();
-        SelectedDateChip = null;
-        TimeChips.Clear();
-
-        if (!ShowDateTimeSection)
-        {
-            DateRangeLabel = string.Empty;
-            return;
-        }
-
-        var allowedDays = GetAllowedDays();
-        if (allowedDays.Count == 0)
-        {
-            DateRangeLabel = string.Empty;
-            return;
-        }
-
-        var date = DateTime.Today.AddDays(1);
-        int found = 0;
-
-        while (found < 7)
-        {
-            if (allowedDays.Contains(date.DayOfWeek))
-            {
-                DateChips.Add(new DateChip
-                {
-                    Date = date,
-                    DayLabel = date.ToString("ddd").ToUpper(),
-                    DayNumber = date.Day.ToString()
-                });
-                found++;
-            }
-            date = date.AddDays(1);
-        }
-
-        if (DateChips.Count > 0)
-        {
-            var first = DateChips.First().Date;
-            var last = DateChips.Last().Date;
-
-            DateRangeLabel = first.Month == last.Month
-                ? first.ToString("MMMM yyyy")
-                : $"{first:MMMM} - {last:MMMM yyyy}";
-        }
-    }
-
-    [RelayCommand]
-    private async Task SelectDate(DateChip chip)
-    {
-        foreach (var d in DateChips) d.IsSelected = false;
-        chip.IsSelected = true;
-        SelectedDateChip = chip;
-
-        await RegenerateTimeChipsAsync(chip.Date);
-    }
-
-    private async Task RegenerateTimeChipsAsync(DateTime date)
-    {
-        TimeChips.Clear();
-        SelectedTimeChip = null;
+        AvailableTimeOptions.Clear();
+        SelectedTimeOption = null;
 
         var (start, end) = GetHoursForDay(date.DayOfWeek);
         if (start == TimeSpan.Zero && end == TimeSpan.Zero) return;
@@ -274,25 +272,13 @@ public partial class BookAppointmentViewModel : ObservableObject
         while (current < end)
         {
             var label = DateTime.Today.Add(current).ToString("h:mm tt");
-            var isPast = date.Date == DateTime.Today && DateTime.Now.TimeOfDay > current;
+            var isPastTime = date.Date == DateTime.Today && DateTime.Now.TimeOfDay > current;
 
-            TimeChips.Add(new TimeChip
-            {
-                Time = label,
-                IsBooked = bookedTimes.Contains(label) || isPast
-            });
+            if (!bookedTimes.Contains(label) && !isPastTime)
+                AvailableTimeOptions.Add(label);
 
             current = current.Add(TimeSpan.FromMinutes(30));
         }
-    }
-
-    [RelayCommand]
-    private void SelectTime(TimeChip chip)
-    {
-        if (chip.IsBooked) return;
-        foreach (var t in TimeChips) t.IsSelected = false;
-        chip.IsSelected = true;
-        SelectedTimeChip = chip;
     }
 
     [RelayCommand]
@@ -343,7 +329,7 @@ public partial class BookAppointmentViewModel : ObservableObject
             subService = SelectedFollowUpReason;
             reasonOrPurpose = AdditionalNotes;
         }
-        else // Cert Request
+        else
         {
             if (string.IsNullOrWhiteSpace(SelectedCertificateType))
             {
@@ -356,7 +342,7 @@ public partial class BookAppointmentViewModel : ObservableObject
 
         if (ShowDateTimeSection)
         {
-            if (SelectedDateChip == null || SelectedTimeChip == null)
+            if (SelectedDate == null || string.IsNullOrEmpty(SelectedTimeOption))
             {
                 await Shell.Current.DisplayAlert("Missing info", "Please select a date and time.", "OK");
                 return;
@@ -376,8 +362,8 @@ public partial class BookAppointmentViewModel : ObservableObject
             ServiceType = SelectedServiceType,
             SubService = subService,
             ReasonOrPurpose = reasonOrPurpose,
-            VisitDate = SelectedDateChip?.Date ?? DateTime.Today,
-            VisitTime = SelectedTimeChip?.Time ?? string.Empty,
+            VisitDate = SelectedDate ?? DateTime.Today,
+            VisitTime = SelectedTimeOption ?? string.Empty,
             Status = "Pending"
         };
 

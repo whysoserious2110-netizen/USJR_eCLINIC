@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.DoctorAppointmentsPage"
+             x:Name="Root"
+             x:DataType="vm:DoctorAppointmentsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ContentPage.Resources>
+        <conv:TabTextColorConverter x:Key="TabTextColor"/>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Appointments" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Tabs -->
+        <Grid ColumnDefinitions="*,*,*">
+            <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Center">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="All"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Label Text="All" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                       TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}"/>
+                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsAllTab}" Color="#0F9B8E"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Center">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Upcoming"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Label Text="Upcoming" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                       TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}"/>
+                <BoxView HeightRequest="2" WidthRequest="60" IsVisible="{Binding IsUpcomingTab}" Color="#0F9B8E"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Center">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Past"/>
+                </VerticalStackLayout.GestureRecognizers>
+                <Label Text="Past" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                       TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}"/>
+                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsPastTab}" Color="#0F9B8E"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <BoxView HeightRequest="1" BackgroundColor="#E2E6EA" Margin="0,-10,0,0"/>
+
+        <VerticalStackLayout IsVisible="{Binding HasAppointments, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,40,0,0" Spacing="10">
+            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No appointments here" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Appointments}" IsVisible="{Binding HasAppointments}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:DoctorAppointmentItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}" CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                <Frame Grid.Column="1" BackgroundColor="{Binding StatusColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
+                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
+                                </Frame>
+                            </Grid>
+                            <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding ChiefComplaint, StringFormat='C/O: {0}'}" FontSize="12" TextColor="#6B7684"/>
+                            <Label FontSize="11" TextColor="#9AA4AE">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding DateDisplay}"/>
+                                        <Span Text=" · "/>
+                                        <Span Text="{Binding TimeDisplay}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

@@ -101,5 +101,22 @@
     Route="PatientDetailPage" />
 
 
+    <ShellContent
+    Title="Doctor Appointments"
+    ContentTemplate="{DataTemplate views:DoctorAppointmentsPage}"
+    Route="DoctorAppointmentsPage" />
+
+
+    <ShellContent
+    Title="My Patients"
+    ContentTemplate="{DataTemplate views:MyPatientsPage}"
+    Route="MyPatientsPage" />
+
+    <ShellContent
+    Title="Issue Certificate"
+    ContentTemplate="{DataTemplate views:IssueCertificatePage}"
+    Route="IssueCertificatePage" />
+
+
 
 </Shell>

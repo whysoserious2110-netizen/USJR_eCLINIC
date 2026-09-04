@@ -16,6 +16,23 @@ public class MedicalRecordService
         _db.CreateTableAsync<ConsultationRecord>().Wait();
     }
 
+
+    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingStaffName)
+    {
+        var all = await _db.Table<ConsultationRecord>().ToListAsync();
+        return all
+            .Where(r => r.AttendingStaff.Equals(attendingStaffName, StringComparison.OrdinalIgnoreCase))
+            .Select(r => r.PatientEmail)
+            .Distinct()
+            .ToList();
+    }
+
+    public async Task<DateTime?> GetLastVisitDateAsync(string patientEmail)
+    {
+        var records = await GetForPatientAsync(patientEmail);
+        return records.Count > 0 ? records.Max(r => r.ConsultationDate) : (DateTime?)null;
+    }
+
     public async Task<List<ConsultationRecord>> GetForPatientAsync(string patientEmail)
     {
         var all = await _db.Table<ConsultationRecord>().ToListAsync();

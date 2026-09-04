@@ -91,14 +91,14 @@
 
                     <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToConsultationCommand}"/>
+                            <TapGestureRecognizer Command="{Binding GoToAnnouncementsCommand}"/>
                         </Frame.GestureRecognizers>
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128204;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Text="&#128227;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <Label Text="Consultation" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Active EMR Form" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Announcements" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Post clinic notices" FontSize="11" TextColor="#9AA4AE"/>
                         </VerticalStackLayout>
                     </Frame>
 
@@ -144,6 +144,33 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
+
+
+                <!-- Certificate Requests -->
+                <VerticalStackLayout IsVisible="{Binding HasCertRequests}" Spacing="10" Margin="0,6,0,0">
+                    <Label Text="Certificate Requests" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
+
+                    <CollectionView ItemsSource="{Binding PendingCertRequests}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CertRequestItem">
+                                <Frame BackgroundColor="White" BorderColor="#D9A441" CornerRadius="14"
+                       Padding="16" Margin="0,0,0,12" HasShadow="False">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenIssueCertificateCommand}" CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                        <Label Text="{Binding CertificateType}" FontSize="12" TextColor="#0F9B8E"/>
+                                        <Label Text="{Binding Purpose}" FontSize="12" TextColor="#6B7684"/>
+                                        <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+
 
             </VerticalStackLayout>
         </ScrollView>

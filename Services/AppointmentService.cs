@@ -24,7 +24,42 @@ public class AppointmentService
             appointment.PatientEmail,
             "Appointment Requested",
             $"Your {appointment.ServiceType} appointment ({appointment.SubService}) on {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime} has been submitted and is Pending.");
+
+        if (appointment.ServiceType == "Medical")
+        {
+            var doctors = await AuthService.Instance.GetAllDoctorsAsync();
+            foreach (var doc in doctors)
+            {
+                await NotificationService.Instance.AddAsync(
+                    doc.Email,
+                    "New Appointment Request",
+                    $"A new Medical appointment ({appointment.SubService}) was booked for {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime}.");
+            }
+        }
     }
+
+
+    public async Task<List<Appointment>> GetCertRequestsAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all
+            .Where(a => a.ServiceType == "Cert Request" && (a.Status == "Pending" || a.Status == "Confirmed"))
+            .OrderBy(a => a.VisitDate)
+            .ToList();
+    }
+
+    public async Task<bool> IssueCertificateAsync(int appointmentId, string content)
+    {
+        var appt = await _db.Table<Appointment>().Where(a => a.Id == appointmentId).FirstOrDefaultAsync();
+        if (appt == null) return false;
+
+        appt.CertificateContent = content;
+        appt.IssuedDate = DateTime.Now;
+        appt.Status = "Completed";
+        await _db.UpdateAsync(appt);
+        return true;
+    }
+
 
     public async Task<bool> CancelAsync(int appointmentId)
     {
@@ -117,4 +152,14 @@ public class AppointmentService
 
 
 
+
+
+public async Task<List<Appointment>> GetAllForServiceAsync(string serviceType)
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all
+            .Where(a => a.ServiceType == serviceType)
+            .OrderByDescending(a => a.VisitDate)
+            .ToList();
+    }
 }

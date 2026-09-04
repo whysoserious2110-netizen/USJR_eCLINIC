@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="USJR_eCLINIC.Views.BookAppointmentPage"
              x:Name="Root"
              x:DataType="vm:BookAppointmentViewModel"
@@ -132,47 +133,23 @@
                        FontSize="12" TextColor="#6B7684" Margin="0,4,0,0"/>
             </VerticalStackLayout>
 
-            <!-- DATE / TIME (shared across Medical, Dental w/ schedule, Follow-up, Cert) -->
+            <!-- DATE / TIME -->
             <VerticalStackLayout IsVisible="{Binding ShowDateTimeSection}" Spacing="10">
 
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label Grid.Column="0" Text="Select Date" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                    <Label Grid.Column="1" Text="{Binding DateRangeLabel}" FontSize="12" TextColor="#0F9B8E" FontAttributes="Bold"/>
-                </Grid>
-                <FlexLayout BindableLayout.ItemsSource="{Binding DateChips}" Wrap="Wrap" JustifyContent="Start">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="vm:DateChip">
-                            <Frame BackgroundColor="{Binding IsSelected, Converter={StaticResource ChipBg}}"
-                                   BorderColor="{Binding IsSelected, Converter={StaticResource ChipBorder}}"
-                                   CornerRadius="12" Padding="10,8" Margin="0,0,8,8" HasShadow="False" WidthRequest="60">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectDateCommand}" CommandParameter="{Binding .}"/>
-                                </Frame.GestureRecognizers>
-                                <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
-                                    <Label Text="{Binding DayLabel}" FontSize="11" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}" HorizontalOptions="Center"/>
-                                    <Label Text="{Binding DayNumber}" FontSize="16" FontAttributes="Bold" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}" HorizontalOptions="Center"/>
-                                </VerticalStackLayout>
-                            </Frame>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </FlexLayout>
+                <Label Text="Select Date" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                    <DatePicker Date="{Binding PickerDate}" MinimumDate="{x:Static system:DateTime.Today}" VerticalOptions="Center"/>
+                </Frame>
+                <Label Text="{Binding DateDisplayText}" FontSize="12" TextColor="#0F9B8E" FontAttributes="Bold"
+                       IsVisible="{Binding HasSelectedDate}"/>
 
-                <Label Text="Select Time Slot" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,10,0,0"/>
-                <FlexLayout BindableLayout.ItemsSource="{Binding TimeChips}" Wrap="Wrap" JustifyContent="Start">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="vm:TimeChip">
-                            <Frame BackgroundColor="{Binding IsSelected, Converter={StaticResource ChipBg}}"
-                                   BorderColor="{Binding IsSelected, Converter={StaticResource ChipBorder}}"
-                                   CornerRadius="12" Padding="10,8" Margin="0,0,8,8" HasShadow="False"
-                                   Opacity="{Binding IsBooked, Converter={StaticResource NotBool}}">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectTimeCommand}" CommandParameter="{Binding .}"/>
-                                </Frame.GestureRecognizers>
-                                <Label Text="{Binding Time}" FontSize="13" TextColor="{Binding IsSelected, Converter={StaticResource ChipText}}"/>
-                            </Frame>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </FlexLayout>
+                <Label Text="Select Time Slot" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,10,0,0"
+                       IsVisible="{Binding HasSelectedDate}"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False"
+                       IsVisible="{Binding HasSelectedDate}">
+                    <Picker ItemsSource="{Binding AvailableTimeOptions}" SelectedItem="{Binding SelectedTimeOption}"
+                            Title="Select a time" VerticalOptions="Center"/>
+                </Frame>
 
             </VerticalStackLayout>
 

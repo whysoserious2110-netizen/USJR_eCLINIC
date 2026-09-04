@@ -16,4 +16,7 @@ public class Appointment
     public string Location { get; set; } = "Main Campus Clinic";
     public string Status { get; set; } = "Pending";
     public bool IsSeenByPatient { get; set; } = false;
+
+    public string CertificateContent { get; set; } = string.Empty;
+    public DateTime? IssuedDate { get; set; }
 }

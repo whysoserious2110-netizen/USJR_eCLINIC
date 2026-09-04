@@ -136,6 +136,13 @@ public class AuthService
         return all.Where(a => !staffRoles.Contains(a.Role)).OrderBy(a => a.FullName).ToList();
     }
 
+    public async Task<List<UserAccount>> GetAllDoctorsAsync()
+    {
+        await EnsureInitializedAsync();
+        var all = await _db.Table<UserAccount>().ToListAsync();
+        return all.Where(a => a.Role == "Doctor").ToList();
+    }
+
 
 
     public async Task<bool> UpdateProfileAsync(UserAccount updatedAccount)
