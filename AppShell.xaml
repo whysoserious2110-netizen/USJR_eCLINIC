@@ -117,6 +117,50 @@
     ContentTemplate="{DataTemplate views:IssueCertificatePage}"
     Route="IssueCertificatePage" />
 
+    <ShellContent
+    Title="R.E.A.D.S. Dashboard"
+    ContentTemplate="{DataTemplate views:ReadsDashboardPage}"
+    Route="ReadsDashboardPage" />
 
 
-</Shell>
+    <ShellContent
+    Title="Patient Search (Admin)"
+    ContentTemplate="{DataTemplate views:AdminPatientsListPage}"
+    Route="AdminPatientsListPage" />
+
+    <ShellContent
+    Title="Patient Info (Admin)"
+    ContentTemplate="{DataTemplate views:AdminPatientPage}"
+    Route="AdminPatientPage" />
+
+
+    <ShellContent
+    Title="Administrative Notes"
+    ContentTemplate="{DataTemplate views:AdminNotesPage}"
+    Route="AdminNotesPage" />
+
+
+    <ShellContent Title="Check-In" 
+                  ContentTemplate="{DataTemplate views:CheckInPage}" 
+                  Route="CheckInPage" />
+    
+    <ShellContent 
+        Title="Manage Appointments" 
+        ContentTemplate="{DataTemplate views:ManageAppointmentsPage}" 
+        Route="ManageAppointmentsPage" />
+    
+    
+    <ShellContent 
+        Title="Register Patient" 
+        ContentTemplate="{DataTemplate views:RegisterPatientPage}" 
+        Route="RegisterPatientPage" />
+    
+    
+    <ShellContent 
+        Title="Today's Overview" 
+        ContentTemplate="{DataTemplate views:TodaysOverviewPage}" 
+        Route="TodaysOverviewPage" />
+    
+    
+
+</Shell>        

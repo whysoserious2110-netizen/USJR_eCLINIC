@@ -158,9 +158,7 @@ public partial class DoctorDashboardViewModel : ObservableObject
 
 
 
-    [RelayCommand]
-    private async Task GoToAnnouncements()
-    => await Shell.Current.Navigation.PushAsync(new Views.PostAnnouncementPage());
+    
 
     [RelayCommand]
     private async Task GoToPatients()

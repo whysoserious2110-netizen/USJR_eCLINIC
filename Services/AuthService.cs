@@ -65,7 +65,20 @@ public class AuthService
                 EmploymentStatus = "Active"
             });
         }
+
+       
     }
+
+
+    public async Task<UserAccount?> GetAccountByIdNumberAsync(string idNumber)
+    {
+        await EnsureInitializedAsync();
+        var all = await _db.Table<UserAccount>().ToListAsync();
+        return all.FirstOrDefault(a => a.IdNumber.Equals(idNumber.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
+
+
 
     public async Task<bool> EmailExistsAsync(string email)
     {

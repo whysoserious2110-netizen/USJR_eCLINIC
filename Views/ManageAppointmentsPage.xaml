@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.ManageAppointmentsPage"
+             x:Name="Root"
+             x:DataType="vm:ManageAppointmentsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Manage Appointments" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <Label Text="Pending appointments awaiting approval." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+
+        <VerticalStackLayout IsVisible="{Binding HasPending, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No pending appointments" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding PendingApprovals}" IsVisible="{Binding HasPending}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:PendingApprovalItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                            <Label FontSize="12" TextColor="#6B7684">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding ServiceType}"/>
+                                        <Span Text=" — "/>
+                                        <Span Text="{Binding SubService}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label FontSize="11" TextColor="#9AA4AE">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding DateDisplay}"/>
+                                        <Span Text=" · "/>
+                                        <Span Text="{Binding TimeDisplay}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Button Text="Approve"
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.ApproveCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                                    CornerRadius="18" HeightRequest="40" Margin="0,6,0,0"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

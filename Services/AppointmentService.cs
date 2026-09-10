@@ -107,6 +107,79 @@ public class AppointmentService
             .ToList();
     }
 
+    public async Task<List<Appointment>> GetPendingApprovalsAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.Where(a => a.Status == "Pending").OrderBy(a => a.VisitDate).ToList();
+    }
+
+    public async Task<bool> ApproveAsync(int appointmentId)
+    {
+        var appt = await _db.Table<Appointment>().Where(a => a.Id == appointmentId).FirstOrDefaultAsync();
+        if (appt == null) return false;
+
+        appt.Status = "Confirmed";
+        await _db.UpdateAsync(appt);
+
+        await NotificationService.Instance.AddAsync(
+            appt.PatientEmail,
+            "Appointment Approved",
+            $"Your {appt.ServiceType} appointment on {appt.VisitDate:MMM dd, yyyy} at {appt.VisitTime} has been approved.");
+
+        return true;
+    }
+
+    public async Task<Appointment?> GetApprovedAppointmentTodayAsync(string patientEmail)
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.FirstOrDefault(a =>
+            a.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase) &&
+            a.VisitDate.Date == DateTime.Today &&
+            a.Status == "Confirmed");
+    }
+
+    public async Task<Appointment?> GetCheckedInTodayAsync(string patientEmail)
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.FirstOrDefault(a =>
+            a.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase) &&
+            a.VisitDate.Date == DateTime.Today &&
+            a.Status == "CheckedIn");
+    }
+
+    public async Task<Appointment> CheckInAsync(int appointmentId)
+    {
+        var appt = await _db.Table<Appointment>().Where(a => a.Id == appointmentId).FirstOrDefaultAsync();
+
+        var all = await _db.Table<Appointment>().ToListAsync();
+        int nextQueueNumber = all.Count(a => a.VisitDate.Date == DateTime.Today && a.QueueNumber.HasValue) + 1;
+
+        appt!.Status = "CheckedIn";
+        appt.CheckInTime = DateTime.Now;
+        appt.QueueNumber = nextQueueNumber;
+        await _db.UpdateAsync(appt);
+
+        return appt;
+    }
+
+    public async Task<int> GetTodayTotalCountAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.Count(a => a.VisitDate.Date == DateTime.Today);
+    }
+
+    public async Task<int> GetTodayCheckedInCountAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.Count(a => a.VisitDate.Date == DateTime.Today && a.Status == "CheckedIn");
+    }
+
+    public async Task<int> GetPendingApprovalCountAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all.Count(a => a.Status == "Pending");
+    }
+
     public async Task<int> GetUnseenCountAsync(string patientEmail)
     {
         var all = await GetAllForPatientAsync(patientEmail);

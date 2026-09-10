@@ -53,7 +53,8 @@ public partial class LoginViewModel : ObservableObject
         Page destination = user.Role switch
         {
             "Doctor" => new Views.DoctorDashboardPage(),
-            _ => new Views.HomePage() // Student, Faculty, Admin Personnel, Non-Teaching, R.E.A.D.S. Scholar
+            "R.E.A.D.S. Scholar" => new Views.ReadsDashboardPage(),
+            _ => new Views.HomePage()
         };
 
         await Shell.Current.Navigation.PushAsync(destination);

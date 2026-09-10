@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.RegisterPatientPage"
+             x:DataType="vm:RegisterPatientViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="16">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Register Patient" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Label Text="Role" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                <Picker ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" VerticalOptions="Center"/>
+            </Frame>
+
+            <Label Text="Full Name" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="Dela Cruz, Juan A." Text="{Binding FullName}"/>
+            </Frame>
+
+            <Label Text="ID Number" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., 2024-12345" Text="{Binding IdNumber}"/>
+            </Frame>
+
+            <Label Text="Program / Department" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., BS Information Technology" Text="{Binding ProgramOrDepartment}"/>
+            </Frame>
+
+            <Label Text="Email" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., juan.delacruz@usjr.edu.ph" Text="{Binding Email}" Keyboard="Email"/>
+            </Frame>
+
+            <Label Text="Mobile Number" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="+63 9XX XXX XXXX" Text="{Binding MobileNumber}" Keyboard="Telephone"/>
+            </Frame>
+
+            <Button Text="Register Patient"
+                    Command="{Binding RegisterCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"
+                    Margin="0,10,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

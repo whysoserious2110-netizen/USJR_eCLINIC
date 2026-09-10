@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.CheckInPage"
+             x:DataType="vm:CheckInViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Patient Check-In" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Scan/search input -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Scan QR or Enter ID Number" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                    <Entry Placeholder="e.g., 2024-12345" Text="{Binding ScannedId}"/>
+                </Frame>
+                <Button Text="Search" Command="{Binding SearchPatientCommand}"
+                        BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                        CornerRadius="20" HeightRequest="46"/>
+            </VerticalStackLayout>
+
+            <!-- Not found -->
+            <Frame IsVisible="{Binding ShowNotFound}" BackgroundColor="#FDECEC" BorderColor="#E05B5B" CornerRadius="14" Padding="18" HasShadow="False">
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="&#9888; Patient Not Found" FontAttributes="Bold" FontSize="16" TextColor="#E05B5B" HorizontalOptions="Center"/>
+                    <Label Text="No account matches this ID number." FontSize="13" TextColor="#8A3A3A" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- No approved appointment -->
+            <Frame IsVisible="{Binding ShowNoApproved}" BackgroundColor="#FDF3E7" BorderColor="#D9A441" CornerRadius="14" Padding="18" HasShadow="False">
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="&#9888; No Approved Appointment" FontAttributes="Bold" FontSize="16" TextColor="#B8862B" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="There is no approved appointment for today." FontSize="13" TextColor="#8A6417" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Already checked in -->
+            <Frame IsVisible="{Binding ShowAlreadyCheckedIn}" BackgroundColor="#EAF6F4" BorderColor="#0F9B8E" CornerRadius="14" Padding="18" HasShadow="False">
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="&#10003; Already Checked In" FontAttributes="Bold" FontSize="16" TextColor="#0F9B8E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="Status: Waiting" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in at: {0}'}" FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Approved found -->
+            <Frame IsVisible="{Binding ShowApprovedFound}" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="18" HasShadow="False">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="PATIENT FOUND &#10003;" FontAttributes="Bold" FontSize="13" TextColor="#0F9B8E"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="17" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientIdNumber, StringFormat='Student ID: {0}'}" FontSize="13" TextColor="#6B7684"/>
+
+                    <BoxView HeightRequest="1" BackgroundColor="#EEF1F3" Margin="0,4,0,4"/>
+
+                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="13" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Program" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding PatientProgram}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Appointment" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding AppointmentService}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Date" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding AppointmentDate}" FontSize="13" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Time" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding AppointmentTime}" FontSize="13" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="10,4" HasShadow="False" HorizontalOptions="Start">
+                        <Label Text="&#10003; Approved" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                    </Frame>
+
+                    <Button Text="CHECK IN PATIENT"
+                            Command="{Binding ConfirmCheckInCommand}"
+                            BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                            CornerRadius="20" HeightRequest="50" Margin="0,6,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Success -->
+            <Frame IsVisible="{Binding ShowCheckInSuccess}" BackgroundColor="#EAF6F4" BorderColor="#0F9B8E" CornerRadius="14" Padding="18" HasShadow="False">
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Label Text="&#10003; CHECK-IN SUCCESSFUL" FontAttributes="Bold" FontSize="16" TextColor="#0F9B8E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientIdNumber, StringFormat='Student ID: {0}'}" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
+                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="15" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" Margin="0,6,0,0"/>
+                    <Label Text="{Binding AppointmentService, StringFormat='Appointment: {0}'}" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="Status: WAITING" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in: {0}'}" FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+
+                    <Button Text="Scan Another Patient" Command="{Binding ScanAnotherCommand}"
+                            BackgroundColor="White" BorderColor="#0F9B8E" BorderWidth="1" TextColor="#0F9B8E" FontAttributes="Bold"
+                            CornerRadius="20" HeightRequest="46" Margin="0,10,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

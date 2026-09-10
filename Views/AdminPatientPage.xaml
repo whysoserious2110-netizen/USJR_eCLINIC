@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.AdminPatientPage"
+             x:DataType="vm:AdminPatientViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Patient Information" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Patient Information (administrative only) -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Frame Grid.Column="0" WidthRequest="56" HeightRequest="56" CornerRadius="28" Padding="0"
+                               BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
+                            <Grid>
+                                <Label Text="&#128100;" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                                <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
+                            </Grid>
+                        </Frame>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
+                            <Label FontSize="12" TextColor="#9AA4AE">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding Role}"/>
+                                        <Span Text=" · "/>
+                                        <Span Text="{Binding IdNumber}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" BackgroundColor="#EEF1F3"/>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Program / Department" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding ProgramOrDepartment}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Email" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding Email}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Mobile Number" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding MobileNumber}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Emergency Contact -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Emergency Contact" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Name" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding EmergencyContactName}" FontSize="13" TextColor="#12212E"/>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="Relationship" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding EmergencyContactRelationship}" FontSize="13" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Contact Number" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding EmergencyContactNumber}" FontSize="13" TextColor="#12212E"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BackgroundColor="#FDF3E7" BorderColor="#D9A441" CornerRadius="12" Padding="14" HasShadow="False">
+                <Label Text="Medical records, diagnosis, and treatment history are restricted to clinical staff (Doctor, Dentist, Nurse) and are not visible here."
+                       FontSize="12" TextColor="#8A6417"/>
+
+                <Button Text="View / Add Administrative Notes"
+        Command="{Binding GoToNotesCommand}"
+        BackgroundColor="#0F9B8E"
+        TextColor="White"
+        FontAttributes="Bold"
+        CornerRadius="24"
+        HeightRequest="48"/>
+
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -32,18 +32,7 @@
                     </VerticalStackLayout>
                 </Grid>
 
-                <!-- Announcement -->
-                <Frame IsVisible="{Binding HasAnnouncement}"
-                       BackgroundColor="#FFF6DC"
-                       BorderColor="#F3D67A"
-                       CornerRadius="12"
-                       Padding="14"
-                       HasShadow="False">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                        <Label Grid.Column="0" Text="&#9432;" FontSize="18" TextColor="#B8862B" VerticalOptions="Start"/>
-                        <Label Grid.Column="1" Text="{Binding AnnouncementText}" FontSize="13" TextColor="#5A4A1E"/>
-                    </Grid>
-                </Frame>
+                
 
                 <!-- Doctor Quick Actions -->
                 <Label Text="Doctor Quick Actions" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>

@@ -19,4 +19,7 @@ public class Appointment
 
     public string CertificateContent { get; set; } = string.Empty;
     public DateTime? IssuedDate { get; set; }
+
+    public int? QueueNumber { get; set; }
+    public DateTime? CheckInTime { get; set; }
 }

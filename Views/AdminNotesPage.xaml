@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.AdminNotesPage"
+             x:DataType="vm:AdminNotesViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Administrative Notes" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
+                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+            </Frame>
+
+            <!-- New note form -->
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Add a Note" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Category" FontSize="12" TextColor="#9AA4AE"/>
+                        <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="10,0" HeightRequest="48" HasShadow="False">
+                            <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" Title="Select category" VerticalOptions="Center"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Note" FontSize="12" TextColor="#9AA4AE"/>
+                        <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,10" HasShadow="False">
+                            <Editor Placeholder="e.g., Patient arrived 15 minutes late for 2:00 PM appointment." Text="{Binding NoteText}" HeightRequest="80"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <Button Text="Save Note"
+                            Command="{Binding SaveNoteCommand}"
+                            BackgroundColor="#0F9B8E"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            HeightRequest="46"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Note history -->
+            <Label Text="Note History" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No administrative notes yet." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasNotes, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding Notes}" IsVisible="{Binding HasNotes}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:AdminNoteListItem">
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Frame Grid.Column="0" BackgroundColor="#E6F3FD" CornerRadius="10" Padding="10,3"
+                                           HasShadow="False" HorizontalOptions="Start">
+                                        <Label Text="{Binding Category}" FontSize="10" FontAttributes="Bold" TextColor="#2E6FDB"/>
+                                    </Frame>
+                                </Grid>
+                                <Label Text="{Binding NoteText}" FontSize="13" TextColor="#12212E"/>
+                                <Label FontSize="11" TextColor="#9AA4AE">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding AuthorName}"/>
+                                            <Span Text=" · "/>
+                                            <Span Text="{Binding DateDisplay}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
