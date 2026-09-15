@@ -137,13 +137,17 @@ public partial class DoctorDashboardViewModel : ObservableObject
     => await Shell.Current.Navigation.PushAsync(new Views.TodaysVisitsPage());
 
     [RelayCommand]
+    private async Task GoToCertificates()
+    => await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
+
+    [RelayCommand]
     private async Task GoToNotifications()
     => await Shell.Current.Navigation.PushAsync(new Views.NotificationsPage());
 
 
     [RelayCommand]
-    private async Task GoToPatientRecords()
-    => await Shell.Current.Navigation.PushAsync(new Views.MyPatientsPage());
+    private async Task GoToPatientRecords()  // dashboard tile
+     => await Shell.Current.Navigation.PushAsync(new Views.MyPatientsPage());
 
     [RelayCommand]
     private async Task GoToWriteRx()
@@ -158,11 +162,11 @@ public partial class DoctorDashboardViewModel : ObservableObject
 
 
 
-    
+
 
     [RelayCommand]
-    private async Task GoToPatients()
-    => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage());
+    private async Task GoToPatients()  // bottom nav
+     => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage());
 
     [RelayCommand]
     private async Task GoToAppointments()

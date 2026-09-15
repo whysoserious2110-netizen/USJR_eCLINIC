@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.RecordVitalsPage"
+             x:DataType="vm:RecordVitalsViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="16">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Vital Signs &amp; Nursing Notes" FontSize="18" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
+                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+            </Frame>
+
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Record Vital Signs" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <Label Text="Blood Pressure" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="120/80" Text="{Binding BloodPressure}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <Label Text="Heart Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="78 bpm" Text="{Binding HeartRate}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <Label Text="Temperature" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="36.8°C" Text="{Binding Temperature}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <Label Text="Respiratory Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="16/min" Text="{Binding RespiratoryRate}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="4">
+                            <Label Text="O2 Saturation" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="98%" Text="{Binding OxygenSaturation}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="Height" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="170 cm" Text="{Binding Height}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="Weight" FontSize="11" TextColor="#9AA4AE"/>
+                            <Entry Placeholder="65 kg" Text="{Binding Weight}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Initial Assessment" FontSize="11" TextColor="#9AA4AE"/>
+                        <Editor Placeholder="Patient's presenting condition..." Text="{Binding InitialAssessment}" HeightRequest="70"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Nursing Notes" FontSize="11" TextColor="#9AA4AE"/>
+                        <Editor Placeholder="Additional nursing observations..." Text="{Binding NursingNotes}" HeightRequest="70"/>
+                    </VerticalStackLayout>
+
+                    <Button Text="Save Record"
+                            Command="{Binding SaveVitalsCommand}"
+                            BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                            CornerRadius="20" HeightRequest="48"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="History" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No vitals recorded yet." FontSize="13" TextColor="#9AA4AE"
+                   IsVisible="{Binding HasHistory, Converter={StaticResource BoolInverter}}"/>
+
+            <CollectionView ItemsSource="{Binding History}" IsVisible="{Binding HasHistory}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:VitalsHistoryItem">
+                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                               Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label FontSize="13" TextColor="#12212E">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="BP: "/>
+                                            <Span Text="{Binding BloodPressure}"/>
+                                            <Span Text="  HR: "/>
+                                            <Span Text="{Binding HeartRate}"/>
+                                            <Span Text="  Temp: "/>
+                                            <Span Text="{Binding Temperature}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding NursingNotes}" FontSize="12" TextColor="#6B7684"/>
+                                <Label Text="{Binding RecordedBy, StringFormat='Recorded by: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -186,6 +186,16 @@ public class AppointmentService
         return all.Count(a => !a.IsSeenByPatient);
     }
 
+
+    public async Task<List<Appointment>> GetAllCertRequestsAsync()
+    {
+        var all = await _db.Table<Appointment>().ToListAsync();
+        return all
+            .Where(a => a.ServiceType == "Cert Request")
+            .OrderByDescending(a => a.VisitDate)
+            .ToList();
+    }
+
     public async Task MarkAllSeenAsync(string patientEmail)
     {
         var all = await _db.Table<Appointment>().ToListAsync();

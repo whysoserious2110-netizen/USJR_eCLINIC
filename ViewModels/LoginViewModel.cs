@@ -54,6 +54,7 @@ public partial class LoginViewModel : ObservableObject
         {
             "Doctor" => new Views.DoctorDashboardPage(),
             "R.E.A.D.S. Scholar" => new Views.ReadsDashboardPage(),
+            "Nurse" => new Views.NurseDashboardPage(),
             _ => new Views.HomePage()
         };
 

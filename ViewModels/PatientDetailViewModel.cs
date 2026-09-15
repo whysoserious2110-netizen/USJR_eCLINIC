@@ -93,5 +93,10 @@ public partial class PatientDetailViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 
-    
+
+    [RelayCommand]
+    private async Task GoToVitals()
+    => await Shell.Current.Navigation.PushAsync(new Views.RecordVitalsPage(_patientEmail, PatientName));
+
+
 }

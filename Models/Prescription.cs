@@ -14,4 +14,7 @@ public class Prescription
     public string Instructions { get; set; } = string.Empty;
     public bool IsClinicGiven { get; set; } // true = Clinic-Given, false = Take-Home
     public string PrescribedBy { get; set; } = string.Empty; // filled by Doctor later
+    public bool IsDispensed { get; set; } = false;
+    public DateTime? DispensedDate { get; set; }
+
 }

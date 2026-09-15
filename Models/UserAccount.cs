@@ -33,4 +33,6 @@ public class UserAccount
 
     public string Position { get; set; } = string.Empty; // e.g., "University Physician"
     public string EmploymentStatus { get; set; } = "Active"; // Active, On Leave, Inactive
+
+    public string LicenseExpiration { get; set; } = string.Empty;
 }

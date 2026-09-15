@@ -78,18 +78,21 @@
                         </VerticalStackLayout>
                     </Frame>
 
+
+
                     <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToAnnouncementsCommand}"/>
+                            <TapGestureRecognizer Command="{Binding GoToCertificatesCommand}"/>
                         </Frame.GestureRecognizers>
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128227;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Text="&#128196;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <Label Text="Announcements" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Post clinic notices" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Certificates" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Pending &amp; issued" FontSize="11" TextColor="#9AA4AE"/>
                         </VerticalStackLayout>
                     </Frame>
+
 
                 </Grid>
 
@@ -175,19 +178,28 @@
 
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToPatientsCommand}"/>
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128101;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                    <Label Text="Patients" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
                     <Label Text="&#128197;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
                     <Label Text="Appointments" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
+
+                <Grid Grid.Column="2" HorizontalOptions="Center">
+                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}"/>
+                        </VerticalStackLayout.GestureRecognizers>
+                        <Label Text="&#128276;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                        <Label Text="Notifications" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Frame IsVisible="{Binding HasUnreadNotifications}"
+                   BackgroundColor="#E05B5B" CornerRadius="9"
+                   WidthRequest="18" HeightRequest="18" Padding="0" HasShadow="False"
+                   HorizontalOptions="End" VerticalOptions="Start" Margin="0,-4,8,0">
+                        <Label Text="{Binding UnreadNotificationCount}" FontSize="10" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </Grid>
 
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>

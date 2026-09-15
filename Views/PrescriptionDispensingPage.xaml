@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.PrescriptionDispensingPage"
+             x:Name="Root"
+             x:DataType="vm:PrescriptionDispensingViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+
+        <Grid ColumnDefinitions="Auto,*">
+            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Grid.Column="1" Text="Prescription Dispensing" FontSize="20" FontAttributes="Bold"
+                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        </Grid>
+
+        <Label Text="Clinic-Given prescriptions awaiting dispensing." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+
+        <VerticalStackLayout IsVisible="{Binding HasPending, Converter={StaticResource BoolInverter}}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128137;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="Nothing pending dispensing" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <CollectionView ItemsSource="{Binding PendingDispense}" IsVisible="{Binding HasPending}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:DispenseListItem">
+                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                           Padding="16" Margin="0,0,0,12" HasShadow="False">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                            <Label FontSize="13" TextColor="#6B7684">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding MedicineName}"/>
+                                        <Span Text=" — "/>
+                                        <Span Text="{Binding Dosage}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
+                            <Button Text="Mark as Dispensed"
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.MarkDispensedCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                                    CornerRadius="18" HeightRequest="42" Margin="0,4,0,0"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

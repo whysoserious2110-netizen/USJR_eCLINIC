@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.ApeLabEncodingPage"
+             x:DataType="vm:ApeLabEncodingViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="16">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="APE Lab Result Encoding" FontSize="18" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Label Text="For Faculty, Admin Personnel, and Non-Teaching Personnel only." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+
+            <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
+                        ItemDisplayBinding="{Binding DisplayName}" Title="Select patient" VerticalOptions="Center"/>
+            </Frame>
+
+            <Label Text="CBC" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., Normal" Text="{Binding Cbc}"/>
+            </Frame>
+
+            <Label Text="Urinalysis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., Normal" Text="{Binding Urinalysis}"/>
+            </Frame>
+
+            <Label Text="Chest X-ray" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., Clear lung fields" Text="{Binding ChestXray}"/>
+            </Frame>
+
+            <Label Text="ECG" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., Normal sinus rhythm" Text="{Binding Ecg}"/>
+            </Frame>
+
+            <Label Text="Drug Test" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
+                <Entry Placeholder="e.g., Negative" Text="{Binding DrugTest}"/>
+            </Frame>
+
+            <Label Text="Overall Findings" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                <Editor Placeholder="Summary of overall findings..." Text="{Binding OverallFindings}" HeightRequest="80"/>
+            </Frame>
+
+            <Button Text="Save Results"
+                    Command="{Binding SaveResultCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"
+                    Margin="0,10,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

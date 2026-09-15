@@ -66,7 +66,29 @@ public class AuthService
             });
         }
 
-       
+
+
+        var nurseExists = await _db.Table<UserAccount>()
+    .Where(a => a.Email == "nurse@usjr.edu.ph")
+    .FirstOrDefaultAsync();
+
+        if (nurseExists == null)
+        {
+            await _db.InsertAsync(new UserAccount
+            {
+                FullName = "Ana Reyes",
+                Email = "nurse@usjr.edu.ph",
+                Password = "Nurse123!",
+                Role = "Nurse",
+                IdNumber = "NUR-0001",
+                ProgramOrDepartment = "USJ-R Clinic",
+                Position = "Staff Nurse",
+                ConsultationSchedule = "Monday – Saturday",
+                EmploymentStatus = "Active"
+            });
+        }
+
+
     }
 
 

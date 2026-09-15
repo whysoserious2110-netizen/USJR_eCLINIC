@@ -160,7 +160,42 @@
         Title="Today's Overview" 
         ContentTemplate="{DataTemplate views:TodaysOverviewPage}" 
         Route="TodaysOverviewPage" />
+
+
+    <ShellContent Title="Certificates" 
+                  ContentTemplate="{DataTemplate views:CertificatesPage}" 
+                  Route="CertificatesPage" />
+
+    <ShellContent Title="Nurse Dashboard" 
+                  ContentTemplate="{DataTemplate views:NurseDashboardPage}" 
+                  Route="NurseDashboardPage" />
     
+    <ShellContent Title="Medicine Inventory" 
+                  ContentTemplate="{DataTemplate views:MedicineInventoryPage}" 
+                  Route="MedicineInventoryPage" />
     
+    <ShellContent Title="Prescription Dispensing" 
+                  ContentTemplate="{DataTemplate views:PrescriptionDispensingPage}" 
+                  Route="PrescriptionDispensingPage" />
+    
+    <ShellContent Title="APE Lab Encoding" 
+                  ContentTemplate="{DataTemplate views:ApeLabEncodingPage}" 
+                  Route="ApeLabEncodingPage" />
+
+
+    <ShellContent Title="Nurse Profile" 
+                  ContentTemplate="{DataTemplate views:NurseProfilePage}" 
+                  Route="NurseProfilePage" />
+
+    <ShellContent Title="Nurse Appointments" 
+                  ContentTemplate="{DataTemplate views:NurseAppointmentsPage}" 
+                  Route="NurseAppointmentsPage" />
+
+
+    <ShellContent Title="Record Vitals" 
+                  ContentTemplate="{DataTemplate views:RecordVitalsPage}" 
+                  Route="RecordVitalsPage" />
+
+
 
 </Shell>        

@@ -54,6 +54,16 @@
                 </VerticalStackLayout>
             </Frame>
 
+
+
+
+            <Button Text="Record Vital Signs / Nursing Notes"
+        Command="{Binding GoToVitalsCommand}"
+        BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+        CornerRadius="24" HeightRequest="48"/>
+
+
+
             <!-- 2. Medical History -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
