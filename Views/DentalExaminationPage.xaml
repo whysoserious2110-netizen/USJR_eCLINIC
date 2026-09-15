@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.DentalExaminationPage"
+             x:DataType="vm:DentalExaminationViewModel"
+             BackgroundColor="#F7F8FA">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="1" Text="Dental Examination" FontSize="20" FontAttributes="Bold"
+                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+            </Grid>
+
+            <Frame BackgroundColor="#FDE6EC" CornerRadius="12" Padding="14" HasShadow="False">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientRole}" FontSize="12" TextColor="#D14C74"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Exam Findings" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Text="{Binding ExamFindings}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Diagnosis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="e.g., Caries / Tooth Cavity (Tooth #46)" Text="{Binding Diagnosis}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Treatment Rendered" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="e.g., Composite filling on distal occlusal surface" Text="{Binding TreatmentRendered}" HeightRequest="80"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Dental Notes" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="Additional clinical notes..." Text="{Binding DentalNotes}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Care Instructions (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
+                    <Editor Placeholder="e.g., Avoid hard chewing on the right side for 24 hours." Text="{Binding CareInstructions}" HeightRequest="60"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <Button Text="Save Examination"
+                    Command="{Binding SaveExaminationCommand}"
+                    BackgroundColor="#0F9B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="26"
+                    HeightRequest="54"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

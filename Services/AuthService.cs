@@ -89,6 +89,31 @@ public class AuthService
         }
 
 
+
+        var dentistExists = await _db.Table<UserAccount>()
+    .Where(a => a.Email == "dentist@usjr.edu.ph")
+    .FirstOrDefaultAsync();
+
+        if (dentistExists == null)
+        {
+            await _db.InsertAsync(new UserAccount
+            {
+                FullName = "Dr. Maria Santos",
+                Email = "dentist@usjr.edu.ph",
+                Password = "Dentist123!",
+                Role = "Dentist",
+                IdNumber = "DEN-0001",
+                ProgramOrDepartment = "USJ-R Clinic - Dental",
+                Specialization = "General Dentistry",
+                LicenseNumber = "PRC-0567890",
+                YearsOfExperience = "6",
+                Position = "University Dentist",
+                ConsultationSchedule = "Mon, Wed, Fri, Sat",
+                EmploymentStatus = "Active"
+            });
+        }
+
+
     }
 
 

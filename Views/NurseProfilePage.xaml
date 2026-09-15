@@ -40,7 +40,7 @@
                 </Label>
                 <Label Text="{Binding FullName}" FontSize="18" FontAttributes="Bold" TextColor="#12212E" HorizontalOptions="Center"/>
                 <Frame BackgroundColor="#D5F5EF" Padding="10,3" CornerRadius="10" HasShadow="False">
-                    <Label Text="NURSE" FontSize="11" Margin="60,0,60,0" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                    <Label Text="NURSE" FontSize="11" Margin="70,0,60,0" FontAttributes="Bold" TextColor="#0F9B8E"/>
                 </Frame>
             </VerticalStackLayout>
 

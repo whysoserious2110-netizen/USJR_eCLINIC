@@ -16,6 +16,22 @@ public class DentalRecordService
         _db.CreateTableAsync<DentalRecord>().Wait();
     }
 
+    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingDentistName)
+    {
+        var all = await _db.Table<DentalRecord>().ToListAsync();
+        return all.Where(r => r.AttendingDentist.Equals(attendingDentistName, StringComparison.OrdinalIgnoreCase))
+                   .Select(r => r.PatientEmail).Distinct().ToList();
+    }
+
+    public async Task<DateTime?> GetLastVisitDateAsync(string patientEmail)
+    {
+        var records = await GetForPatientAsync(patientEmail);
+        return records.Count > 0 ? records.Max(r => r.VisitDate) : (DateTime?)null;
+    }
+
+
+
+
     public async Task<List<DentalRecord>> GetForPatientAsync(string patientEmail)
     {
         var all = await _db.Table<DentalRecord>().ToListAsync();

@@ -14,4 +14,5 @@ public class DentalRecord
     public string TreatmentRendered { get; set; } = string.Empty;
     public string CareInstructions { get; set; } = string.Empty; // e.g. "Brush twice daily, schedule next cleaning in 6 months."
     public string AttendingDentist { get; set; } = string.Empty; // filled by Dentist later
+    public string DentalNotes { get; set; } = string.Empty;
 }

@@ -197,5 +197,31 @@
                   Route="RecordVitalsPage" />
 
 
+    <ShellContent Title="Dentist Dashboard" 
+                  ContentTemplate="{DataTemplate views:DentistDashboardPage}" 
+                  Route="DentistDashboardPage" />
+    
+    <ShellContent Title="Dental Examination" 
+                  ContentTemplate="{DataTemplate views:DentalExaminationPage}" 
+                  Route="DentalExaminationPage" />
+    
+    <ShellContent Title="Dentist Today's Visits" 
+                  ContentTemplate="{DataTemplate views:DentistTodaysVisitsPage}" 
+                  Route="DentistTodaysVisitsPage" />
+    
+    <ShellContent Title="Dentist My Patients" 
+                  ContentTemplate="{DataTemplate views:DentistMyPatientsPage}" 
+                  Route="DentistMyPatientsPage" />
+    
+    <ShellContent Title="Dentist Appointments" 
+                  ContentTemplate="{DataTemplate views:DentistAppointmentsPage}"
+                  Route="DentistAppointmentsPage" />
+    
+    <ShellContent Title="Dentist Profile" 
+                  ContentTemplate="{DataTemplate views:DentistProfilePage}" 
+                  Route="DentistProfilePage" />
+    
+
+
 
 </Shell>        

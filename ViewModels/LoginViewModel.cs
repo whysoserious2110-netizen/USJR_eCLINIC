@@ -55,10 +55,16 @@ public partial class LoginViewModel : ObservableObject
             "Doctor" => new Views.DoctorDashboardPage(),
             "R.E.A.D.S. Scholar" => new Views.ReadsDashboardPage(),
             "Nurse" => new Views.NurseDashboardPage(),
+            "Dentist" => new Views.DentistDashboardPage(),
             _ => new Views.HomePage()
         };
 
         await Shell.Current.Navigation.PushAsync(destination);
+
+
+
+
+
     }
 
     [RelayCommand]
