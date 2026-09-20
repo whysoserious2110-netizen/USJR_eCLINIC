@@ -48,7 +48,14 @@ public partial class NotificationsViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 
-    
+
+    [RelayCommand]
+    private async Task OpenNotification(NotificationListItem item)
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.NotificationDetailPage(item.Title, item.Message, item.DateDisplay));
+    }
+
+
     [RelayCommand]
     private async Task DeleteNotification(NotificationListItem item)
     {

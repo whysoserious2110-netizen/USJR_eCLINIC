@@ -45,6 +45,9 @@
 
                         <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                                Padding="16" Margin="0,0,0,12" HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenNotificationCommand}" CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
                             <VerticalStackLayout Spacing="6">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <Label Grid.Column="0" Text="{Binding Title}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>

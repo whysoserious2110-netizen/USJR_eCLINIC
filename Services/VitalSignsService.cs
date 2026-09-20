@@ -23,6 +23,22 @@ public class VitalSignsService
         var all = await _db.Table<VitalSigns>().ToListAsync();
         return all.Where(v => v.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
                    .OrderByDescending(v => v.DateRecorded)
-                   .ToList();
+                 .ToList();
     }
+
+    public async Task<VitalSigns?> GetForAppointmentAsync(int appointmentId)
+    {
+        if (appointmentId <= 0)
+            return null;
+
+        var records = await _db.Table<VitalSigns>()
+            .Where(v => v.AppointmentId == appointmentId)
+            .ToListAsync();
+
+        return records
+            .OrderByDescending(v => v.DateRecorded)
+            .FirstOrDefault();
+    }
+
+
 }

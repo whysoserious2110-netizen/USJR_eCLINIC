@@ -2,15 +2,15 @@ using USJR_eCLINIC.ViewModels;
 
 namespace USJR_eCLINIC.Views;
 
-public partial class ReadsDashboardPage : ContentPage
+public partial class ApeLabResultsPage : ContentPage
 {
-    private readonly ReadsDashboardViewModel _viewModel;
+    private readonly ApeLabResultsViewModel _viewModel;
 
-    public ReadsDashboardPage()
+    public ApeLabResultsPage()
     {
         InitializeComponent();
 
-        _viewModel = new ReadsDashboardViewModel();
+        _viewModel = new ApeLabResultsViewModel();
         BindingContext = _viewModel;
     }
 

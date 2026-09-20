@@ -1,44 +1,224 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
-             x:Class="USJR_eCLINIC.Views.TodaysOverviewPage"
-             x:DataType="vm:TodaysOverviewViewModel"
-             BackgroundColor="#F7F8FA">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="18">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+    x:Class="USJR_eCLINIC.Views.TodaysOverviewPage"
+    x:DataType="vm:TodaysOverviewViewModel"
+    BackgroundColor="#F7F8FA">
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Today's Overview" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-        </Grid>
+    <ScrollView>
 
-        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="16" Padding="20" HasShadow="False">
-            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                <Label Text="{Binding TotalAppointments}" FontSize="34" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center"/>
-                <Label Text="Total Appointments Today" FontSize="13" TextColor="#6B7684" HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-        </Frame>
+        <VerticalStackLayout
+            Padding="20,50,20,30"
+            Spacing="18">
 
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
-            <Frame Grid.Column="0" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="16" Padding="16" HasShadow="False">
-                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                    <Label Text="{Binding CheckedInCount}" FontSize="26" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center"/>
-                    <Label Text="Checked In" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto,*">
+
+                <Label
+                    Grid.Column="0"
+                    Text="&#8592;"
+                    FontSize="22"
+                    TextColor="#0F9B8E"
+                    VerticalOptions="Center">
+
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+
+                </Label>
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Spacing="1">
+
+                    <Label
+                        Text="Today's Clinic Operations"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#12212E"/>
+
+                    <Label
+                        Text="{Binding TodayDisplay}"
+                        FontSize="11"
+                        TextColor="#9AA4AE"/>
+
                 </VerticalStackLayout>
-            </Frame>
-            <Frame Grid.Column="1" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="16" Padding="16" HasShadow="False">
-                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                    <Label Text="{Binding PendingApprovalCount}" FontSize="26" FontAttributes="Bold" TextColor="#D9A441" HorizontalOptions="Center"/>
-                    <Label Text="Pending Approval" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
-                </VerticalStackLayout>
-            </Frame>
-        </Grid>
 
-    </VerticalStackLayout>
+            </Grid>
+
+            <!-- Explanation -->
+            <Frame
+                BackgroundColor="#D5F5EF"
+                BorderColor="#A8E4D9"
+                CornerRadius="12"
+                Padding="14"
+                HasShadow="False">
+
+                <Label
+                    Text="Front-desk status for appointment requests and today's patient flow."
+                    FontSize="12"
+                    TextColor="#27665F"/>
+
+            </Frame>
+
+            <!-- Summary cards -->
+            <Grid
+                ColumnDefinitions="*,*"
+                RowDefinitions="Auto,Auto"
+                ColumnSpacing="12"
+                RowSpacing="12">
+
+                <!-- Pending -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    BackgroundColor="#FEF3D9"
+                    CornerRadius="14"
+                    Padding="16"
+                    HasShadow="False">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label
+                            Text="{Binding PendingApprovalCount}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#D9A441"/>
+
+                        <Label
+                            Text="Pending Requests"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#6B7684"/>
+
+                        <Label
+                            Text="Awaiting approval"
+                            FontSize="10"
+                            TextColor="#9AA4AE"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Expected -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    BackgroundColor="#E6F3FD"
+                    CornerRadius="14"
+                    Padding="16"
+                    HasShadow="False">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label
+                            Text="{Binding ExpectedTodayCount}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#2E6FDB"/>
+
+                        <Label
+                            Text="Expected Today"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#6B7684"/>
+
+                        <Label
+                            Text="Approved visits"
+                            FontSize="10"
+                            TextColor="#9AA4AE"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Checked In -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    BackgroundColor="#EEE9FA"
+                    CornerRadius="14"
+                    Padding="16"
+                    HasShadow="False">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label
+                            Text="{Binding CheckedInTodayCount}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#7B61C8"/>
+
+                        <Label
+                            Text="Currently Checked In"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#6B7684"/>
+
+                        <Label
+                            Text="Inside the clinic"
+                            FontSize="10"
+                            TextColor="#9AA4AE"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Completed -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    BackgroundColor="#D5F5EF"
+                    CornerRadius="14"
+                    Padding="16"
+                    HasShadow="False">
+
+                    <VerticalStackLayout Spacing="5">
+
+                        <Label
+                            Text="{Binding CompletedTodayCount}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#0F9B8E"/>
+
+                        <Label
+                            Text="Completed Today"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#6B7684"/>
+
+                        <Label
+                            Text="Finished visits"
+                            FontSize="10"
+                            TextColor="#9AA4AE"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </Grid>
+
+            <!-- Open detailed appointments -->
+            <Button
+                Text="Open Appointment Center"
+                Command="{Binding GoToAppointmentsCommand}"
+                BackgroundColor="#0F9B8E"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="24"
+                HeightRequest="50"/>
+
+           
+
+         
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
 </ContentPage>

@@ -59,8 +59,12 @@
 
             <Button Text="Record Vital Signs / Nursing Notes"
         Command="{Binding GoToVitalsCommand}"
-        BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
-        CornerRadius="24" HeightRequest="48"/>
+        IsVisible="{Binding CanRecordVitals}"
+        BackgroundColor="#0F9B8E"
+        TextColor="White"
+        FontAttributes="Bold"
+        CornerRadius="24"
+        HeightRequest="48"/>
 
 
 

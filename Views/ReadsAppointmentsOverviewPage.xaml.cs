@@ -2,22 +2,20 @@ using USJR_eCLINIC.ViewModels;
 
 namespace USJR_eCLINIC.Views;
 
-public partial class ReadsDashboardPage : ContentPage
+public partial class ReadsAppointmentsOverviewPage : ContentPage
 {
-    private readonly ReadsDashboardViewModel _viewModel;
+    private readonly ReadsAppointmentsOverviewViewModel _viewModel;
 
-    public ReadsDashboardPage()
+    public ReadsAppointmentsOverviewPage()
     {
         InitializeComponent();
-
-        _viewModel = new ReadsDashboardViewModel();
+        _viewModel = new ReadsAppointmentsOverviewViewModel();
         BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-
         await _viewModel.RefreshAsync();
     }
 }

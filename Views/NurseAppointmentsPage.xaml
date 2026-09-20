@@ -1,54 +1,203 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
-             x:Class="USJR_eCLINIC.Views.NurseAppointmentsPage"
-             x:DataType="vm:NurseAppointmentsViewModel"
-             BackgroundColor="#F7F8FA">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+    x:Class="USJR_eCLINIC.Views.NurseAppointmentsPage"
+    x:Name="Root"
+    x:DataType="vm:NurseAppointmentsViewModel"
+    BackgroundColor="#F7F8FA">
 
+    <VerticalStackLayout
+        Padding="20,50,20,20"
+        Spacing="16">
+
+        <!-- Header -->
         <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+
+            <Label
+                Grid.Column="0"
+                Text="&#8592;"
+                FontSize="22"
+                TextColor="#0F9B8E"
+                VerticalOptions="Center">
+
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    <TapGestureRecognizer
+                        Command="{Binding GoBackCommand}"/>
                 </Label.GestureRecognizers>
+
             </Label>
-            <Label Grid.Column="1" Text="Today's Appointments" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+
+            <Label
+                Grid.Column="1"
+                Text="Triage Queue"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="#12212E"
+                Margin="10,0,0,0"
+                VerticalOptions="Center"/>
+
         </Grid>
 
-        <VerticalStackLayout IsVisible="{Binding HasAppointments, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No appointments scheduled today" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        <Label
+            Text="Today's patients awaiting or completing triage."
+            FontSize="12"
+            FontAttributes="Italic"
+            TextColor="#9AA4AE"/>
+
+        <!-- Empty state -->
+        <VerticalStackLayout
+            IsVisible="{Binding HasAppointments,
+                        Converter={StaticResource BoolInverter}}"
+            VerticalOptions="Center"
+            Margin="0,60,0,0"
+            Spacing="10">
+
+            <Label
+                Text="&#128203;"
+                FontSize="40"
+                HorizontalOptions="Center"
+                TextColor="#C7CDD3"/>
+
+            <Label
+                Text="No patients scheduled today"
+                FontSize="15"
+                FontAttributes="Bold"
+                TextColor="#6B7684"
+                HorizontalOptions="Center"/>
+
+            <Label
+                Text="Checked-in patients will appear here for triage."
+                FontSize="12"
+                TextColor="#9AA4AE"
+                HorizontalTextAlignment="Center"
+                HorizontalOptions="Center"/>
+
         </VerticalStackLayout>
 
-        <CollectionView ItemsSource="{Binding TodaysAppointments}" IsVisible="{Binding HasAppointments}">
+        <!-- Triage queue -->
+        <CollectionView
+            ItemsSource="{Binding TodaysAppointments}"
+            IsVisible="{Binding HasAppointments}">
+
             <CollectionView.ItemTemplate>
+
                 <DataTemplate x:DataType="vm:NurseAppointmentItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
-                            <Frame Grid.Column="0" BackgroundColor="#D5F5EF" CornerRadius="10"
-                                   Padding="6" WidthRequest="52" HeightRequest="52" HasShadow="False">
-                                <Label Text="{Binding TimeDisplay}" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"
-                                       HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
-                            </Frame>
-                            <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Label Text="{Binding ServiceType}" FontSize="12" TextColor="#0F9B8E"/>
-                                <Label Text="{Binding SubService}" FontSize="12" TextColor="#6B7684"/>
-                            </VerticalStackLayout>
-                            <Frame Grid.Column="2" BackgroundColor="{Binding StatusColor}" CornerRadius="10"
-                                   Padding="10,3" HasShadow="False" VerticalOptions="Start">
-                                <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
-                            </Frame>
-                        </Grid>
+
+                    <Frame
+                        BackgroundColor="White"
+                        BorderColor="#E2E6EA"
+                        CornerRadius="14"
+                        Padding="16"
+                        Margin="0,0,0,12"
+                        HasShadow="False">
+
+                        <VerticalStackLayout Spacing="12">
+
+                            <Grid
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="14">
+
+                                <!-- Appointment time -->
+                                <Frame
+                                    Grid.Column="0"
+                                    BackgroundColor="#D5F5EF"
+                                    CornerRadius="10"
+                                    Padding="6"
+                                    WidthRequest="58"
+                                    HeightRequest="52"
+                                    HasShadow="False">
+
+                                    <Label
+                                        Text="{Binding TimeDisplay}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        TextColor="#0F9B8E"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Center"/>
+
+                                </Frame>
+
+                                <!-- Patient information -->
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    Spacing="2"
+                                    VerticalOptions="Center">
+
+                                    <Label
+                                        Text="{Binding PatientName}"
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        TextColor="#12212E"/>
+
+                                    <Label
+                                        Text="{Binding ServiceType}"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        TextColor="#0F9B8E"/>
+
+                                    <Label
+                                        Text="{Binding SubService}"
+                                        FontSize="12"
+                                        TextColor="#6B7684"
+                                        LineBreakMode="TailTruncation"/>
+
+                                </VerticalStackLayout>
+
+                                <!-- Status -->
+                                <Frame
+                                    Grid.Column="2"
+                                    BackgroundColor="{Binding StatusColor}"
+                                    CornerRadius="10"
+                                    Padding="10,3"
+                                    HasShadow="False"
+                                    VerticalOptions="Start">
+
+                                    <Label
+                                        Text="{Binding Status}"
+                                        FontSize="10"
+                                        FontAttributes="Bold"
+                                        TextColor="White"/>
+
+                                </Frame>
+
+                            </Grid>
+
+                            <!-- Only available after check-in -->
+                            <Button
+                                Text="{Binding ActionText}"
+                                IsVisible="{Binding CanRecordVitals}"
+                                Command="{Binding Source={x:Reference Root},
+                                          Path=BindingContext.OpenAppointmentCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="#0F9B8E"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="20"
+                                HeightRequest="44"/>
+
+                            <!-- Informational message before check-in -->
+                            <Label
+                                Text="Waiting for the patient to check in."
+                                IsVisible="{Binding CanRecordVitals,
+                                            Converter={StaticResource BoolInverter}}"
+                                FontSize="11"
+                                FontAttributes="Italic"
+                                TextColor="#9AA4AE"/>
+
+                        </VerticalStackLayout>
+
                     </Frame>
+
                 </DataTemplate>
+
             </CollectionView.ItemTemplate>
+
         </CollectionView>
 
     </VerticalStackLayout>
+
 </ContentPage>

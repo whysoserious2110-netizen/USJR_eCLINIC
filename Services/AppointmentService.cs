@@ -196,6 +196,13 @@ public class AppointmentService
             .ToList();
     }
 
+
+
+    public async Task<List<Appointment>> GetAllAppointmentsAsync()
+    {
+        return (await _db.Table<Appointment>().ToListAsync()).OrderByDescending(a => a.VisitDate).ToList();
+    }
+
     public async Task MarkAllSeenAsync(string patientEmail)
     {
         var all = await _db.Table<Appointment>().ToListAsync();
@@ -245,4 +252,31 @@ public async Task<List<Appointment>> GetAllForServiceAsync(string serviceType)
             .OrderByDescending(a => a.VisitDate)
             .ToList();
     }
+
+
+
+    public async Task<bool> MarkVitalsRecordedAsync(int appointmentId)
+    {
+        var appointment = await _db.Table<Appointment>()
+            .Where(a => a.Id == appointmentId)
+            .FirstOrDefaultAsync();
+
+        if (appointment == null)
+            return false;
+
+        if (appointment.Status != "CheckedIn" &&
+            appointment.Status != "VitalsRecorded") 
+        {
+            return false;
+        }
+
+        appointment.Status = "VitalsRecorded";
+
+        await _db.UpdateAsync(appointment);
+
+        return true;
+    }
+
+
+
 }

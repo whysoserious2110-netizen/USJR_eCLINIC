@@ -220,7 +220,15 @@
     <ShellContent Title="Dentist Profile" 
                   ContentTemplate="{DataTemplate views:DentistProfilePage}" 
                   Route="DentistProfilePage" />
-    
+
+    <ShellContent Title="All Appointments"  
+                  ContentTemplate="{DataTemplate views:ReadsAppointmentsOverviewPage}" 
+                  Route="ReadsAppointmentsOverviewPage" />
+
+    <ShellContent Title="Notification Detail"  
+                  ContentTemplate="{DataTemplate views:NotificationDetailPage}" 
+                  Route="NotificationDetailPage" />
+
 
 
 

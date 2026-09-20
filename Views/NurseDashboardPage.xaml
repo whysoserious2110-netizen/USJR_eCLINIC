@@ -42,6 +42,146 @@
                         <Label Grid.Column="1" Text="{Binding AnnouncementText}" FontSize="13" TextColor="#5A4A1E"/>
                     </Grid>
                 </Frame>
+                
+
+                <!-- Today's clinic summary -->
+                <Frame
+                 BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="16" Padding="16" HasShadow="False">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
+                    </Frame.GestureRecognizers>
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label
+                    Text="Today’s Clinic Summary"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    TextColor="#12212E"/>
+
+                                <Label
+                    Text="Overview of today’s patient workflow"
+                    FontSize="11"
+                    TextColor="#9AA4AE"/>
+                            </VerticalStackLayout>
+
+                            <Label
+                Grid.Column="1"
+                Text="View Queue →"
+                FontSize="12"
+                FontAttributes="Bold"
+                TextColor="#0F9B8E"
+                VerticalOptions="Center"/>
+
+                        </Grid>
+
+                        <Grid
+            ColumnDefinitions="*,*"
+            RowDefinitions="Auto,Auto"
+            ColumnSpacing="12"
+            RowSpacing="12">
+
+                            <!-- Total scheduled -->
+                            <Frame
+                Grid.Row="0"
+                Grid.Column="0"
+                BackgroundColor="#E6F3FD"
+                CornerRadius="12"
+                Padding="12"
+                HasShadow="False">
+
+                                <VerticalStackLayout Spacing="3">
+                                    <Label
+                        Text="{Binding TodayPatientCount}"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="#2E6FDB"/>
+
+                                    <Label
+                        Text="Scheduled Today"
+                        FontSize="11"
+                        TextColor="#6B7684"/>
+                                </VerticalStackLayout>
+
+                            </Frame>
+
+                            <!-- Checked in -->
+                            <Frame
+                Grid.Row="0"
+                Grid.Column="1"
+                BackgroundColor="#FEF3D9"
+                CornerRadius="12"
+                Padding="12"
+                HasShadow="False">
+
+                                <VerticalStackLayout Spacing="3">
+                                    <Label
+                        Text="{Binding AwaitingVitalsCount}"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="#D9A441"/>
+
+                                    <Label
+                        Text="Awaiting Vitals"
+                        FontSize="11"
+                        TextColor="#6B7684"/>
+                                </VerticalStackLayout>
+
+                            </Frame>
+
+                            <!-- Vitals recorded -->
+                            <Frame
+                Grid.Row="1"
+                Grid.Column="0"
+                BackgroundColor="#EEE9FA"
+                CornerRadius="12"
+                Padding="12"
+                HasShadow="False">
+
+                                <VerticalStackLayout Spacing="3">
+                                    <Label
+                        Text="{Binding VitalsRecordedCount}"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        TextColor="#7B61C8"/>
+
+                                    <Label
+                        Text="Vitals Recorded"
+                        FontSize="11"
+                        TextColor="#6B7684"/>
+                                </VerticalStackLayout>
+
+                            </Frame>
+
+                            <!-- Completed -->
+                            <Frame
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="#D5F5EF"
+                CornerRadius="12"
+                Padding="12"
+                HasShadow="False">
+
+                         <VerticalStackLayout Spacing="3">
+                             <Label Text="{Binding CompletedTodayCount}" FontSize="24" FontAttributes="Bold" TextColor="#0F9B8E"/>
+
+                            <Label Text="Completed" FontSize="11" TextColor="#6B7684"/>
+                          </VerticalStackLayout>
+
+                            </Frame>
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+
+
 
                 <Label Text="Nurse Station" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
 
@@ -117,7 +257,7 @@
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
                     <Label Text="&#128197;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                    <Label Text="Appointments" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                    <Label Text="Triage" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
 
                 <Grid Grid.Column="2" HorizontalOptions="Center">

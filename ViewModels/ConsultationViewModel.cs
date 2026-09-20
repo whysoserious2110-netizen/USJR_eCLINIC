@@ -31,6 +31,12 @@ public partial class ConsultationViewModel : ObservableObject
     [ObservableProperty] private string temperature = string.Empty;
     [ObservableProperty] private string pulseRate = string.Empty;
     [ObservableProperty] private string respiratoryRate = string.Empty;
+    [ObservableProperty] private string oxygenSaturation = string.Empty;
+    [ObservableProperty] private string initialAssessment = string.Empty;
+    [ObservableProperty] private string nursingNotes = string.Empty;
+    [ObservableProperty] private string vitalsRecordedBy = string.Empty;
+    [ObservableProperty] private string vitalsRecordedAt = string.Empty;
+    [ObservableProperty] private bool hasVitals;
 
     public ConsultationViewModel(int appointmentId, string patientEmail, string patientName, string patientRole, string prefillComplaint)
     {
@@ -39,7 +45,36 @@ public partial class ConsultationViewModel : ObservableObject
         PatientName = patientName;
         PatientRole = patientRole;
         ChiefComplaint = prefillComplaint;
+
+        _ = LoadVitalsAsync();
     }
+
+
+    private async Task LoadVitalsAsync()
+    {
+        var vitals = await Services.VitalSignsService.Instance
+            .GetForAppointmentAsync(_appointmentId);
+
+        if (vitals == null)
+        {
+            HasVitals = false;
+            return;
+        }
+
+        BloodPressure = vitals.BloodPressure;
+        Temperature = vitals.Temperature;
+        PulseRate = vitals.HeartRate;
+        RespiratoryRate = vitals.RespiratoryRate;
+        OxygenSaturation = vitals.OxygenSaturation;
+        InitialAssessment = vitals.InitialAssessment;
+        NursingNotes = vitals.NursingNotes;
+        VitalsRecordedBy = vitals.RecordedBy;
+        VitalsRecordedAt = vitals.DateRecorded
+            .ToString("MMM dd, yyyy · h:mm tt");
+
+        HasVitals = true;
+    }
+
 
     [RelayCommand]
     private async Task SaveConsultation()

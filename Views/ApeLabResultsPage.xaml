@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+    x:Class="USJR_eCLINIC.Views.ApeLabResultsPage"
+    x:DataType="vm:ApeLabResultsViewModel"
+    BackgroundColor="#F7F8FA">
+
+    <Grid
+        RowDefinitions="Auto,*"
+        Padding="20,50,20,20"
+        RowSpacing="18">
+
+        <!-- Header -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            Spacing="14">
+
+            <Grid ColumnDefinitions="Auto,*">
+
+                <Label
+                    Grid.Column="0"
+                    Text="&#8592;"
+                    FontSize="22"
+                    TextColor="#0F9B8E"
+                    VerticalOptions="Center">
+
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding GoBackCommand}"/>
+                    </Label.GestureRecognizers>
+
+                </Label>
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Spacing="1">
+
+                    <Label
+                        Text="APE Lab Results"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#12212E"/>
+
+                    <Label
+                        Text="Annual Physical Examination"
+                        FontSize="11"
+                        TextColor="#9AA4AE"/>
+
+                </VerticalStackLayout>
+
+            </Grid>
+
+            <!-- Patient information -->
+            <Frame
+                BackgroundColor="#D5F5EF"
+                BorderColor="#A8E4D9"
+                CornerRadius="14"
+                Padding="14"
+                HasShadow="False">
+
+                <Grid
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="12">
+
+                    <Frame
+                        Grid.Column="0"
+                        BackgroundColor="White"
+                        CornerRadius="20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        HasShadow="False">
+
+                        <Label
+                            Text="&#128100;"
+                            FontSize="19"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+
+                    </Frame>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="2"
+                        VerticalOptions="Center">
+
+                        <Label
+                            Text="{Binding PatientName}"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#12212E"/>
+
+                        <Label
+                            Text="{Binding PatientRole}"
+                            FontSize="11"
+                            TextColor="#0F9B8E"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Frame>
+
+        </VerticalStackLayout>
+
+        <!-- Results list -->
+        <CollectionView
+            Grid.Row="1"
+            ItemsSource="{Binding Results}"
+            IsVisible="{Binding HasResults}"
+            VerticalScrollBarVisibility="Default">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate
+                    x:DataType="vm:ApeLabResultItem">
+
+                    <Frame
+                        BackgroundColor="White"
+                        BorderColor="#E2E6EA"
+                        CornerRadius="16"
+                        Padding="16"
+                        Margin="0,0,0,14"
+                        HasShadow="False">
+
+                        <VerticalStackLayout Spacing="14">
+
+                            <!-- Result heading -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <VerticalStackLayout
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <Label
+                                        Text="APE Laboratory Result"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        TextColor="#12212E"/>
+
+                                    <Label
+                                        Text="{Binding DateDisplay}"
+                                        FontSize="11"
+                                        TextColor="#9AA4AE"/>
+
+                                </VerticalStackLayout>
+
+                                <Frame
+                                    Grid.Column="1"
+                                    BackgroundColor="#D5F5EF"
+                                    CornerRadius="10"
+                                    Padding="9,3"
+                                    HasShadow="False"
+                                    VerticalOptions="Start">
+
+                                    <Label
+                                        Text="Available"
+                                        FontSize="10"
+                                        FontAttributes="Bold"
+                                        TextColor="#0F9B8E"/>
+
+                                </Frame>
+
+                            </Grid>
+
+                            <BoxView
+                                HeightRequest="1"
+                                BackgroundColor="#EEF1F3"/>
+
+                            <!-- CBC -->
+                            <VerticalStackLayout Spacing="4">
+
+                                <Label
+                                    Text="Complete Blood Count (CBC)"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="{Binding Cbc}"
+                                    FontSize="13"
+                                    TextColor="#12212E"/>
+
+                            </VerticalStackLayout>
+
+                            <!-- Urinalysis -->
+                            <VerticalStackLayout Spacing="4">
+
+                                <Label
+                                    Text="Urinalysis"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="{Binding Urinalysis}"
+                                    FontSize="13"
+                                    TextColor="#12212E"/>
+
+                            </VerticalStackLayout>
+
+                            <!-- Chest X-Ray -->
+                            <VerticalStackLayout Spacing="4">
+
+                                <Label
+                                    Text="Chest X-Ray"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="{Binding ChestXray}"
+                                    FontSize="13"
+                                    TextColor="#12212E"/>
+
+                            </VerticalStackLayout>
+
+                            <!-- ECG -->
+                            <VerticalStackLayout Spacing="4">
+
+                                <Label
+                                    Text="Electrocardiogram (ECG)"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="{Binding Ecg}"
+                                    FontSize="13"
+                                    TextColor="#12212E"/>
+
+                            </VerticalStackLayout>
+
+                            <!-- Drug Test -->
+                            <VerticalStackLayout Spacing="4">
+
+                                <Label
+                                    Text="Drug Test"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="{Binding DrugTest}"
+                                    FontSize="13"
+                                    TextColor="#12212E"/>
+
+                            </VerticalStackLayout>
+
+                            <!-- Overall Findings -->
+                            <Frame
+                                BackgroundColor="#F3F8F7"
+                                BorderColor="#D5F5EF"
+                                CornerRadius="12"
+                                Padding="12"
+                                HasShadow="False">
+
+                                <VerticalStackLayout Spacing="5">
+
+                                    <Label
+                                        Text="Overall Findings"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        TextColor="#0F9B8E"/>
+
+                                    <Label
+                                        Text="{Binding OverallFindings}"
+                                        FontSize="13"
+                                        TextColor="#12212E"/>
+
+                                </VerticalStackLayout>
+
+                            </Frame>
+
+                            <Label
+                                FontSize="11"
+                                TextColor="#9AA4AE">
+
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Encoded by: "/>
+                                        <Span
+                                            Text="{Binding EncodedBy}"
+                                            FontAttributes="Bold"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+
+                            </Label>
+
+                        </VerticalStackLayout>
+
+                    </Frame>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <!-- Empty state -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            IsVisible="{Binding HasNoResults}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="10"
+            Padding="20">
+
+            <Label
+                Text="&#128300;"
+                FontSize="42"
+                HorizontalOptions="Center"
+                TextColor="#C7CDD3"/>
+
+            <Label
+                Text="No APE results available"
+                FontSize="15"
+                FontAttributes="Bold"
+                TextColor="#6B7684"
+                HorizontalOptions="Center"/>
+
+            <Label
+                Text="Your Annual Physical Examination laboratory results will appear here after they are encoded by the clinic."
+                FontSize="12"
+                TextColor="#9AA4AE"
+                HorizontalTextAlignment="Center"
+                HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator
+            Grid.Row="1"
+            IsVisible="{Binding IsLoading}"
+            IsRunning="{Binding IsLoading}"
+            Color="#0F9B8E"
+            WidthRequest="36"
+            HeightRequest="36"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"/>
+
+    </Grid>
+
+</ContentPage>

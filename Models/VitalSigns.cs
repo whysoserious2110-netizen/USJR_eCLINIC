@@ -6,6 +6,7 @@ public class VitalSigns
 {
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
+    public int AppointmentId { get; set; }
 
     public string PatientEmail { get; set; } = string.Empty;
     public string BloodPressure { get; set; } = string.Empty;

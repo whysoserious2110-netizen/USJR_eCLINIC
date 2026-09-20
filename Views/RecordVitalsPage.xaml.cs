@@ -4,9 +4,16 @@ namespace USJR_eCLINIC.Views;
 
 public partial class RecordVitalsPage : ContentPage
 {
-    public RecordVitalsPage(string patientEmail, string patientName)
+    public RecordVitalsPage(
+        int appointmentId,
+        string patientEmail,
+        string patientName)
     {
         InitializeComponent();
-        BindingContext = new RecordVitalsViewModel(patientEmail, patientName);
+
+        BindingContext = new RecordVitalsViewModel(
+            appointmentId,
+            patientEmail,
+            patientName);
     }
 }

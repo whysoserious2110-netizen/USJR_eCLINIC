@@ -18,6 +18,7 @@ public partial class VitalsHistoryItem : ObservableObject
 public partial class RecordVitalsViewModel : ObservableObject
 {
     private readonly string _patientEmail;
+    private readonly int _appointmentId;
 
     public string PatientName { get; }
 
@@ -35,10 +36,15 @@ public partial class RecordVitalsViewModel : ObservableObject
 
     [ObservableProperty] private bool hasHistory;
 
-    public RecordVitalsViewModel(string patientEmail, string patientName)
+    public RecordVitalsViewModel(
+    int appointmentId,
+    string patientEmail,
+    string patientName)
     {
+        _appointmentId = appointmentId;
         _patientEmail = patientEmail;
         PatientName = patientName;
+
         _ = LoadHistoryAsync();
     }
 
@@ -76,6 +82,8 @@ public partial class RecordVitalsViewModel : ObservableObject
 
         var vitals = new Models.VitalSigns
         {
+
+            AppointmentId = _appointmentId,
             PatientEmail = _patientEmail,
             BloodPressure = BloodPressure,
             HeartRate = HeartRate,
@@ -91,6 +99,11 @@ public partial class RecordVitalsViewModel : ObservableObject
         };
 
         await Services.VitalSignsService.Instance.AddAsync(vitals);
+        if (_appointmentId > 0)
+        {
+            await Services.AppointmentService.Instance
+                .MarkVitalsRecordedAsync(_appointmentId);
+        }
 
         BloodPressure = HeartRate = Temperature = RespiratoryRate = OxygenSaturation = Height = Weight = InitialAssessment = NursingNotes = string.Empty;
 

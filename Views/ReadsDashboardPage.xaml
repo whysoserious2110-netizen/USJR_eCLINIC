@@ -1,174 +1,772 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
-             x:Class="USJR_eCLINIC.Views.ReadsDashboardPage"
-             x:Name="Root"
-             x:DataType="vm:ReadsDashboardViewModel"
-             BackgroundColor="#F7F8FA">
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+    x:Class="USJR_eCLINIC.Views.ReadsDashboardPage"
+    x:Name="Root"
+    x:DataType="vm:ReadsDashboardViewModel"
+    BackgroundColor="#F7F8FA">
 
     <Grid RowDefinitions="*,Auto">
 
+        <!-- Main scrollable content -->
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="20,50,20,20" Spacing="18">
 
-                <Grid ColumnDefinitions="*,Auto">
-                    <VerticalStackLayout Grid.Column="0" Spacing="2">
-                        <Label Text="Welcome," FontSize="13" TextColor="#6B7684"/>
-                        <Label Text="{Binding StaffName}" FontSize="19" FontAttributes="Bold" TextColor="#12212E"/>
-                        <Frame BackgroundColor="#D5F5EF" Padding="10,3" CornerRadius="10"
-                               HasShadow="False" HorizontalOptions="Start" Margin="0,4,0,0">
-                            <Label Text="R.E.A.D.S. SCHOLAR" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"/>
+            <VerticalStackLayout
+                Padding="20,50,20,24"
+                Spacing="18">
+
+                <!-- Profile header -->
+                <Grid
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="14">
+
+                    <Frame
+                        Grid.Column="0"
+                        WidthRequest="56"
+                        HeightRequest="56"
+                        CornerRadius="28"
+                        Padding="0"
+                        HasShadow="False"
+                        BackgroundColor="#E2E6EA"
+                        IsClippedToBounds="True"
+                        VerticalOptions="Center">
+
+                        <Grid>
+
+                            <!-- Default profile icon -->
+                            <Label
+                                Text="&#128100;"
+                                FontSize="24"
+                                TextColor="#9AA4AE"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"/>
+
+                            <!-- Uploaded profile image -->
+                            <Image
+                                Source="{Binding ProfileImagePath,
+                                         Converter={StaticResource ImagePathConv}}"
+                                Aspect="AspectFill"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill"/>
+
+                        </Grid>
+
+                    </Frame>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="2"
+                        VerticalOptions="Center">
+
+                        <Label
+                            Text="Welcome,"
+                            FontSize="13"
+                            TextColor="#6B7684"/>
+
+                        <Label
+                            Text="{Binding StaffName}"
+                            FontSize="19"
+                            FontAttributes="Bold"
+                            TextColor="#12212E"/>
+
+                        <Frame
+                            BackgroundColor="#D5F5EF"
+                            Padding="10,3"
+                            CornerRadius="10"
+                            HasShadow="False"
+                            HorizontalOptions="Start"
+                            Margin="0,4,0,0">
+
+                            <Label
+                                Text="R.E.A.D.S. SCHOLAR"
+                                FontSize="11"
+                                FontAttributes="Bold"
+                                TextColor="#0F9B8E"/>
+
                         </Frame>
+
                     </VerticalStackLayout>
+
                 </Grid>
 
-                <Frame IsVisible="{Binding HasAnnouncement}"
-                       BackgroundColor="#FFF6DC"
-                       BorderColor="#F3D67A"
-                       CornerRadius="12"
-                       Padding="14"
-                       HasShadow="False">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                        <Label Grid.Column="0" Text="&#9432;" FontSize="18" TextColor="#B8862B" VerticalOptions="Start"/>
-                        <Label Grid.Column="1" Text="{Binding AnnouncementText}" FontSize="13" TextColor="#5A4A1E"/>
+                <!-- Clinic announcement -->
+                <Frame
+                    IsVisible="{Binding HasAnnouncement}"
+                    BackgroundColor="#FFF6DC"
+                    BorderColor="#F3D67A"
+                    CornerRadius="12"
+                    Padding="14"
+                    HasShadow="False">
+
+                    <Grid
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="10">
+
+                        <Label
+                            Grid.Column="0"
+                            Text="&#9432;"
+                            FontSize="18"
+                            TextColor="#B8862B"
+                            VerticalOptions="Start"/>
+
+                        <Label
+                            Grid.Column="1"
+                            Text="{Binding AnnouncementText}"
+                            FontSize="13"
+                            TextColor="#5A4A1E"/>
+
                     </Grid>
+
                 </Frame>
 
-                <!-- Priority: Search Patient -->
-                <Label Text="Front Desk Tools" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+                <!-- Front Desk Tools -->
+                <Label
+                    Text="Front Desk Tools"
+                    FontSize="17"
+                    FontAttributes="Bold"
+                    TextColor="#12212E"
+                    Margin="0,6,0,0"/>
 
-                <Frame BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
+                <!-- Search Patient -->
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="16"
+                    Padding="16"
+                    HasShadow="False">
+
                     <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToPatientSearchCommand}"/>
+                        <TapGestureRecognizer
+                            Command="{Binding GoToPatientSearchCommand}"/>
                     </Frame.GestureRecognizers>
+
                     <Grid ColumnDefinitions="Auto,*">
-                        <Frame Grid.Column="0" BackgroundColor="#D5F5EF" CornerRadius="10" Padding="10" WidthRequest="44" HeightRequest="44" HasShadow="False">
-                            <Label Text="&#128269;" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                        <Frame
+                            Grid.Column="0"
+                            BackgroundColor="#D5F5EF"
+                            CornerRadius="10"
+                            Padding="10"
+                            WidthRequest="44"
+                            HeightRequest="44"
+                            HasShadow="False">
+
+                            <Label
+                                Text="&#128269;"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"/>
+
                         </Frame>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="14,0,0,0" Spacing="2">
-                            <Label Text="Search Patient" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
-                            <Label Text="Look up patients &amp; administrative notes" FontSize="12" TextColor="#9AA4AE"/>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            VerticalOptions="Center"
+                            Margin="14,0,0,0"
+                            Spacing="2">
+
+                            <Label
+                                Text="Search Patient"
+                                FontAttributes="Bold"
+                                FontSize="15"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Look up patients &amp; administrative notes"
+                                FontSize="12"
+                                TextColor="#9AA4AE"/>
+
                         </VerticalStackLayout>
+
                     </Grid>
+
                 </Frame>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="14" RowSpacing="14">
-                    
-                    <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
+                <!-- Four Front Desk panels -->
+                <Grid
+                    ColumnDefinitions="*,*"
+                    RowDefinitions="Auto,Auto"
+                    ColumnSpacing="14"
+                    RowSpacing="14">
+
+                    <!-- Today's Overview -->
+                    <Frame
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BackgroundColor="White"
+                        CornerRadius="16"
+                        Padding="16"
+                        HasShadow="False">
+
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToTodaysOverviewCommand}"/>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToTodaysOverviewCommand}"/>
                         </Frame.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="10">
-                            <Frame BackgroundColor="#E6F3FD" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128202;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                            <Frame
+                                BackgroundColor="#E6F3FD"
+                                CornerRadius="10"
+                                Padding="8"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                HasShadow="False">
+
+                                <Label
+                                    Text="&#128202;"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+
                             </Frame>
-                            <Label Text="Today's Overview" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Clinic workload" FontSize="11" TextColor="#9AA4AE"/>
+
+                            <Label
+                                Text="Today's Overview"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Clinic operations"
+                                FontSize="11"
+                                TextColor="#9AA4AE"/>
+
                         </VerticalStackLayout>
+
                     </Frame>
 
-                    <Frame Grid.Row="0" Grid.Column="1" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
+                    <!-- Register Patient -->
+                    <Frame
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="White"
+                        CornerRadius="16"
+                        Padding="16"
+                        HasShadow="False">
+
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToPatientRegistrationCommand}"/>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToPatientRegistrationCommand}"/>
                         </Frame.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="10">
-                            <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128100;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                            <Frame
+                                BackgroundColor="#D5F5EF"
+                                CornerRadius="10"
+                                Padding="8"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                HasShadow="False">
+
+                                <Label
+                                    Text="&#128100;"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+
                             </Frame>
-                            <Label Text="Register Patient" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Create new patient" FontSize="11" TextColor="#9AA4AE"/>
+
+                            <Label
+                                Text="Register Patient"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Create patient profile"
+                                FontSize="11"
+                                TextColor="#9AA4AE"/>
+
                         </VerticalStackLayout>
+
                     </Frame>
 
-                    <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
+                    <!-- Check-In Patient -->
+                    <Frame
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BackgroundColor="White"
+                        CornerRadius="16"
+                        Padding="16"
+                        HasShadow="False">
+
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToCheckInCommand}"/>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToCheckInCommand}"/>
                         </Frame.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="10">
-                            <Frame BackgroundColor="#FEF3D9" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#9989;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                            <Frame
+                                BackgroundColor="#FEF3D9"
+                                CornerRadius="10"
+                                Padding="8"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                HasShadow="False">
+
+                                <Label
+                                    Text="&#9989;"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+
                             </Frame>
-                            <Label Text="Check-In Patient" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Scan ID / QR" FontSize="11" TextColor="#9AA4AE"/>
+
+                            <Label
+                                Text="Check-In Patient"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Scan ID / barcode"
+                                FontSize="11"
+                                TextColor="#9AA4AE"/>
+
                         </VerticalStackLayout>
+
                     </Frame>
 
-                    <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToAppointmentManagementCommand}"/>
-                        </Frame.GestureRecognizers>
-                        <VerticalStackLayout Spacing="10">
-                            <Frame BackgroundColor="#FDE6EC" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128197;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
-                            <Label Text="Manage Appointments" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Approve requests" FontSize="11" TextColor="#9AA4AE"/>
-                        </VerticalStackLayout>
-                    </Frame>
+                    <!-- Post Announcement -->
+                    <Frame
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BackgroundColor="White"
+                        CornerRadius="16"
+                        Padding="16"
+                        HasShadow="False">
 
-                    <Frame Grid.Row="2" Grid.Column="0" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToPostAnnouncementCommand}"/>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToPostAnnouncementCommand}"/>
                         </Frame.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="10">
-                            <Frame BackgroundColor="#E6F3FD" CornerRadius="10" Padding="8" WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128227;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                            <Frame
+                                BackgroundColor="#E6F3FD"
+                                CornerRadius="10"
+                                Padding="8"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                HasShadow="False">
+
+                                <Label
+                                    Text="&#128227;"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+
                             </Frame>
-                            <Label Text="Post Announcement" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Clinic-wide notice" FontSize="11" TextColor="#9AA4AE"/>
+
+                            <Label
+                                Text="Post Announcement"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Clinic-wide notice"
+                                FontSize="11"
+                                TextColor="#9AA4AE"/>
+
                         </VerticalStackLayout>
+
                     </Frame>
 
                 </Grid>
+
+                <!-- Next Arrivals below Front Desk panels -->
+                <VerticalStackLayout
+                    Spacing="12"
+                    Margin="0,6,0,0">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="2">
+
+                            <Label
+                                Text="Next Arrivals"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                TextColor="#12212E"/>
+
+                            <Label
+                                Text="Approved appointments expected today"
+                                FontSize="11"
+                                TextColor="#9AA4AE"/>
+
+                        </VerticalStackLayout>
+
+                        <Label
+                            Grid.Column="1"
+                            Text="View All →"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#0F9B8E"
+                            VerticalOptions="Center">
+
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding GoToAppointmentsOverviewCommand}"/>
+                            </Label.GestureRecognizers>
+
+                        </Label>
+
+                    </Grid>
+
+                    <!-- Empty state -->
+                    <Frame
+                        IsVisible="{Binding HasNextArrivals,
+                            Converter={StaticResource BoolInverter}}"
+                        BackgroundColor="White"
+                        BorderColor="#E2E6EA"
+                        CornerRadius="14"
+                        Padding="16"
+                        HasShadow="False">
+
+                        <Grid
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="12">
+
+                            <Frame
+                                Grid.Column="0"
+                                BackgroundColor="#E6F3FD"
+                                CornerRadius="10"
+                                WidthRequest="48"
+                                HeightRequest="48"
+                                Padding="6"
+                                HasShadow="False">
+
+                                <Label
+                                    Text="&#128197;"
+                                    FontSize="21"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+
+                            </Frame>
+
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                Spacing="2"
+                                VerticalOptions="Center">
+
+                                <Label
+                                    Text="No upcoming arrivals"
+                                    FontSize="13"
+                                    FontAttributes="Bold"
+                                    TextColor="#6B7684"/>
+
+                                <Label
+                                    Text="Approved appointments for today will appear here."
+                                    FontSize="11"
+                                    TextColor="#9AA4AE"/>
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </Frame>
+
+                    <!-- Arrival list -->
+                    <VerticalStackLayout
+                        IsVisible="{Binding HasNextArrivals}"
+                        Spacing="10"
+                        BindableLayout.ItemsSource="{Binding NextArrivals}">
+
+                        <BindableLayout.ItemTemplate>
+
+                            <DataTemplate
+                                x:DataType="vm:ReadsNextArrivalItem">
+
+                                <Frame
+                                    BackgroundColor="White"
+                                    BorderColor="#0F9B8E"
+                                    CornerRadius="14"
+                                    Padding="16"
+                                    HasShadow="False">
+
+                                    <VerticalStackLayout Spacing="12">
+
+                                        <Grid
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            ColumnSpacing="14">
+
+                                            <!-- Time box -->
+                                            <Frame
+                                                Grid.Column="0"
+                                                BackgroundColor="#D5F5EF"
+                                                CornerRadius="10"
+                                                Padding="6"
+                                                WidthRequest="58"
+                                                HeightRequest="52"
+                                                HasShadow="False">
+
+                                                <Label
+                                                    Text="{Binding TimeDisplay}"
+                                                    FontSize="11"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#0F9B8E"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    HorizontalTextAlignment="Center"/>
+
+                                            </Frame>
+
+                                            <!-- Patient details -->
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+
+                                                <Label
+                                                    Text="{Binding PatientName}"
+                                                    FontSize="14"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#12212E"
+                                                    LineBreakMode="TailTruncation"/>
+
+                                                <Label
+                                                    Text="{Binding PatientIdNumber}"
+                                                    FontSize="11"
+                                                    TextColor="#9AA4AE"/>
+
+                                                <Label
+                                                    FontSize="12"
+                                                    TextColor="#6B7684"
+                                                    LineBreakMode="TailTruncation">
+
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span
+                                                                Text="{Binding ServiceType}"/>
+                                                            <Span Text=" · "/>
+                                                            <Span
+                                                                Text="{Binding SubService}"/>
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+
+                                                </Label>
+
+                                            </VerticalStackLayout>
+
+                                            <!-- Status -->
+                                            <Frame
+                                                Grid.Column="2"
+                                                BackgroundColor="#D5F5EF"
+                                                CornerRadius="10"
+                                                Padding="9,3"
+                                                HasShadow="False"
+                                                VerticalOptions="Start">
+
+                                                <Label
+                                                    Text="Confirmed"
+                                                    FontSize="10"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#0F9B8E"/>
+
+                                            </Frame>
+
+                                        </Grid>
+
+                                        <Button
+                                            Text="Check In Patient"
+                                            Command="{Binding Source={x:Reference Root},
+                                                Path=BindingContext.CheckInArrivalCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#0F9B8E"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            CornerRadius="20"
+                                            HeightRequest="42"/>
+
+                                    </VerticalStackLayout>
+
+                                </Frame>
+
+                            </DataTemplate>
+
+                        </BindableLayout.ItemTemplate>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
 
             </VerticalStackLayout>
+
         </ScrollView>
 
-        <!-- Bottom nav -->
-        <Frame Grid.Row="1" BackgroundColor="White" CornerRadius="0" Padding="0,10" HasShadow="False">
+        <!-- Bottom navigation -->
+        <Frame
+            Grid.Row="1"
+            BackgroundColor="White"
+            CornerRadius="0"
+            Padding="0,10"
+            HasShadow="False">
+
             <Grid ColumnDefinitions="*,*,*,*">
 
-                <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#8962;" FontSize="18" TextColor="#0F9B8E" HorizontalOptions="Center"/>
-                    <Label Text="Home" FontSize="11" TextColor="#0F9B8E" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <!-- Home -->
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    Spacing="2"
+                    HorizontalOptions="Center">
+
+                    <Label
+                        Text="&#8962;"
+                        FontSize="18"
+                        TextColor="#0F9B8E"
+                        HorizontalOptions="Center"/>
+
+                    <Label
+                        Text="Home"
+                        FontSize="11"
+                        TextColor="#0F9B8E"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"/>
+
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToAppointmentManagementCommand}"/>
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                    <Label Text="Appointments" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                </VerticalStackLayout>
+                <!-- Appointments -->
+                <Grid
+                    Grid.Column="1"
+                    HorizontalOptions="Center">
 
-                <Grid Grid.Column="2" HorizontalOptions="Center">
-                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout
+                        Spacing="2"
+                        HorizontalOptions="Center">
+
                         <VerticalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}"/>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToAppointmentsOverviewCommand}"/>
                         </VerticalStackLayout.GestureRecognizers>
-                        <Label Text="&#128276;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                        <Label Text="Notifications" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+
+                        <Label
+                            Text="&#128197;"
+                            FontSize="18"
+                            TextColor="#9AA4AE"
+                            HorizontalOptions="Center"/>
+
+                        <Label
+                            Text="Appointments"
+                            FontSize="11"
+                            TextColor="#9AA4AE"
+                            HorizontalOptions="Center"/>
+
                     </VerticalStackLayout>
-                    <Frame IsVisible="{Binding HasUnreadNotifications}"
-                   BackgroundColor="#E05B5B" CornerRadius="9"
-                   WidthRequest="18" HeightRequest="18" Padding="0" HasShadow="False"
-                   HorizontalOptions="End" VerticalOptions="Start" Margin="0,-4,8,0">
-                        <Label Text="{Binding UnreadNotificationCount}" FontSize="10" FontAttributes="Bold"
-                       TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                    <Frame
+                        IsVisible="{Binding HasPendingApprovals}"
+                        BackgroundColor="#E05B5B"
+                        CornerRadius="9"
+                        WidthRequest="18"
+                        HeightRequest="18"
+                        Padding="0"
+                        HasShadow="False"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Margin="0,-4,8,0">
+
+                        <Label
+                            Text="{Binding PendingApprovalCount}"
+                            FontSize="10"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+
                     </Frame>
+
                 </Grid>
 
-                <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                <!-- Notifications -->
+                <Grid
+                    Grid.Column="2"
+                    HorizontalOptions="Center">
+
+                    <VerticalStackLayout
+                        Spacing="2"
+                        HorizontalOptions="Center">
+
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding GoToNotificationsCommand}"/>
+                        </VerticalStackLayout.GestureRecognizers>
+
+                        <Label
+                            Text="&#128276;"
+                            FontSize="18"
+                            TextColor="#9AA4AE"
+                            HorizontalOptions="Center"/>
+
+                        <Label
+                            Text="Notifications"
+                            FontSize="11"
+                            TextColor="#9AA4AE"
+                            HorizontalOptions="Center"/>
+
+                    </VerticalStackLayout>
+
+                    <Frame
+                        IsVisible="{Binding HasUnreadNotifications}"
+                        BackgroundColor="#E05B5B"
+                        CornerRadius="9"
+                        WidthRequest="18"
+                        HeightRequest="18"
+                        Padding="0"
+                        HasShadow="False"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Margin="0,-4,8,0">
+
+                        <Label
+                            Text="{Binding UnreadNotificationCount}"
+                            FontSize="10"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+
+                    </Frame>
+
+                </Grid>
+
+                <!-- Profile -->
+                <VerticalStackLayout
+                    Grid.Column="3"
+                    Spacing="2"
+                    HorizontalOptions="Center">
+
                     <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
+                        <TapGestureRecognizer
+                            Command="{Binding GoToProfileCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="18" TextColor="#9AA4AE" HorizontalOptions="Center"/>
-                    <Label Text="Profile" FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+
+                    <Label
+                        Text="&#128100;"
+                        FontSize="18"
+                        TextColor="#9AA4AE"
+                        HorizontalOptions="Center"/>
+
+                    <Label
+                        Text="Profile"
+                        FontSize="11"
+                        TextColor="#9AA4AE"
+                        HorizontalOptions="Center"/>
+
                 </VerticalStackLayout>
 
             </Grid>
+
         </Frame>
 
     </Grid>
+
 </ContentPage>

@@ -13,6 +13,15 @@ public partial class NurseDashboardViewModel : ObservableObject
     [ObservableProperty] private int unreadNotificationCount;
     [ObservableProperty] private bool hasUnreadNotifications;
     [ObservableProperty] private string profileImagePath = string.Empty;
+
+    [ObservableProperty] private int todayPatientCount;
+
+    [ObservableProperty] private int awaitingVitalsCount;
+
+    [ObservableProperty] private int vitalsRecordedCount;
+
+    [ObservableProperty] private int completedTodayCount;
+
     public async Task RefreshAsync()
     {
         var user = Services.AuthService.Instance.CurrentUser;
@@ -41,6 +50,30 @@ public partial class NurseDashboardViewModel : ObservableObject
         HasUnreadNotifications = UnreadNotificationCount > 0;
 
         ProfileImagePath = user.ProfileImagePath;
+        var allAppointments = await Services.AppointmentService.Instance
+    .GetAllAppointmentsAsync();
+
+        var todaysAppointments = allAppointments
+            .Where(a =>
+                a.VisitDate.Date == DateTime.Today &&
+                a.Status != "Cancelled" &&
+                (a.ServiceType == "Medical" ||
+                 a.ServiceType == "Dental"))
+            .ToList();
+
+        TodayPatientCount = todaysAppointments.Count;
+
+        AwaitingVitalsCount = todaysAppointments.Count(
+            a => a.Status == "CheckedIn");
+
+        VitalsRecordedCount = todaysAppointments.Count(
+            a => a.Status == "VitalsRecorded");
+
+        CompletedTodayCount = todaysAppointments.Count(
+            a => a.Status == "Completed");
+
+
+
     }
 
     [RelayCommand]

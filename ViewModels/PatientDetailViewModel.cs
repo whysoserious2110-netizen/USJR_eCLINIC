@@ -27,6 +27,9 @@ public partial class PatientDetailViewModel : ObservableObject
     [ObservableProperty] private string medicalConditions = string.Empty;
     [ObservableProperty] private string currentMedications = string.Empty;
 
+    [ObservableProperty]
+    private bool canRecordVitals;
+
     // Prescriptions
     public ObservableCollection<PrescriptionListItem> Prescriptions { get; } = new();
     [ObservableProperty] private bool hasPrescriptions;
@@ -37,6 +40,11 @@ public partial class PatientDetailViewModel : ObservableObject
         PatientName = patientName;
         PatientRole = patientRole;
         PatientIdNumber = patientIdNumber;
+        CanRecordVitals = string.Equals(
+        Services.AuthService.Instance.CurrentUser?.Role,"Nurse",
+        StringComparison.OrdinalIgnoreCase);
+
+
 
         _ = LoadAsync();
     }
@@ -94,9 +102,41 @@ public partial class PatientDetailViewModel : ObservableObject
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 
 
+   
     [RelayCommand]
     private async Task GoToVitals()
-    => await Shell.Current.Navigation.PushAsync(new Views.RecordVitalsPage(_patientEmail, PatientName));
+    {
+        var currentUser = Services.AuthService.Instance.CurrentUser;
+
+        if (currentUser?.Role != "Nurse")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only Nurses can record vital signs and nursing notes.",
+                "OK");
+
+            return;
+        }
+
+        var appointment = await Services.AppointmentService.Instance
+            .GetCheckedInTodayAsync(_patientEmail);
+
+        if (appointment == null)
+        {
+            await Shell.Current.DisplayAlert(
+                "No checked-in appointment",
+                "This patient does not have a checked-in appointment today.",
+                "OK");
+
+            return;
+        }
+
+        await Shell.Current.Navigation.PushAsync(
+            new Views.RecordVitalsPage(
+                appointment.Id,
+                _patientEmail,
+                PatientName));
+    }
 
 
 }
