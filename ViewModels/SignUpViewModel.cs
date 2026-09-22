@@ -1,21 +1,25 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Linq;
 
 namespace USJR_eCLINIC.ViewModels;
 
-public partial class SignUpViewModel : ObservableObject
+public partial class SignUpViewModel :
+    ObservableObject
 {
     [ObservableProperty]
     private string selectedRole = "Student";
 
     [ObservableProperty]
-    private string idLabel = "Student ID Number";
+    private string idLabel =
+        "Student ID Number";
 
     [ObservableProperty]
     private string idNumber = string.Empty;
 
     [ObservableProperty]
-    private string programOrDepartment = string.Empty;
+    private string programOrDepartment =
+        string.Empty;
 
     [ObservableProperty]
     private string fullName = string.Empty;
@@ -27,7 +31,8 @@ public partial class SignUpViewModel : ObservableObject
     private string password = string.Empty;
 
     [ObservableProperty]
-    private string confirmPassword = string.Empty;
+    private string confirmPassword =
+        string.Empty;
 
     [ObservableProperty]
     private bool isPasswordHidden = true;
@@ -39,138 +44,321 @@ public partial class SignUpViewModel : ObservableObject
     private bool agreedToPrivacyPolicy;
 
     [ObservableProperty]
-    private string passwordMatchMessage = string.Empty;
+    private string passwordMatchMessage =
+        string.Empty;
 
     [ObservableProperty]
-    private Color passwordMatchColor = Colors.Gray;
+    private Color passwordMatchColor =
+        Colors.Gray;
+
+    [ObservableProperty]
+    private bool isRegistering;
 
     public SignUpViewModel()
     {
-        UpdateRoleDependentFields();
+        SelectedRole = "Student";
+        IdLabel = "Student ID Number";
     }
+
+    // Roles that may self-register here. R.E.A.D.S. Scholar,
+    // Nurse, Doctor, and Dentist accounts are provisioned by
+    // authorized personnel instead (see PatientRolePolicy on
+    // the API side).
+    private static readonly string[] SelfRegistrationRoles =
+    {
+        "Student",
+        "Faculty",
+        "Admin Personnel",
+        "Non-Teaching"
+    };
 
     [RelayCommand]
-    private void SelectRole(string role)
+    private async Task SelectRole(
+        string role)
     {
-        SelectedRole = role;
-        UpdateRoleDependentFields();
-    }
-
-    private void UpdateRoleDependentFields()
-    {
-        IdLabel = SelectedRole switch
+        if (!SelfRegistrationRoles.Contains(role))
         {
-            "Student" => "Student ID Number",
-            "Faculty" or "Admin Personnel" or "Non-Teaching" => "Employee ID Number",
-            "R.E.A.D.S. Scholar" => "Scholar ID Number",
-            _ => "ID Number"
-        };
+            await Shell.Current.DisplayAlert(
+                "Staff Registration",
+                "Doctor, Nurse, Dentist, and R.E.A.D.S. " +
+                "Scholar accounts must be created by " +
+                "authorized personnel.",
+                "OK");
+
+            return;
+        }
+
+        SelectedRole = role;
+
+        IdLabel =
+            role == "Student"
+                ? "Student ID Number"
+                : "Employee ID Number";
     }
 
-    partial void OnPasswordChanged(string value) => UpdatePasswordMatchStatus();
-    partial void OnConfirmPasswordChanged(string value) => UpdatePasswordMatchStatus();
+    partial void OnPasswordChanged(
+        string value)
+    {
+        UpdatePasswordMatchStatus();
+    }
+
+    partial void OnConfirmPasswordChanged(
+        string value)
+    {
+        UpdatePasswordMatchStatus();
+    }
 
     private void UpdatePasswordMatchStatus()
     {
-        if (string.IsNullOrEmpty(ConfirmPassword))
+        if (string.IsNullOrEmpty(
+            ConfirmPassword))
         {
-            PasswordMatchMessage = string.Empty;
+            PasswordMatchMessage =
+                string.Empty;
+
+            PasswordMatchColor =
+                Colors.Gray;
+
             return;
         }
 
         if (Password == ConfirmPassword)
         {
-            PasswordMatchMessage = "Passwords match";
-            PasswordMatchColor = Color.FromArgb("#0F9B8E");
+            PasswordMatchMessage =
+                "Passwords match";
+
+            PasswordMatchColor =
+                Color.FromArgb("#0F9B8E");
         }
         else
         {
-            PasswordMatchMessage = "Passwords do not match";
-            PasswordMatchColor = Color.FromArgb("#E05B5B");
+            PasswordMatchMessage =
+                "Passwords do not match";
+
+            PasswordMatchColor =
+                Color.FromArgb("#E05B5B");
         }
     }
 
     [RelayCommand]
-    private void TogglePasswordVisibility() => IsPasswordHidden = !IsPasswordHidden;
+    private void TogglePasswordVisibility()
+    {
+        IsPasswordHidden =
+            !IsPasswordHidden;
+    }
 
     [RelayCommand]
-    private void ToggleConfirmPasswordVisibility() => IsConfirmPasswordHidden = !IsConfirmPasswordHidden;
+    private void ToggleConfirmPasswordVisibility()
+    {
+        IsConfirmPasswordHidden =
+            !IsConfirmPasswordHidden;
+    }
 
     [RelayCommand]
     private async Task Register()
     {
-        if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Email) ||
-            string.IsNullOrWhiteSpace(IdNumber) || string.IsNullOrWhiteSpace(Password))
+        if (IsRegistering)
+            return;
+
+        var normalizedName =
+            FullName?.Trim() ??
+            string.Empty;
+
+        var normalizedStudentId =
+            IdNumber?.Trim()
+                .ToUpperInvariant() ??
+            string.Empty;
+
+        var normalizedEmail =
+            Email?.Trim()
+                .ToLowerInvariant() ??
+            string.Empty;
+
+        // Passwords must not be trimmed.
+        var enteredPassword =
+            Password ??
+            string.Empty;
+
+        if (string.IsNullOrWhiteSpace(
+                normalizedName) ||
+            string.IsNullOrWhiteSpace(
+                normalizedStudentId) ||
+            string.IsNullOrWhiteSpace(
+                normalizedEmail) ||
+            string.IsNullOrEmpty(
+                enteredPassword))
         {
-            await Shell.Current.DisplayAlert("Missing info", "Please fill in all required fields.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Missing information",
+                "Please fill in all required fields.",
+                "OK");
+
             return;
         }
 
-        if (!IsValidEmail(Email))
+        if (!IsValidEmail(normalizedEmail))
         {
-            await Shell.Current.DisplayAlert("Invalid Email", "Please enter a valid email address (e.g. name@usjr.edu.ph or name@gmail.com).", "OK");
+            await Shell.Current.DisplayAlert(
+                "Invalid Email",
+                "Enter a valid USJ-R email address.",
+                "OK");
+
             return;
         }
 
-        if (!Services.AuthService.Instance.IsAllowedEmailDomain(Email))
+        if (!normalizedEmail.EndsWith(
+            "@usjr.edu.ph",
+            StringComparison.OrdinalIgnoreCase))
         {
-            await Shell.Current.DisplayAlert("Email Not Allowed", "Please use a USJ-R email (@usjr.edu.ph) or a Gmail account (@gmail.com).", "OK");
+            await Shell.Current.DisplayAlert(
+                "USJ-R Email Required",
+                "Registration requires an official " +
+                "@usjr.edu.ph email address.",
+                "OK");
+
             return;
         }
 
-        if (!IsStrongPassword(Password))
+        if (!IsStrongPassword(
+            enteredPassword))
         {
-            await Shell.Current.DisplayAlert("Weak Password",
-                "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Weak Password",
+                "Password must be at least 8 characters " +
+                "and include uppercase, lowercase, number, " +
+                "and special characters.",
+                "OK");
+
             return;
         }
 
-        if (Password != ConfirmPassword)
+        if (!string.Equals(
+            enteredPassword,
+            ConfirmPassword,
+            StringComparison.Ordinal))
         {
-            await Shell.Current.DisplayAlert("Password mismatch", "Passwords do not match.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Password mismatch",
+                "Passwords do not match.",
+                "OK");
+
             return;
         }
 
         if (!AgreedToPrivacyPolicy)
         {
-            await Shell.Current.DisplayAlert("Privacy Policy", "Please agree to the USJ-R Health Service Data Privacy Policy.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Privacy Policy",
+                "Please agree to the USJ-R Health " +
+                "Service Data Privacy Policy.",
+                "OK");
+
             return;
         }
 
-        if (await Services.AuthService.Instance.EmailExistsAsync(Email))
+        try
         {
-            await Shell.Current.DisplayAlert("Account exists", "An account with this email already exists. Please log in instead.", "OK");
-            return;
+            IsRegistering = true;
+
+            var result =
+                await Services.ClinicApiService
+                    .Instance
+                    .RegisterPatientAsync(
+                        normalizedName,
+                        normalizedStudentId,
+                        normalizedEmail,
+                        enteredPassword,
+                        SelectedRole);
+
+            if (!result.Registered ||
+                result.UserId == null)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Registration Failed",
+                    string.IsNullOrWhiteSpace(
+                        result.Message)
+                        ? "The account could not be created."
+                        : result.Message,
+                    "OK");
+
+                return;
+            }
+
+            // Create a local non-password cache for
+            // appointments and profile information.
+            var apiStudent =
+                new Services.ApiStudentUser
+                {
+                    Id = result.UserId.Value,
+
+                    StudentId =
+                        normalizedStudentId,
+
+                    FullName =
+                        normalizedName,
+
+                    Email =
+                        normalizedEmail,
+
+                    Role = SelectedRole
+                };
+
+            var localAccount =
+                await Services.AuthService.Instance
+                    .SignInCentralStudentAsync(
+                        apiStudent);
+
+            localAccount.ProgramOrDepartment =
+                ProgramOrDepartment?.Trim() ??
+                string.Empty;
+
+            await Services.AuthService.Instance
+                .UpdateProfileAsync(
+                    localAccount);
+
+            // Registration does not automatically
+            // keep the Student signed in.
+            Services.AuthService.Instance.Logout();
+
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
+
+            await Shell.Current.DisplayAlert(
+                "Account Created",
+                "Your central account has been " +
+                "created. Please log in.",
+                "Continue");
+
+            await Shell.Current.Navigation
+                .PopAsync();
         }
-
-        if (await Services.AuthService.Instance.IdNumberExistsAsync(IdNumber))
+        catch
         {
-            await Shell.Current.DisplayAlert("ID already registered", "This Student/Employee ID is already registered to another account.", "OK");
-            return;
+            await Shell.Current.DisplayAlert(
+                "Registration Unavailable",
+                "The central server could not complete " +
+                "the registration. Please try again.",
+                "OK");
         }
-
-        var newAccount = new Models.UserAccount
+        finally
         {
-            FullName = FullName,
-            Email = Email,
-            Password = Password,
-            Role = SelectedRole,
-            IdNumber = IdNumber,
-            ProgramOrDepartment = ProgramOrDepartment
-        };
-
-        await Services.AuthService.Instance.RegisterAsync(newAccount);
-
-        await Shell.Current.DisplayAlert("Account Created", "Your account has been created. Please log in.", "OK");
-        await Shell.Current.Navigation.PopAsync();
+            IsRegistering = false;
+        }
     }
 
-    private bool IsValidEmail(string email)
+    private static bool IsValidEmail(
+        string email)
     {
         try
         {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email;
+            var address =
+                new System.Net.Mail.MailAddress(
+                    email);
+
+            return string.Equals(
+                address.Address,
+                email,
+                StringComparison.OrdinalIgnoreCase);
         }
         catch
         {
@@ -178,19 +366,23 @@ public partial class SignUpViewModel : ObservableObject
         }
     }
 
-    private bool IsStrongPassword(string password)
+    private static bool IsStrongPassword(
+        string password)
     {
-        if (password.Length < 8) return false;
-        bool hasUpper = password.Any(char.IsUpper);
-        bool hasLower = password.Any(char.IsLower);
-        bool hasDigit = password.Any(char.IsDigit);
-        bool hasSpecial = password.Any(ch => !char.IsLetterOrDigit(ch));
-        return hasUpper && hasLower && hasDigit && hasSpecial;
+        if (password.Length < 8)
+            return false;
+
+        return password.Any(char.IsUpper) &&
+               password.Any(char.IsLower) &&
+               password.Any(char.IsDigit) &&
+               password.Any(character =>
+                   !char.IsLetterOrDigit(character));
     }
 
     [RelayCommand]
     private async Task GoBack()
     {
-        await Shell.Current.Navigation.PopAsync();
+        await Shell.Current.Navigation
+            .PopAsync();
     }
 }

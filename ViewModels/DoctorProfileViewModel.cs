@@ -133,7 +133,11 @@ public partial class DoctorProfileViewModel : ObservableObject
         bool confirm = await Shell.Current.DisplayAlert("Log Out", "Are you sure you want to log out?", "Log Out", "Cancel");
         if (!confirm) return;
 
+        await Services.SecureSessionService.Instance
+    .ClearSessionAsync();
+
         Services.AuthService.Instance.Logout();
+
         await Shell.Current.Navigation.PopToRootAsync();
     }
 
