@@ -10,11 +10,8 @@ public class AuthService
 
     public UserAccount? CurrentUser { get; private set; }
 
-    // Roles that self-register and authenticate through the
-    // central API (see PatientRolePolicy on the API side).
-    // Everything else (Doctor, Nurse, Dentist, R.E.A.D.S.
-    // Scholar) is a locally seeded/provisioned account that
-    // signs in through the local password instead.
+    // Roles that may be created through the public signup screen.
+    // All accounts authenticate locally in the MAUI app.
     public static readonly string[] CentralPatientRoles =
     {
         "Student",
@@ -171,8 +168,6 @@ public class AuthService
         });
     }
 
-
-
     private async Task SeedReadsAsync()
     {
         var existing =
@@ -195,16 +190,16 @@ public class AuthService
 
             Role = "R.E.A.D.S. Scholar",
             IdNumber = "READS-0001",
-            ProgramOrDepartment = "USJ-R Clinic - Front Desk",
+            ProgramOrDepartment =
+                "USJ-R Clinic - Front Desk",
             Position = "Front Desk Coordinator",
             EmploymentStatus = "Active"
         });
     }
 
-
-
     public async Task<UserAccount?>
-        GetAccountByIdNumberAsync(string idNumber)
+        GetAccountByIdNumberAsync(
+            string idNumber)
     {
         await EnsureInitializedAsync();
 
@@ -222,7 +217,8 @@ public class AuthService
     }
 
     public async Task<UserAccount?>
-        GetAccountByEmailAsync(string email)
+        GetAccountByEmailAsync(
+            string email)
     {
         await EnsureInitializedAsync();
 
@@ -245,14 +241,16 @@ public class AuthService
         await EnsureInitializedAsync();
 
         var normalized =
-            email.Trim().ToLowerInvariant();
+            email.Trim()
+                .ToLowerInvariant();
 
         var accounts =
             await _db.Table<UserAccount>()
                 .ToListAsync();
 
         return accounts.Any(a =>
-            a.Email.Trim().ToLowerInvariant() ==
+            a.Email.Trim()
+                .ToLowerInvariant() ==
             normalized);
     }
 
@@ -262,20 +260,24 @@ public class AuthService
         await EnsureInitializedAsync();
 
         var normalized =
-            idNumber.Trim().ToLowerInvariant();
+            idNumber.Trim()
+                .ToLowerInvariant();
 
         var accounts =
             await _db.Table<UserAccount>()
                 .ToListAsync();
 
         return accounts.Any(a =>
-            a.IdNumber.Trim().ToLowerInvariant() ==
+            a.IdNumber.Trim()
+                .ToLowerInvariant() ==
             normalized);
     }
 
-    public bool IsAllowedEmailDomain(string email)
+    public bool IsAllowedEmailDomain(
+        string email)
     {
-        var atIndex = email.LastIndexOf('@');
+        var atIndex =
+            email.LastIndexOf('@');
 
         if (atIndex < 0 ||
             atIndex == email.Length - 1)
@@ -283,11 +285,13 @@ public class AuthService
             return false;
         }
 
-        var domain = email[(atIndex + 1)..]
-            .Trim()
-            .ToLowerInvariant();
+        var domain =
+            email[(atIndex + 1)..]
+                .Trim()
+                .ToLowerInvariant();
 
-        return AllowedEmailDomains.Contains(domain);
+        return AllowedEmailDomains.Contains(
+            domain);
     }
 
     public async Task RegisterAsync(
@@ -295,15 +299,20 @@ public class AuthService
     {
         await EnsureInitializedAsync();
 
-        account.Email = account.Email.Trim();
-        account.IdNumber = account.IdNumber.Trim();
+        account.Email =
+            account.Email.Trim();
 
-        if (!PasswordSecurityService.IsHashedPassword(
-            account.Password))
+        account.IdNumber =
+            account.IdNumber.Trim();
+
+        if (!PasswordSecurityService
+            .IsHashedPassword(
+                account.Password))
         {
             account.Password =
-                PasswordSecurityService.HashPassword(
-                    account.Password);
+                PasswordSecurityService
+                    .HashPassword(
+                        account.Password);
         }
 
         await _db.InsertAsync(account);
@@ -316,33 +325,42 @@ public class AuthService
         await EnsureInitializedAsync();
 
         var input =
-            emailOrId.Trim().ToLowerInvariant();
+            emailOrId.Trim()
+                .ToLowerInvariant();
 
         var accounts =
             await _db.Table<UserAccount>()
                 .ToListAsync();
 
-        var account = accounts.FirstOrDefault(a =>
-            a.Email.Trim().ToLowerInvariant() == input ||
-            a.IdNumber.Trim().ToLowerInvariant() == input);
+        var account =
+            accounts.FirstOrDefault(a =>
+                a.Email.Trim()
+                    .ToLowerInvariant() ==
+                    input ||
+                a.IdNumber.Trim()
+                    .ToLowerInvariant() ==
+                    input);
 
         if (account == null)
             return false;
 
-        var passwordIsValid = false;
+        var passwordIsValid =
+            false;
 
-        if (PasswordSecurityService.IsHashedPassword(
-            account.Password))
+        if (PasswordSecurityService
+            .IsHashedPassword(
+                account.Password))
         {
             passwordIsValid =
-                PasswordSecurityService.VerifyPassword(
-                    password,
-                    account.Password);
+                PasswordSecurityService
+                    .VerifyPassword(
+                        password,
+                        account.Password);
         }
         else
         {
-            // Temporary compatibility for accounts that
-            // were created before password hashing.
+            // Compatibility for old accounts
+            // created before password hashing.
             passwordIsValid =
                 string.Equals(
                     account.Password,
@@ -351,54 +369,54 @@ public class AuthService
 
             if (passwordIsValid)
             {
-                // Automatically replace the old plaintext
-                // password after a successful login.
                 account.Password =
-                    PasswordSecurityService.HashPassword(
-                        password);
+                    PasswordSecurityService
+                        .HashPassword(
+                            password);
 
-                await _db.UpdateAsync(account);
+                await _db.UpdateAsync(
+                    account);
             }
         }
 
         if (!passwordIsValid)
             return false;
 
-        CurrentUser = account;
+        CurrentUser =
+            account;
 
         return true;
     }
 
-
     public async Task<bool> UpdatePasswordAsync(
-    int userId,
-    string newPassword)
+        int userId,
+        string newPassword)
     {
         await EnsureInitializedAsync();
 
         var account =
             await _db.Table<UserAccount>()
-                .Where(a => a.Id == userId)
+                .Where(a =>
+                    a.Id == userId)
                 .FirstOrDefaultAsync();
 
         if (account == null)
             return false;
 
         account.Password =
-            PasswordSecurityService.HashPassword(
-                newPassword);
+            PasswordSecurityService
+                .HashPassword(
+                    newPassword);
 
         var updated =
-            await _db.UpdateAsync(account);
+            await _db.UpdateAsync(
+                account);
 
         if (CurrentUser?.Id == userId)
             CurrentUser = account;
 
         return updated > 0;
     }
-
-
-
 
     public async Task<List<UserAccount>>
         GetAllPatientsAsync()
@@ -409,16 +427,20 @@ public class AuthService
             await _db.Table<UserAccount>()
                 .ToListAsync();
 
-        var staffRoles = new[]
-        {
-            "Doctor",
-            "Nurse",
-            "Dentist"
-        };
+        var staffRoles =
+            new[]
+            {
+                "Doctor",
+                "Nurse",
+                "Dentist"
+            };
 
         return all
-            .Where(a => !staffRoles.Contains(a.Role))
-            .OrderBy(a => a.FullName)
+            .Where(a =>
+                !staffRoles.Contains(
+                    a.Role))
+            .OrderBy(a =>
+                a.FullName)
             .ToList();
     }
 
@@ -432,7 +454,8 @@ public class AuthService
                 .ToListAsync();
 
         return all
-            .Where(a => a.Role == "Doctor")
+            .Where(a =>
+                a.Role == "Doctor")
             .ToList();
     }
 
@@ -442,21 +465,23 @@ public class AuthService
         await EnsureInitializedAsync();
 
         var result =
-            await _db.UpdateAsync(updatedAccount);
+            await _db.UpdateAsync(
+                updatedAccount);
 
         if (CurrentUser != null &&
-            CurrentUser.Id == updatedAccount.Id)
+            CurrentUser.Id ==
+                updatedAccount.Id)
         {
-            CurrentUser = updatedAccount;
+            CurrentUser =
+                updatedAccount;
         }
 
         return result > 0;
     }
 
-
     public async Task<UserAccount?>
-    GetAccountByIdentifierAsync(
-        string emailOrId)
+        GetAccountByIdentifierAsync(
+            string emailOrId)
     {
         await EnsureInitializedAsync();
 
@@ -464,8 +489,11 @@ public class AuthService
             emailOrId?.Trim() ??
             string.Empty;
 
-        if (string.IsNullOrWhiteSpace(identifier))
+        if (string.IsNullOrWhiteSpace(
+            identifier))
+        {
             return null;
+        }
 
         var normalizedEmail =
             identifier.ToLowerInvariant();
@@ -475,132 +503,48 @@ public class AuthService
 
         return await _db.Table<UserAccount>()
             .Where(user =>
-                user.Email == normalizedEmail ||
-                user.IdNumber == normalizedId)
+                user.Email ==
+                    normalizedEmail ||
+                user.IdNumber ==
+                    normalizedId)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<UserAccount>
-        SignInCentralStudentAsync(
-            ApiStudentUser apiStudent)
-    {
-        await EnsureInitializedAsync();
-
-        var normalizedStudentId =
-            apiStudent.StudentId
-                .Trim()
-                .ToUpperInvariant();
-
-        var normalizedEmail =
-            apiStudent.Email
-                .Trim()
-                .ToLowerInvariant();
-
-        var localAccount =
-            await _db.Table<UserAccount>()
-                .Where(user =>
-                    user.IdNumber ==
-                        normalizedStudentId ||
-                    user.Email ==
-                        normalizedEmail)
-                .FirstOrDefaultAsync();
-
-        if (localAccount == null)
-        {
-            localAccount = new UserAccount
-            {
-                FullName =
-                    apiStudent.FullName,
-
-                IdNumber =
-                    normalizedStudentId,
-
-                Email =
-                    normalizedEmail,
-
-                // Trust whatever role the central API
-                // authenticated this account as (Student,
-                // Faculty, Admin Personnel, or Non-Teaching).
-                Role =
-                    apiStudent.Role,
-
-                // No usable central password is stored locally.
-                // This is a hash of a random unknown value.
-                Password =
-                    PasswordSecurityService.HashPassword(
-                        $"{Guid.NewGuid():N}" +
-                        $"{Guid.NewGuid():N}")
-            };
-
-            await _db.InsertAsync(localAccount);
-        }
-        else
-        {
-            localAccount.FullName =
-                apiStudent.FullName;
-
-            localAccount.IdNumber =
-                normalizedStudentId;
-
-            localAccount.Email =
-                normalizedEmail;
-
-            localAccount.Role =
-                apiStudent.Role;
-
-            // Remove the ability to authenticate this Student
-            // using an old locally stored password.
-            localAccount.Password =
-                PasswordSecurityService.HashPassword(
-                    $"{Guid.NewGuid():N}" +
-                    $"{Guid.NewGuid():N}");
-
-            await _db.UpdateAsync(localAccount);
-        }
-
-        CurrentUser = localAccount;
-
-        return localAccount;
-    }
-
-
-
-
     public void Logout()
     {
-        CurrentUser = null;
+        CurrentUser =
+            null;
     }
 
-
-
     public async Task<UserAccount?>
-    GetAccountByDatabaseIdAsync(int userId)
+        GetAccountByDatabaseIdAsync(
+            int userId)
     {
         await EnsureInitializedAsync();
 
         return await _db.Table<UserAccount>()
-            .Where(a => a.Id == userId)
+            .Where(a =>
+                a.Id == userId)
             .FirstOrDefaultAsync();
     }
 
     public async Task<bool> RestoreSessionAsync(
-    int userId)
+        int userId)
     {
         await EnsureInitializedAsync();
 
         var account =
             await _db.Table<UserAccount>()
-                .Where(a => a.Id == userId)
+                .Where(a =>
+                    a.Id == userId)
                 .FirstOrDefaultAsync();
 
         if (account == null)
             return false;
 
-        CurrentUser = account;
+        CurrentUser =
+            account;
 
         return true;
     }
-
-
-
 }

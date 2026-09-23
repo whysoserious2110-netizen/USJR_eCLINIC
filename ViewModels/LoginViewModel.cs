@@ -20,7 +20,7 @@ public partial class LoginViewModel :
     private string showHideText = "SHOW";
 
     [ObservableProperty]
-    private bool rememberMe;
+    private bool rememberMe= true;
 
     [ObservableProperty]
     private bool isLoggingIn;
@@ -47,8 +47,6 @@ public partial class LoginViewModel :
             EmailOrId?.Trim() ??
             string.Empty;
 
-        // Passwords must not be trimmed because
-        // spaces can be valid password characters.
         var enteredPassword =
             Password ??
             string.Empty;
@@ -68,75 +66,24 @@ public partial class LoginViewModel :
         {
             IsLoggingIn = true;
 
-            Models.UserAccount? user;
-
-            var localAccount =
+            var loginSuccessful =
                 await Services.AuthService.Instance
-                    .GetAccountByIdentifierAsync(
-                        input);
+                    .LoginAsync(
+                        input,
+                        enteredPassword);
 
-            // Seeded staff accounts (Doctor, Nurse, Dentist,
-            // R.E.A.D.S. Scholar) continue using the existing
-            // local clinic authentication. Student, Faculty,
-            // Admin Personnel, and Non-Teaching always
-            // authenticate centrally instead.
-            if (localAccount != null &&
-                !Services.AuthService.CentralPatientRoles
-                    .Contains(localAccount.Role))
+            if (!loginSuccessful)
             {
-                var localLoginSuccessful =
-                    await Services.AuthService.Instance
-                        .LoginAsync(
-                            input,
-                            enteredPassword);
+                await Shell.Current.DisplayAlert(
+                    "Login failed",
+                    "Invalid email/ID or password.",
+                    "OK");
 
-                if (!localLoginSuccessful)
-                {
-                    await Shell.Current.DisplayAlert(
-                        "Login failed",
-                        "Invalid email/ID or password.",
-                        "OK");
-
-                    return;
-                }
-
-                user =
-                    Services.AuthService.Instance
-                        .CurrentUser;
+                return;
             }
-            else
-            {
-                // Student, Faculty, Admin Personnel, and
-                // Non-Teaching always authenticate through
-                // the central API. The app must never fall
-                // back to an old local password for them.
-                var apiResult =
-                    await Services.ClinicApiService
-                        .Instance
-                        .LoginPatientAsync(
-                            input,
-                            enteredPassword);
 
-                if (!apiResult.Authenticated ||
-                    apiResult.User == null)
-                {
-                    await Shell.Current.DisplayAlert(
-                        "Login failed",
-                        string.IsNullOrWhiteSpace(
-                            apiResult.Message)
-                            ? "Invalid ID/email " +
-                              "or password."
-                            : apiResult.Message,
-                        "OK");
-
-                    return;
-                }
-
-                user =
-                    await Services.AuthService.Instance
-                        .SignInCentralStudentAsync(
-                            apiResult.User);
-            }
+            var user =
+                Services.AuthService.Instance.CurrentUser;
 
             if (user == null)
             {
@@ -155,9 +102,6 @@ public partial class LoginViewModel :
                     .CreateSessionAsync(user);
 
                 var shouldOfferBiometric =
-                    Services.AuthService
-                        .CentralPatientRoles
-                        .Contains(user.Role) &&
                     Services
                         .BiometricAuthenticationService
                         .Instance
@@ -260,9 +204,7 @@ public partial class LoginViewModel :
         {
             await Shell.Current.DisplayAlert(
                 "Login unavailable",
-                "The application could not complete " +
-                "the login. Make sure the central " +
-                "server is running and try again.",
+                "The local account database could not complete the login.",
                 "OK");
         }
         finally

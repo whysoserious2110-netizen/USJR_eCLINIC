@@ -3,13 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace USJR_eCLINIC.ViewModels;
 
-public partial class ForgotPasswordViewModel :
-    ObservableObject
+public partial class ForgotPasswordViewModel : ObservableObject
 {
-    private Guid _requestId;
-
-    private string _resetToken =
-        string.Empty;
+    private string _resetToken = string.Empty;
 
     [ObservableProperty]
     private int currentStep = 1;
@@ -29,8 +25,6 @@ public partial class ForgotPasswordViewModel :
     [ObservableProperty]
     private string recoveryText = string.Empty;
 
-    // Kept temporarily so the existing XAML
-    // continues compiling. Demo codes are never shown.
     [ObservableProperty]
     private string demoCode = string.Empty;
 
@@ -46,26 +40,15 @@ public partial class ForgotPasswordViewModel :
     [ObservableProperty]
     private bool isBusy;
 
-    public bool IsStudentIdStep =>
-        CurrentStep == 1;
+    public bool IsStudentIdStep => CurrentStep == 1;
+    public bool IsVerificationStep => CurrentStep == 2;
+    public bool IsNewPasswordStep => CurrentStep == 3;
 
-    public bool IsVerificationStep =>
-        CurrentStep == 2;
-
-    public bool IsNewPasswordStep =>
-        CurrentStep == 3;
-
-    partial void OnCurrentStepChanged(
-        int value)
+    partial void OnCurrentStepChanged(int value)
     {
-        OnPropertyChanged(
-            nameof(IsStudentIdStep));
-
-        OnPropertyChanged(
-            nameof(IsVerificationStep));
-
-        OnPropertyChanged(
-            nameof(IsNewPasswordStep));
+        OnPropertyChanged(nameof(IsStudentIdStep));
+        OnPropertyChanged(nameof(IsVerificationStep));
+        OnPropertyChanged(nameof(IsNewPasswordStep));
     }
 
     [RelayCommand]
@@ -74,12 +57,9 @@ public partial class ForgotPasswordViewModel :
         if (IsBusy)
             return;
 
-        if (string.IsNullOrWhiteSpace(
-    StudentId))
+        if (string.IsNullOrWhiteSpace(StudentId))
         {
-            ShowStatus(
-                "Enter your ID number.");
-
+            ShowStatus("Enter your Student or Employee ID.");
             return;
         }
 
@@ -92,36 +72,28 @@ public partial class ForgotPasswordViewModel :
                 StudentId.Trim()
                     .ToUpperInvariant();
 
-            DemoCode = string.Empty;
-            HasDemoCode = false;
-
             var result =
-                await Services.ClinicApiService
-                    .Instance
-                    .RequestPasswordResetAsync(
-                        StudentId);
+                await Services.PasswordResetService.Instance
+                    .StartResetAsync(StudentId);
 
-            if (result.RequestId == Guid.Empty)
+            if (!result.AccountFound)
             {
                 ShowStatus(
-                    string.IsNullOrWhiteSpace(
-                        result.Message)
-                        ? "The password-reset request " +
-                          "could not be completed."
-                        : result.Message);
+                    "No local account was found for that ID. " +
+                    "Check the ID and try again.");
 
                 return;
             }
 
-            _requestId = result.RequestId;
+            DemoCode = result.DemoCode;
+
+            HasDemoCode =
+                !string.IsNullOrWhiteSpace(
+                    DemoCode);
 
             RecoveryText =
-    string.IsNullOrWhiteSpace(
-        result.Message)
-        ? "If the ID number is registered, " +
-          "a verification code has been sent " +
-          "to the registered Usjr email."
-        : result.Message;
+                $"Use the demo verification code for " +
+                $"{result.RecoveryDisplay}.";
 
             VerificationCode =
                 string.Empty;
@@ -131,9 +103,8 @@ public partial class ForgotPasswordViewModel :
         catch
         {
             ShowStatus(
-                "The verification request could not " +
-                "be completed. Make sure the central " +
-                "server is running.");
+                "The local password-reset request " +
+                "could not be completed.");
         }
         finally
         {
@@ -155,17 +126,7 @@ public partial class ForgotPasswordViewModel :
             !code.All(char.IsDigit))
         {
             ShowStatus(
-                "Enter the six-digit code sent " +
-                "to your registered email.");
-
-            return;
-        }
-
-        if (_requestId == Guid.Empty)
-        {
-            ShowStatus(
-                "The password-reset request is invalid. " +
-                "Request a new code.");
+                "Enter the six-digit demo code.");
 
             return;
         }
@@ -176,13 +137,12 @@ public partial class ForgotPasswordViewModel :
             ClearStatus();
 
             var result =
-                await Services.ClinicApiService
-                    .Instance
-                    .VerifyPasswordResetCodeAsync(
-                        _requestId,
+                await Services.PasswordResetService.Instance
+                    .VerifyCodeAsync(
+                        StudentId,
                         code);
 
-            if (!result.Verified ||
+            if (!result.Success ||
                 string.IsNullOrWhiteSpace(
                     result.ResetToken))
             {
@@ -199,16 +159,18 @@ public partial class ForgotPasswordViewModel :
             _resetToken =
                 result.ResetToken;
 
-            NewPassword = string.Empty;
-            ConfirmPassword = string.Empty;
+            NewPassword =
+                string.Empty;
+
+            ConfirmPassword =
+                string.Empty;
 
             CurrentStep = 3;
         }
         catch
         {
             ShowStatus(
-                "The code could not be verified. " +
-                "Please try again.");
+                "The demo code could not be verified.");
         }
         finally
         {
@@ -222,11 +184,14 @@ public partial class ForgotPasswordViewModel :
         if (IsBusy)
             return;
 
-        VerificationCode = string.Empty;
-        DemoCode = string.Empty;
-        HasDemoCode = false;
-        _requestId = Guid.Empty;
-        _resetToken = string.Empty;
+        VerificationCode =
+            string.Empty;
+
+        DemoCode =
+            string.Empty;
+
+        HasDemoCode =
+            false;
 
         ClearStatus();
 
@@ -249,9 +214,9 @@ public partial class ForgotPasswordViewModel :
         }
 
         if (!string.Equals(
-            NewPassword,
-            ConfirmPassword,
-            StringComparison.Ordinal))
+                NewPassword,
+                ConfirmPassword,
+                StringComparison.Ordinal))
         {
             ShowStatus(
                 "The passwords do not match.");
@@ -259,13 +224,12 @@ public partial class ForgotPasswordViewModel :
             return;
         }
 
-        if (_requestId == Guid.Empty ||
-            string.IsNullOrWhiteSpace(
-                _resetToken))
+        if (string.IsNullOrWhiteSpace(
+            _resetToken))
         {
             ShowStatus(
-                "The password-reset session is invalid. " +
-                "Request a new verification code.");
+                "The reset session is invalid. " +
+                "Request a new code.");
 
             return;
         }
@@ -276,15 +240,12 @@ public partial class ForgotPasswordViewModel :
             ClearStatus();
 
             var result =
-                await Services.ClinicApiService
-                    .Instance
-                    .CompletePasswordResetAsync(
-                        _requestId,
+                await Services.PasswordResetService.Instance
+                    .ResetPasswordAsync(
                         _resetToken,
-                        NewPassword,
-                        ConfirmPassword);
+                        NewPassword);
 
-            if (!result.Reset)
+            if (!result.Success)
             {
                 ShowStatus(
                     string.IsNullOrWhiteSpace(
@@ -295,9 +256,7 @@ public partial class ForgotPasswordViewModel :
                 return;
             }
 
-            // Revoke any old remembered device session.
-            await Services.SecureSessionService
-                .Instance
+            await Services.SecureSessionService.Instance
                 .ClearSessionAsync();
 
             Services.AuthService.Instance.Logout();
@@ -308,15 +267,31 @@ public partial class ForgotPasswordViewModel :
                 "Sign in using your new password.",
                 "Continue");
 
-            StudentId = string.Empty;
-            VerificationCode = string.Empty;
-            NewPassword = string.Empty;
-            ConfirmPassword = string.Empty;
-            RecoveryText = string.Empty;
-            DemoCode = string.Empty;
-            HasDemoCode = false;
-            _requestId = Guid.Empty;
-            _resetToken = string.Empty;
+            StudentId =
+                string.Empty;
+
+            VerificationCode =
+                string.Empty;
+
+            NewPassword =
+                string.Empty;
+
+            ConfirmPassword =
+                string.Empty;
+
+            RecoveryText =
+                string.Empty;
+
+            DemoCode =
+                string.Empty;
+
+            HasDemoCode =
+                false;
+
+            _resetToken =
+                string.Empty;
+
+            CurrentStep = 1;
 
             await Shell.Current.Navigation
                 .PopAsync();
@@ -337,12 +312,21 @@ public partial class ForgotPasswordViewModel :
     private void ChangeStudentId()
     {
         CurrentStep = 1;
-        VerificationCode = string.Empty;
-        RecoveryText = string.Empty;
-        DemoCode = string.Empty;
-        HasDemoCode = false;
-        _requestId = Guid.Empty;
-        _resetToken = string.Empty;
+
+        VerificationCode =
+            string.Empty;
+
+        RecoveryText =
+            string.Empty;
+
+        DemoCode =
+            string.Empty;
+
+        HasDemoCode =
+            false;
+
+        _resetToken =
+            string.Empty;
 
         ClearStatus();
     }
@@ -353,11 +337,18 @@ public partial class ForgotPasswordViewModel :
         if (CurrentStep == 3)
         {
             CurrentStep = 2;
-            NewPassword = string.Empty;
-            ConfirmPassword = string.Empty;
-            _resetToken = string.Empty;
+
+            NewPassword =
+                string.Empty;
+
+            ConfirmPassword =
+                string.Empty;
+
+            _resetToken =
+                string.Empty;
 
             ClearStatus();
+
             return;
         }
 
@@ -374,13 +365,19 @@ public partial class ForgotPasswordViewModel :
     private void ShowStatus(
         string message)
     {
-        StatusMessage = message;
-        HasStatusMessage = true;
+        StatusMessage =
+            message;
+
+        HasStatusMessage =
+            true;
     }
 
     private void ClearStatus()
     {
-        StatusMessage = string.Empty;
-        HasStatusMessage = false;
+        StatusMessage =
+            string.Empty;
+
+        HasStatusMessage =
+            false;
     }
 }

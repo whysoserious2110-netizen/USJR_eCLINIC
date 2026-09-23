@@ -60,10 +60,6 @@ public partial class SignUpViewModel :
         IdLabel = "Student ID Number";
     }
 
-    // Roles that may self-register here. R.E.A.D.S. Scholar,
-    // Nurse, Doctor, and Dentist accounts are provisioned by
-    // authorized personnel instead (see PatientRolePolicy on
-    // the API side).
     private static readonly string[] SelfRegistrationRoles =
     {
         "Student",
@@ -174,7 +170,6 @@ public partial class SignUpViewModel :
                 .ToLowerInvariant() ??
             string.Empty;
 
-        // Passwords must not be trimmed.
         var enteredPassword =
             Password ??
             string.Empty;
@@ -260,64 +255,33 @@ public partial class SignUpViewModel :
         {
             IsRegistering = true;
 
-            var result =
-                await Services.ClinicApiService
-                    .Instance
-                    .RegisterPatientAsync(
-                        normalizedName,
-                        normalizedStudentId,
-                        normalizedEmail,
-                        enteredPassword,
-                        SelectedRole);
-
-            if (!result.Registered ||
-                result.UserId == null)
+            if (await Services.AuthService.Instance
+                    .IdNumberExistsAsync(normalizedStudentId) ||
+                await Services.AuthService.Instance
+                    .EmailExistsAsync(normalizedEmail))
             {
                 await Shell.Current.DisplayAlert(
-                    "Registration Failed",
-                    string.IsNullOrWhiteSpace(
-                        result.Message)
-                        ? "The account could not be created."
-                        : result.Message,
+                    "Already registered",
+                    "That ID number or email address is already registered.",
                     "OK");
 
                 return;
             }
 
-            // Create a local non-password cache for
-            // appointments and profile information.
-            var apiStudent =
-                new Services.ApiStudentUser
-                {
-                    Id = result.UserId.Value,
-
-                    StudentId =
-                        normalizedStudentId,
-
-                    FullName =
-                        normalizedName,
-
-                    Email =
-                        normalizedEmail,
-
-                    Role = SelectedRole
-                };
-
-            var localAccount =
-                await Services.AuthService.Instance
-                    .SignInCentralStudentAsync(
-                        apiStudent);
-
-            localAccount.ProgramOrDepartment =
-                ProgramOrDepartment?.Trim() ??
-                string.Empty;
+            var account = new Models.UserAccount
+            {
+                FullName = normalizedName,
+                Email = normalizedEmail,
+                Password = enteredPassword,
+                Role = SelectedRole,
+                IdNumber = normalizedStudentId,
+                ProgramOrDepartment =
+                    ProgramOrDepartment?.Trim() ?? string.Empty
+            };
 
             await Services.AuthService.Instance
-                .UpdateProfileAsync(
-                    localAccount);
+                .RegisterAsync(account);
 
-            // Registration does not automatically
-            // keep the Student signed in.
             Services.AuthService.Instance.Logout();
 
             Password = string.Empty;
@@ -325,7 +289,7 @@ public partial class SignUpViewModel :
 
             await Shell.Current.DisplayAlert(
                 "Account Created",
-                "Your central account has been " +
+                "Your local account has been " +
                 "created. Please log in.",
                 "Continue");
 
@@ -336,7 +300,7 @@ public partial class SignUpViewModel :
         {
             await Shell.Current.DisplayAlert(
                 "Registration Unavailable",
-                "The central server could not complete " +
+                "The local account database could not complete " +
                 "the registration. Please try again.",
                 "OK");
         }

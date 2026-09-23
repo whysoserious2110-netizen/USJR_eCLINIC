@@ -85,8 +85,7 @@ public class PasswordResetService
             await AuthService.Instance
                 .GetAccountByIdNumberAsync(studentId);
 
-        if (account == null ||
-            account.Role != "Student")
+        if (account == null)
         {
             // The UI should still show a generic message
             // so it does not reveal registered accounts.
@@ -161,8 +160,7 @@ public class PasswordResetService
             await AuthService.Instance
                 .GetAccountByIdNumberAsync(studentId);
 
-        if (account == null ||
-            account.Role != "Student")
+        if (account == null)
         {
             return FailedVerification(
                 "The verification code is invalid or expired.");
