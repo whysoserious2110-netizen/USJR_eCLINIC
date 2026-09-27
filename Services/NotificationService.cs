@@ -8,16 +8,35 @@ public class NotificationService
     public static NotificationService Instance { get; } = new NotificationService();
 
     private readonly SQLiteAsyncConnection _db;
+    private bool _initialized = false;
+    private readonly SemaphoreSlim _initLock = new(1, 1);
 
     private NotificationService()
     {
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "usjr_eclinic.db3");
         _db = new SQLiteAsyncConnection(dbPath);
-        _db.CreateTableAsync<Notification>().Wait();
+    }
+
+    private async Task EnsureInitializedAsync()
+    {
+        if (_initialized) return;
+
+        await _initLock.WaitAsync();
+        try
+        {
+            if (_initialized) return;
+            await _db.CreateTableAsync<Notification>();
+            _initialized = true;
+        }
+        finally
+        {
+            _initLock.Release();
+        }
     }
 
     public async Task AddAsync(string recipientEmail, string title, string message)
     {
+        await EnsureInitializedAsync();
         await _db.InsertAsync(new Notification
         {
             RecipientEmail = recipientEmail,
@@ -27,10 +46,6 @@ public class NotificationService
             IsRead = false
         });
     }
-
-   
-
-
 
     public async Task<int> GetUnreadCountAsync(string recipientEmail)
     {
@@ -50,6 +65,7 @@ public class NotificationService
 
     public async Task<List<Notification>> GetForUserAsync(string recipientEmail)
     {
+        await EnsureInitializedAsync();
         await PurgeExpiredAsync();
 
         var all = await _db.Table<Notification>().ToListAsync();
@@ -61,6 +77,7 @@ public class NotificationService
 
     public async Task SoftDeleteAsync(int notificationId)
     {
+        await EnsureInitializedAsync();
         var notif = await _db.Table<Notification>().Where(n => n.Id == notificationId).FirstOrDefaultAsync();
         if (notif == null) return;
 
@@ -77,7 +94,5 @@ public class NotificationService
         foreach (var n in expired)
             await _db.DeleteAsync(n);
     }
-
-
 
 }

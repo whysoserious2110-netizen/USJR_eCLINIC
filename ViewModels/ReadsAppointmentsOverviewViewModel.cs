@@ -6,8 +6,6 @@ namespace USJR_eCLINIC.ViewModels;
 
 public partial class ReadsAppointmentOverviewItem : ObservableObject
 {
-
-
     public int AppointmentId { get; set; }
     public string PatientName { get; set; } = string.Empty;
     public string ServiceType { get; set; } = string.Empty;
@@ -19,6 +17,9 @@ public partial class ReadsAppointmentOverviewItem : ObservableObject
     public Color StatusColor { get; set; } = Colors.Gray;
 
     public bool CanApprove => Status == "Pending";
+
+    public string StatusDisplay =>
+        Status == "CheckedIn" ? "Checked in" : Status;
 }
 
 public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
@@ -27,8 +28,11 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
 
     public ObservableCollection<ReadsAppointmentOverviewItem> Appointments { get; } = new();
 
-    [ObservableProperty] private bool hasAppointments;
-    [ObservableProperty] private string selectedTab = "Upcoming";
+    [ObservableProperty]
+    private bool hasAppointments;
+
+    [ObservableProperty]
+    private string selectedTab = "Upcoming";
 
     public bool IsAllTab => SelectedTab == "All";
     public bool IsUpcomingTab => SelectedTab == "Upcoming";
@@ -36,24 +40,28 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
-        var appointments = await Services.AppointmentService.Instance.GetAllAppointmentsAsync();
+        var appointments =
+            await Services.AppointmentService.Instance.GetAllAppointmentsAsync();
 
         _all.Clear();
-        foreach (var appt in appointments)
+
+        foreach (var appointment in appointments)
         {
-            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(appt.PatientEmail);
+            var patient =
+                await Services.AuthService.Instance.GetAccountByEmailAsync(
+                    appointment.PatientEmail);
 
             _all.Add(new ReadsAppointmentOverviewItem
             {
-                AppointmentId = appt.Id,
-                PatientName = patient?.FullName ?? appt.PatientEmail,
-                ServiceType = appt.ServiceType,
-                SubService = appt.SubService,
-                VisitDate = appt.VisitDate,
-                DateDisplay = appt.VisitDate.ToString("MMM dd, yyyy"),
-                TimeDisplay = appt.VisitTime,
-                Status = appt.Status,
-                StatusColor = appt.Status switch
+                AppointmentId = appointment.Id,
+                PatientName = patient?.FullName ?? appointment.PatientEmail,
+                ServiceType = appointment.ServiceType,
+                SubService = appointment.SubService,
+                VisitDate = appointment.VisitDate,
+                DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy"),
+                TimeDisplay = appointment.VisitTime,
+                Status = appointment.Status,
+                StatusColor = appointment.Status switch
                 {
                     "Confirmed" => Color.FromArgb("#0F9B8E"),
                     "CheckedIn" => Color.FromArgb("#2E6FDB"),
@@ -73,14 +81,32 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
 
         IEnumerable<ReadsAppointmentOverviewItem> filtered = SelectedTab switch
         {
-            "Upcoming" => _all.Where(a => a.VisitDate.Date >= today && a.Status != "Cancelled" && a.Status != "Completed")
-                               .OrderBy(a => a.VisitDate),
-            "Past" => _all.Where(a => a.VisitDate.Date < today || a.Status == "Completed" || a.Status == "Cancelled")
-                           .OrderByDescending(a => a.VisitDate),
-            _ => _all.OrderByDescending(a => a.VisitDate)
+            "Upcoming" => _all
+                .Where(a =>
+                    a.VisitDate.Date >= today &&
+                    a.Status != "Cancelled" &&
+                    a.Status != "Completed")
+                .OrderBy(a => a.CanApprove ? 0 : 1)
+                .ThenBy(a => a.VisitDate)
+                .ThenBy(a => a.TimeDisplay),
+
+            "Past" => _all
+                .Where(a =>
+                    a.VisitDate.Date < today ||
+                    a.Status == "Completed" ||
+                    a.Status == "Cancelled")
+                .OrderByDescending(a => a.VisitDate)
+                .ThenBy(a => a.TimeDisplay),
+
+            _ => _all
+                .OrderBy(a => a.CanApprove ? 0 : 1)
+                .ThenBy(a => a.VisitDate.Date < today ? 1 : 0)
+                .ThenBy(a => a.VisitDate)
+                .ThenBy(a => a.TimeDisplay)
         };
 
         Appointments.Clear();
+
         foreach (var item in filtered)
             Appointments.Add(item);
 
@@ -91,21 +117,22 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
     private void SelectTab(string tab)
     {
         SelectedTab = tab;
+
         OnPropertyChanged(nameof(IsAllTab));
         OnPropertyChanged(nameof(IsUpcomingTab));
         OnPropertyChanged(nameof(IsPastTab));
+
         ApplyFilter();
     }
 
     [RelayCommand]
     private async Task ApproveAppointment(
-    ReadsAppointmentOverviewItem? item)
+        ReadsAppointmentOverviewItem? item)
     {
         if (item == null)
             return;
 
-        var currentUser =
-            Services.AuthService.Instance.CurrentUser;
+        var currentUser = Services.AuthService.Instance.CurrentUser;
 
         if (currentUser?.Role != "R.E.A.D.S. Scholar")
         {
@@ -158,8 +185,9 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             "OK");
     }
 
-
-
     [RelayCommand]
-    private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
+    private async Task GoBack()
+    {
+        await Shell.Current.Navigation.PopAsync();
+    }
 }

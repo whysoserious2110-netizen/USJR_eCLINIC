@@ -20,12 +20,24 @@
                    TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
         </Grid>
 
-        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="48" HasShadow="False">
-            <Entry Placeholder="Search by name or ID..." Text="{Binding SearchText}" VerticalOptions="Center"/>
+        <Frame x:Name="SearchFrame" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="48" HasShadow="False">
+            <Entry x:Name="SearchEntry" Placeholder="Search by name or ID..." Text="{Binding SearchText}" VerticalOptions="Center"
+                   Focused="SearchEntry_Focused" Unfocused="SearchEntry_Unfocused"/>
         </Frame>
 
-        <VerticalStackLayout IsVisible="{Binding HasPatients, Converter={StaticResource BoolInverter}}"
+        <VerticalStackLayout IsVisible="{Binding HasSearched, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <Label Text="&#128269;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="Start typing a name or ID to search" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout IsVisible="{Binding HasSearched}"
+                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
+            <VerticalStackLayout.Triggers>
+                <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding HasPatients}" Value="True">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+            </VerticalStackLayout.Triggers>
             <Label Text="&#128101;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
             <Label Text="No patients found" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
         </VerticalStackLayout>

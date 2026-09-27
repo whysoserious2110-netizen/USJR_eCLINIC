@@ -15,6 +15,7 @@ public partial class PatientListItem : ObservableObject
 
 public partial class PatientsListViewModel : ObservableObject
 {
+    private readonly string? _serviceTypeFilter;
     private List<PatientListItem> _allPatients = new();
 
     public ObservableCollection<PatientListItem> Patients { get; } = new();
@@ -25,9 +26,29 @@ public partial class PatientsListViewModel : ObservableObject
     [ObservableProperty]
     private bool hasPatients;
 
+    public PatientsListViewModel(string? serviceTypeFilter = null)
+    {
+        _serviceTypeFilter = serviceTypeFilter;
+    }
+
     public async Task RefreshAsync()
     {
         var patients = await Services.AuthService.Instance.GetAllPatientsAsync();
+
+        if (!string.IsNullOrEmpty(_serviceTypeFilter))
+        {
+            var appointments = await Services.AppointmentService.Instance
+                .GetAllForServiceAsync(_serviceTypeFilter);
+
+            var eligibleEmails = appointments
+                .Where(a => a.Status != "Cancelled")
+                .Select(a => a.PatientEmail)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            patients = patients
+                .Where(p => eligibleEmails.Contains(p.Email))
+                .ToList();
+        }
 
         _allPatients = patients.Select(p => new PatientListItem
         {

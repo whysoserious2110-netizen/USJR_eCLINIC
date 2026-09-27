@@ -16,6 +16,8 @@ public partial class AdminPatientsListViewModel : ObservableObject
     [ObservableProperty]
     private bool hasPatients;
 
+    public bool HasSearched => !string.IsNullOrWhiteSpace(SearchText);
+
     public async Task RefreshAsync()
     {
         var patients = await Services.AuthService.Instance.GetAllPatientsAsync();
@@ -32,18 +34,27 @@ public partial class AdminPatientsListViewModel : ObservableObject
         ApplyFilter();
     }
 
-    partial void OnSearchTextChanged(string value) => ApplyFilter();
+    partial void OnSearchTextChanged(string value)
+    {
+        OnPropertyChanged(nameof(HasSearched));
+        ApplyFilter();
+    }
 
     private void ApplyFilter()
     {
-        var filtered = string.IsNullOrWhiteSpace(SearchText)
-            ? _allPatients
-            : _allPatients.Where(p =>
+        Patients.Clear();
+
+        if (!HasSearched)
+        {
+            HasPatients = false;
+            return;
+        }
+
+        var filtered = _allPatients.Where(p =>
                 p.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                 p.IdNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
               .ToList();
 
-        Patients.Clear();
         foreach (var p in filtered)
             Patients.Add(p);
 

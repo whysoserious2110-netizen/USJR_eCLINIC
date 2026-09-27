@@ -64,7 +64,7 @@ public partial class DentistAppointmentsViewModel : ObservableObject
 
         IEnumerable<DentistAppointmentItem> filtered = SelectedTab switch
         {
-            "Upcoming" => _all.Where(a => a.VisitDate.Date >= today && a.Status != "Cancelled" && a.Status != "Completed")
+            "Upcoming" => _all.Where(a => a.VisitDate.Date >= today && a.Status == "Confirmed")
                                .OrderBy(a => a.VisitDate),
             "Past" => _all.Where(a => a.VisitDate.Date < today || a.Status == "Completed" || a.Status == "Cancelled")
                            .OrderByDescending(a => a.VisitDate),

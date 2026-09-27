@@ -41,6 +41,9 @@ public partial class BookAppointmentViewModel : ObservableObject
     public bool IsFollowUp => SelectedServiceType == "Follow-up";
     public bool IsCertRequest => SelectedServiceType == "Cert Request";
 
+    private bool _isResettingPickerDate;
+    private string? _unavailableDateMessage;
+
     // ---- Medical ----
     public ObservableCollection<string> MedicalReasons { get; } = new()
     {
@@ -140,7 +143,11 @@ public partial class BookAppointmentViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowDateTimeSection));
     }
 
-    partial void OnPickerDateChanged(DateTime value) => _ = HandleDatePickedAsync(value);
+    partial void OnPickerDateChanged(DateTime value)
+    {
+        if (!_isResettingPickerDate)
+            _ = HandleDatePickedAsync(value);
+    }
 
     private async Task HandleDatePickedAsync(DateTime date)
     {
@@ -152,20 +159,28 @@ public partial class BookAppointmentViewModel : ObservableObject
 
         if (!isAvailable)
         {
+            _unavailableDateMessage = IsSchoolHoliday(date)
+                ? "This date is a school holiday."
+                : isPast
+                    ? "Please pick a future date."
+                    : "This service is not available on the selected day. Please choose a different date.";
+
             SelectedDate = null;
             AvailableTimeOptions.Clear();
             SelectedTimeOption = null;
             OnPropertyChanged(nameof(HasSelectedDate));
             OnPropertyChanged(nameof(DateDisplayText));
 
-            string reason = IsSchoolHoliday(date) ? "This date is a school holiday." :
-                             isPast ? "Please pick a future date." :
-                             "This service is not available on the selected day. Please choose a different date.";
+            // Reset the picker so choosing the same unavailable date again triggers its change handler.
+            _isResettingPickerDate = true;
+            PickerDate = DateTime.Today;
+            _isResettingPickerDate = false;
 
-            await Shell.Current.DisplayAlert("Date Not Available", reason, "OK");
+            await Shell.Current.DisplayAlert("Date Not Available", _unavailableDateMessage, "OK");
             return;
         }
 
+        _unavailableDateMessage = null;
         SelectedDate = date;
         OnPropertyChanged(nameof(HasSelectedDate));
         OnPropertyChanged(nameof(DateDisplayText));
@@ -175,6 +190,7 @@ public partial class BookAppointmentViewModel : ObservableObject
 
     private void ResetSelections()
     {
+        _unavailableDateMessage = null;
         SelectedDentalService = string.Empty;
         SelectedMedicalReason = string.Empty;
         SelectedFollowUpReason = string.Empty;
@@ -272,7 +288,8 @@ public partial class BookAppointmentViewModel : ObservableObject
         while (current < end)
         {
             var label = DateTime.Today.Add(current).ToString("h:mm tt");
-            var isPastTime = date.Date == DateTime.Today && DateTime.Now.TimeOfDay > current;
+            var isPastTime = date.Date == DateTime.Today
+     && current <= DateTime.Now.TimeOfDay;
 
             if (!bookedTimes.Contains(label) && !isPastTime)
                 AvailableTimeOptions.Add(label);
@@ -288,6 +305,16 @@ public partial class BookAppointmentViewModel : ObservableObject
         if (user == null)
         {
             await Shell.Current.DisplayAlert("Not logged in", "Please log in again.", "OK");
+            return;
+        }
+
+        if (DateTime.TryParse(SelectedTimeOption, out var selectedTime)
+    && SelectedDate!.Value.Date.Add(selectedTime.TimeOfDay) <= DateTime.Now)
+        {
+            await Shell.Current.DisplayAlert(
+                "Time Not Available",
+                "That time has already passed. Please choose a future time.",
+                "OK");
             return;
         }
 
@@ -342,6 +369,14 @@ public partial class BookAppointmentViewModel : ObservableObject
 
         if (ShowDateTimeSection)
         {
+            if (_unavailableDateMessage != null)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Date Not Available",
+                    _unavailableDateMessage,
+                    "OK");
+                return;
+            }
             if (SelectedDate == null || string.IsNullOrEmpty(SelectedTimeOption))
             {
                 await Shell.Current.DisplayAlert("Missing info", "Please select a date and time.", "OK");

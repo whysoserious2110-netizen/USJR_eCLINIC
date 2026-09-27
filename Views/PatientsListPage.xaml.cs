@@ -6,10 +6,10 @@ public partial class PatientsListPage : ContentPage
 {
     private readonly PatientsListViewModel _viewModel;
 
-    public PatientsListPage()
+    public PatientsListPage(string? serviceTypeFilter = null)
     {
         InitializeComponent();
-        _viewModel = new PatientsListViewModel();
+        _viewModel = new PatientsListViewModel(serviceTypeFilter);
         BindingContext = _viewModel;
     }
 

@@ -43,7 +43,7 @@ public partial class TodaysVisitsViewModel : ObservableObject
                 TimeDisplay = appt.VisitTime,
                 ChiefComplaint = string.IsNullOrWhiteSpace(appt.ReasonOrPurpose) ? appt.SubService : appt.ReasonOrPurpose,
                 Status = appt.Status,
-                CanConsult = appt.Status == "Pending" || appt.Status == "Confirmed",
+                CanConsult = appt.Status == "CheckedIn" || appt.Status == "VitalsRecorded",
                 StatusColor = appt.Status switch
                 {
                     "Confirmed" => Color.FromArgb("#0F9B8E"),

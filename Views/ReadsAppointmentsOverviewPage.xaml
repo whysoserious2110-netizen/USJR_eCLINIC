@@ -6,117 +6,254 @@
              x:Class="USJR_eCLINIC.Views.ReadsAppointmentsOverviewPage"
              x:Name="Root"
              x:DataType="vm:ReadsAppointmentsOverviewViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F5F7FA">
 
     <ContentPage.Resources>
-        <conv:TabTextColorConverter x:Key="TabTextColor"/>
+        <conv:TabTextColorConverter x:Key="TabTextColor" />
     </ContentPage.Resources>
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+    <Grid Padding="20,42,20,12"
+          RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="14">
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
+        <!-- Page title -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Label Grid.Column="0"
+                   Text="&#8592;"
+                   FontSize="24"
+                   TextColor="#0F9B8E"
+                   VerticalOptions="Center">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                 </Label.GestureRecognizers>
             </Label>
-            <Label Grid.Column="1" Text="All Appointments" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-        </Grid>
 
-        <Label Text="Clinic-wide overview, across all service types." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
-
-        <Grid ColumnDefinitions="*,*,*">
-            <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Center">
-                <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="All"/>
-                </VerticalStackLayout.GestureRecognizers>
-                <Label Text="All" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
-                       TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsAllTab}" Color="#0F9B8E"/>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Center">
-                <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Upcoming"/>
-                </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Upcoming" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
-                       TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="60" IsVisible="{Binding IsUpcomingTab}" Color="#0F9B8E"/>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Center">
-                <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Past"/>
-                </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Past" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
-                       TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsPastTab}" Color="#0F9B8E"/>
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="3"
+                                 VerticalOptions="Center">
+                <Label Text="All Appointments"
+                       FontSize="21"
+                       FontAttributes="Bold"
+                       TextColor="#12212E" />
+                <Label Text="Clinic-wide overview across all service types"
+                       FontSize="12"
+                       TextColor="#7B8794" />
             </VerticalStackLayout>
         </Grid>
 
-        <BoxView HeightRequest="1" BackgroundColor="#E2E6EA" Margin="0,-10,0,0"/>
+        <!-- Appointment filters -->
+        <Frame Grid.Row="1"
+               BackgroundColor="White"
+               BorderColor="#E6EAF0"
+               CornerRadius="14"
+               Padding="6"
+               HasShadow="False">
+            <Grid ColumnDefinitions="*,*,*">
+                <VerticalStackLayout Grid.Column="0"
+                                     Spacing="5"
+                                     Padding="4,7">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}"
+                                              CommandParameter="All" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="All"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}" />
+                    <BoxView HeightRequest="2"
+                             WidthRequest="30"
+                             HorizontalOptions="Center"
+                             IsVisible="{Binding IsAllTab}"
+                             Color="#0F9B8E" />
+                </VerticalStackLayout>
 
-        <VerticalStackLayout IsVisible="{Binding HasAppointments, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,40,0,0" Spacing="10">
-            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No appointments here" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
-        </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1"
+                                     Spacing="5"
+                                     Padding="4,7">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}"
+                                              CommandParameter="Upcoming" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="Upcoming"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}" />
+                    <BoxView HeightRequest="2"
+                             WidthRequest="60"
+                             HorizontalOptions="Center"
+                             IsVisible="{Binding IsUpcomingTab}"
+                             Color="#0F9B8E" />
+                </VerticalStackLayout>
 
-        <CollectionView ItemsSource="{Binding Appointments}" IsVisible="{Binding HasAppointments}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="vm:ReadsAppointmentOverviewItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <VerticalStackLayout Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Frame Grid.Column="1" BackgroundColor="{Binding StatusColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
-                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
-                                </Frame>
-                            </Grid>
-                            <Label FontSize="13" TextColor="#6B7684">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding ServiceType}"/>
-                                        <Span Text=" — "/>
-                                        <Span Text="{Binding SubService}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label FontSize="12" TextColor="#9AA4AE">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding DateDisplay}"/>
-                                        <Span Text=" · "/>
-                                        <Span Text="{Binding TimeDisplay}"/>
-                                        
-                                        
-                                    </FormattedString>
-                                </Label.FormattedText>
-                                
-                            </Label>
+                <VerticalStackLayout Grid.Column="2"
+                                     Spacing="5"
+                                     Padding="4,7">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}"
+                                              CommandParameter="Past" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="Past"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}" />
+                    <BoxView HeightRequest="2"
+                             WidthRequest="30"
+                             HorizontalOptions="Center"
+                             IsVisible="{Binding IsPastTab}"
+                             Color="#0F9B8E" />
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
 
+        <!-- Appointment list and empty state -->
+        <Grid Grid.Row="3">
+            <CollectionView ItemsSource="{Binding Appointments}"
+                            IsVisible="{Binding HasAppointments}"
+                            SelectionMode="None"
+                            ItemsUpdatingScrollMode="KeepScrollOffset">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="12" />
+                </CollectionView.ItemsLayout>
 
-                            <Button
-                                      Text="Approve Request"
-                                      IsVisible="{Binding CanApprove}"
-                                      Command="{Binding Source={x:Reference Root},
-                                               Path=BindingContext.ApproveAppointmentCommand}"
-                                     CommandParameter="{Binding .}"
-                                     BackgroundColor="#0F9B8E"
-                                     TextColor="White"
-                                     FontAttributes="Bold"
-                                     CornerRadius="20"
-                                     HeightRequest="42"
-                                     Margin="0,6,0,0"/>
-                            
-                            
-                        </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ReadsAppointmentOverviewItem">
+                        <Frame BackgroundColor="White"
+                               BorderColor="#E2E8EF"
+                               CornerRadius="16"
+                               Padding="0"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="0">
 
-    </VerticalStackLayout>
+                                <!-- Patient, service, and status -->
+                                <VerticalStackLayout Padding="16,15,16,12"
+                                                     Spacing="10">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          ColumnSpacing="10">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding PatientName}"
+                                               FontAttributes="Bold"
+                                               FontSize="15"
+                                               TextColor="#12212E"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="TailTruncation" />
+
+                                        <Frame Grid.Column="1"
+                                               BackgroundColor="{Binding StatusColor}"
+                                               CornerRadius="12"
+                                               Padding="10,5"
+                                               HasShadow="False"
+                                               VerticalOptions="Center">
+                                            <Label Text="{Binding StatusDisplay}"
+                                                   FontSize="10"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White" />
+                                        </Frame>
+                                    </Grid>
+
+                                    <Label FontSize="13"
+                                           TextColor="#526171"
+                                           LineBreakMode="TailTruncation">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding ServiceType}"
+                                                      FontAttributes="Bold" />
+                                                <Span Text="  •  " />
+                                                <Span Text="{Binding SubService}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <!-- Date and time -->
+                                    <Grid ColumnDefinitions="*,*"
+                                          ColumnSpacing="8">
+                                        <Frame Grid.Column="0"
+                                               BackgroundColor="#F5F7FA"
+                                               CornerRadius="10"
+                                               Padding="10,8"
+                                               HasShadow="False">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="DATE"
+                                                       FontSize="9"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#8A96A3" />
+                                                <Label Text="{Binding DateDisplay}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#334155" />
+                                            </VerticalStackLayout>
+                                        </Frame>
+
+                                        <Frame Grid.Column="1"
+                                               BackgroundColor="#F5F7FA"
+                                               CornerRadius="10"
+                                               Padding="10,8"
+                                               HasShadow="False">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="TIME"
+                                                       FontSize="9"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#8A96A3" />
+                                                <Label Text="{Binding TimeDisplay}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#334155" />
+                                            </VerticalStackLayout>
+                                        </Frame>
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                                <!-- Separate review area for pending requests -->
+                                <VerticalStackLayout IsVisible="{Binding CanApprove}"
+                                                     BackgroundColor="#FFF9ED"
+                                                     Padding="16,12,16,15"
+                                                     Spacing="8">
+                                    <Label Text="NEW REQUEST · NEEDS REVIEW"
+                                           FontSize="10"
+                                           FontAttributes="Bold"
+                                           TextColor="#A87518" />
+                                    <Button Text="Approve Request"
+                                            IsVisible="{Binding CanApprove}"
+                                            Command="{Binding Source={x:Reference Root},
+                                                              Path=BindingContext.ApproveAppointmentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#0F9B8E"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            CornerRadius="12"
+                                            HeightRequest="46"
+                                            Padding="16,0" />
+                                </VerticalStackLayout>
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <VerticalStackLayout IsVisible="{Binding HasAppointments,
+                                                    Converter={StaticResource BoolInverter}}"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="8"
+                                 Padding="24">
+                <Label Text="&#128197;"
+                       FontSize="40"
+                       HorizontalOptions="Center"
+                       TextColor="#B8C2CC" />
+                <Label Text="No appointments here"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="#526171"
+                       HorizontalOptions="Center" />
+                <Label Text="Appointments for this filter will appear here."
+                       FontSize="12"
+                       TextColor="#8793A0"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentPage>

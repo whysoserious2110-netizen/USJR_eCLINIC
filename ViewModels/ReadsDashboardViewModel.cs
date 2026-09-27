@@ -16,6 +16,10 @@ public partial class ReadsNextArrivalItem : ObservableObject
 
     public string TimeDisplay { get; set; } = string.Empty;
 
+    public string ArrivalTimeContext { get; set; } = string.Empty;
+
+    public Color ArrivalTimeContextColor { get; set; } = Colors.Gray;
+
     public string ServiceType { get; set; } = string.Empty;
 
     public string SubService { get; set; } = string.Empty;
@@ -51,6 +55,9 @@ public partial class ReadsDashboardViewModel : ObservableObject
 
     [ObservableProperty]
     private bool hasNextArrivals;
+
+    [ObservableProperty]
+    private string nextArrivalsSummary = "No confirmed visits scheduled today.";
 
     public ObservableCollection<ReadsNextArrivalItem>
         NextArrivals
@@ -116,9 +123,7 @@ public partial class ReadsDashboardViewModel : ObservableObject
         var todaysAppointments = allAppointments
             .Where(a =>
                 a.VisitDate.Date == DateTime.Today &&
-                a.Status == "Confirmed" &&
-                (a.ServiceType == "Medical" ||
-                 a.ServiceType == "Dental"))
+                a.Status == "Confirmed")
             .ToList();
 
         await LoadNextArrivalsAsync(todaysAppointments);
@@ -127,6 +132,8 @@ public partial class ReadsDashboardViewModel : ObservableObject
     private async Task LoadNextArrivalsAsync(
         List<Models.Appointment> todaysAppointments)
     {
+        var now = DateTime.Now;
+
         var confirmedAppointments = todaysAppointments
             .OrderBy(a =>
             {
@@ -142,6 +149,14 @@ public partial class ReadsDashboardViewModel : ObservableObject
             .Take(3)
             .ToList();
 
+        NextArrivalsSummary = todaysAppointments.Count switch
+        {
+            0 => "No confirmed visits scheduled today.",
+            1 => "1 confirmed visit scheduled today.",
+            <= 3 => $"{todaysAppointments.Count} confirmed visits scheduled today.",
+            _ => $"Showing the next 3 of {todaysAppointments.Count} confirmed visits today."
+        };
+
         NextArrivals.Clear();
 
         foreach (var appointment in confirmedAppointments)
@@ -150,6 +165,11 @@ public partial class ReadsDashboardViewModel : ObservableObject
                 await Services.AuthService.Instance
                     .GetAccountByEmailAsync(
                         appointment.PatientEmail);
+
+            var arrivalContext = GetArrivalTimeContext(
+                appointment.VisitDate,
+                appointment.VisitTime,
+                now);
 
             NextArrivals.Add(new ReadsNextArrivalItem
             {
@@ -163,11 +183,16 @@ public partial class ReadsDashboardViewModel : ObservableObject
                     appointment.PatientEmail,
 
                 PatientIdNumber =
-                    patient?.IdNumber ??
-                    "No ID number",
+                    string.IsNullOrWhiteSpace(patient?.IdNumber)
+                        ? "No ID number"
+                        : patient.IdNumber,
 
                 TimeDisplay =
                     appointment.VisitTime,
+
+                ArrivalTimeContext = arrivalContext.label,
+
+                ArrivalTimeContextColor = arrivalContext.color,
 
                 ServiceType =
                     appointment.ServiceType,
@@ -185,6 +210,29 @@ public partial class ReadsDashboardViewModel : ObservableObject
 
         HasNextArrivals =
             NextArrivals.Count > 0;
+    }
+
+    private static (string label, Color color) GetArrivalTimeContext(
+        DateTime visitDate,
+        string visitTime,
+        DateTime now)
+    {
+        if (!DateTime.TryParse(visitTime, out var parsedTime))
+            return ("Scheduled", Color.FromArgb("#8793A0"));
+
+        var appointmentDateTime = visitDate.Date.Add(parsedTime.TimeOfDay);
+        var timeUntilAppointment = appointmentDateTime - now;
+
+        if (timeUntilAppointment <= TimeSpan.Zero)
+            return ("Overdue", Color.FromArgb("#C54848"));
+
+        if (timeUntilAppointment <= TimeSpan.FromMinutes(30))
+            return ("Due soon", Color.FromArgb("#B47B19"));
+
+        if (timeUntilAppointment <= TimeSpan.FromHours(2))
+            return ("Coming up", Color.FromArgb("#2E6FDB"));
+
+        return ("Later today", Color.FromArgb("#687585"));
     }
 
     [RelayCommand]
@@ -213,7 +261,7 @@ public partial class ReadsDashboardViewModel : ObservableObject
                 $"Patient: {item.PatientName}\n" +
                 $"ID: {item.PatientIdNumber}\n" +
                 $"Time: {item.TimeDisplay}\n" +
-                $"Service: {item.ServiceType}",
+                $"Service: {item.ServiceType} - {item.SubService}",
                 "Check In",
                 "Cancel");
 
@@ -290,6 +338,6 @@ public partial class ReadsDashboardViewModel : ObservableObject
     private async Task GoToProfile()
     {
         await Shell.Current.Navigation.PushAsync(
-            new Views.ProfilePage());
+            new Views.ReadsProfilePage());
     }
 }

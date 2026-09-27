@@ -399,7 +399,7 @@
                                 TextColor="#12212E"/>
 
                             <Label
-                                Text="Approved appointments expected today"
+                                Text="{Binding NextArrivalsSummary}"
                                 FontSize="11"
                                 TextColor="#9AA4AE"/>
 
@@ -415,7 +415,7 @@
 
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer
-                                    Command="{Binding GoToAppointmentsOverviewCommand}"/>
+                                    Command="{Binding GoToTodaysOverviewCommand}"/>
                             </Label.GestureRecognizers>
 
                         </Label>
@@ -459,13 +459,13 @@
                                 VerticalOptions="Center">
 
                                 <Label
-                                    Text="No upcoming arrivals"
+                                    Text="No confirmed visits scheduled today"
                                     FontSize="13"
                                     FontAttributes="Bold"
                                     TextColor="#6B7684"/>
 
                                 <Label
-                                    Text="Approved appointments for today will appear here."
+                                    Text="Confirmed visits from all service types will appear here."
                                     FontSize="11"
                                     TextColor="#9AA4AE"/>
 
@@ -488,106 +488,83 @@
 
                                 <Frame
                                     BackgroundColor="White"
-                                    BorderColor="#0F9B8E"
+                                    BorderColor="#E2E8EF"
                                     CornerRadius="14"
-                                    Padding="16"
+                                    Padding="12"
                                     HasShadow="False">
 
-                                    <VerticalStackLayout Spacing="12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="10">
 
-                                        <Grid
-                                            ColumnDefinitions="Auto,*,Auto"
-                                            ColumnSpacing="14">
-
-                                            <!-- Time box -->
-                                            <Frame
-                                                Grid.Column="0"
-                                                BackgroundColor="#D5F5EF"
-                                                CornerRadius="10"
-                                                Padding="6"
-                                                WidthRequest="58"
-                                                HeightRequest="52"
-                                                HasShadow="False">
-
-                                                <Label
-                                                    Text="{Binding TimeDisplay}"
-                                                    FontSize="11"
-                                                    FontAttributes="Bold"
-                                                    TextColor="#0F9B8E"
-                                                    HorizontalOptions="Center"
-                                                    VerticalOptions="Center"
-                                                    HorizontalTextAlignment="Center"/>
-
-                                            </Frame>
-
-                                            <!-- Patient details -->
-                                            <VerticalStackLayout
-                                                Grid.Column="1"
-                                                Spacing="2"
-                                                VerticalOptions="Center">
-
-                                                <Label
-                                                    Text="{Binding PatientName}"
-                                                    FontSize="14"
-                                                    FontAttributes="Bold"
-                                                    TextColor="#12212E"
-                                                    LineBreakMode="TailTruncation"/>
-
-                                                <Label
-                                                    Text="{Binding PatientIdNumber}"
-                                                    FontSize="11"
-                                                    TextColor="#9AA4AE"/>
-
-                                                <Label
-                                                    FontSize="12"
-                                                    TextColor="#6B7684"
-                                                    LineBreakMode="TailTruncation">
-
-                                                    <Label.FormattedText>
-                                                        <FormattedString>
-                                                            <Span
-                                                                Text="{Binding ServiceType}"/>
-                                                            <Span Text=" · "/>
-                                                            <Span
-                                                                Text="{Binding SubService}"/>
-                                                        </FormattedString>
-                                                    </Label.FormattedText>
-
-                                                </Label>
-
+                                        <!-- Time and arrival timing -->
+                                        <Frame Grid.Column="0"
+                                               BackgroundColor="#F5F7FA"
+                                               CornerRadius="10"
+                                               Padding="6"
+                                               WidthRequest="68"
+                                               HeightRequest="62"
+                                               HasShadow="False">
+                                            <VerticalStackLayout Spacing="3"
+                                                                 HorizontalOptions="Center"
+                                                                 VerticalOptions="Center">
+                                                <Label Text="{Binding TimeDisplay}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#12212E"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center" />
+                                                <Label Text="{Binding ArrivalTimeContext}"
+                                                       FontSize="9"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding ArrivalTimeContextColor}"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center" />
                                             </VerticalStackLayout>
+                                        </Frame>
 
-                                            <!-- Status -->
-                                            <Frame
-                                                Grid.Column="2"
-                                                BackgroundColor="#D5F5EF"
+                                        <!-- Patient and service details -->
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Spacing="2"
+                                                             VerticalOptions="Center">
+                                            <Label Text="{Binding PatientName}"
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#12212E"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding PatientIdNumber}"
+                                                   FontSize="10"
+                                                   TextColor="#8793A0"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label FontSize="11"
+                                                   TextColor="#526171"
+                                                   LineBreakMode="TailTruncation">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding ServiceType}"
+                                                              FontAttributes="Bold" />
+                                                        <Span Text=" · " />
+                                                        <Span Text="{Binding SubService}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <!-- Keep check-in available without dominating the card. -->
+                                        <Button Grid.Column="2"
+                                                Text="Check in"
+                                                Command="{Binding Source={x:Reference Root},
+                                                                  Path=BindingContext.CheckInArrivalCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="#0F9B8E"
+                                                TextColor="White"
+                                                FontSize="10"
+                                                FontAttributes="Bold"
                                                 CornerRadius="10"
-                                                Padding="9,3"
-                                                HasShadow="False"
-                                                VerticalOptions="Start">
-
-                                                <Label
-                                                    Text="Confirmed"
-                                                    FontSize="10"
-                                                    FontAttributes="Bold"
-                                                    TextColor="#0F9B8E"/>
-
-                                            </Frame>
-
-                                        </Grid>
-
-                                        <Button
-                                            Text="Check In Patient"
-                                            Command="{Binding Source={x:Reference Root},
-                                                Path=BindingContext.CheckInArrivalCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="#0F9B8E"
-                                            TextColor="White"
-                                            FontAttributes="Bold"
-                                            CornerRadius="20"
-                                            HeightRequest="42"/>
-
-                                    </VerticalStackLayout>
+                                                WidthRequest="72"
+                                                HeightRequest="36"
+                                                Padding="4,0"
+                                                VerticalOptions="Center" />
+                                    </Grid>
 
                                 </Frame>
 

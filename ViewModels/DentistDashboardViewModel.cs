@@ -91,7 +91,7 @@ public partial class DentistDashboardViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoToPatients()
-        => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage());
+        => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage("Dental"));
 
     [RelayCommand]
     private async Task GoToAppointments()
