@@ -9,15 +9,21 @@
 
     <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Patient Records" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,50,18,14">
+        <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Patient Records" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
         </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
 
         <Label Text="Patients you have personally consulted." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
 

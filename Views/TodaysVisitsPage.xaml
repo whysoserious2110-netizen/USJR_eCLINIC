@@ -5,54 +5,69 @@
              x:Class="USJR_eCLINIC.Views.TodaysVisitsPage"
              x:Name="Root"
              x:DataType="vm:TodaysVisitsViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F7F8F6">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
-
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Today's Visits" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+    <VerticalStackLayout Padding="18,44,18,20" Spacing="14">
+        <Grid RowDefinitions="Auto,7" Margin="-18,-44,-18,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,44,18,14">
+        <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Today's Schedule" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
         </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
+
+        <Label Text="All medical appointments are listed here. Only checked-in patients can be opened for consultation."
+               FontSize="12" TextColor="#647067"/>
 
         <VerticalStackLayout IsVisible="{Binding HasVisits, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No visits scheduled today" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+                             VerticalOptions="Center" Margin="0,45,0,0" Spacing="8">
+            <Label Text="&#128197;" FontSize="38" HorizontalOptions="Center" TextColor="#9BA89E"/>
+            <Label Text="No appointments scheduled today" FontSize="15" FontAttributes="Bold"
+                   TextColor="#647067" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
         <CollectionView ItemsSource="{Binding Visits}" IsVisible="{Binding HasVisits}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:TodaysVisitItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}" CommandParameter="{Binding .}"/>
-                        </Frame.GestureRecognizers>
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
-                            <Frame Grid.Column="0" BackgroundColor="#D5F5EF" CornerRadius="10"
-                                   Padding="6" WidthRequest="52" HeightRequest="52" HasShadow="False">
-                                <Label Text="{Binding TimeDisplay}" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"
-                                       HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"/>
-                            </Frame>
-                            <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#9AA4AE"/>
-                                <Label Text="{Binding ChiefComplaint, StringFormat='C/O: {0}'}" FontSize="12" TextColor="#6B7684"/>
-                            </VerticalStackLayout>
-                            <Frame Grid.Column="2" BackgroundColor="{Binding StatusColor}" CornerRadius="10"
-                                   Padding="10,3" HasShadow="False" VerticalOptions="Start">
-                                <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
-                            </Frame>
-                        </Grid>
-                    </Frame>
+                    <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 14" Padding="13" Margin="0,0,0,10">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14"
+                                       TextColor="#17221B" VerticalOptions="Center"/>
+                                <Border Grid.Column="1" BackgroundColor="{Binding StatusColor}"
+                                        StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="8,3">
+                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold"
+                                           TextColor="White"/>
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#879188"/>
+                            <Label Text="{Binding ChiefComplaint, StringFormat='Reason: {0}'}"
+                                   FontSize="12" TextColor="#647067"/>
+                            <Label Text="{Binding TimeDisplay}" FontSize="11" TextColor="#879188"/>
+
+                            <Button IsVisible="{Binding CanConsult}"
+                                    Text="Start Consultation"
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="#087A3D" TextColor="White"
+                                    FontAttributes="Bold" CornerRadius="10" HeightRequest="42"
+                                    Margin="0,4,0,0"/>
+                            <Label IsVisible="{Binding CanConsult, Converter={StaticResource BoolInverter}}"
+                                   Text="{Binding ActionMessage}" FontSize="11" TextColor="#8A6A1B"
+                                   Margin="0,2,0,0"/>
+                        </VerticalStackLayout>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
     </VerticalStackLayout>
 </ContentPage>

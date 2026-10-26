@@ -26,8 +26,13 @@ public partial class DentistDashboardViewModel : ObservableObject
     [ObservableProperty] private string profileImagePath = string.Empty;
 
     public ObservableCollection<DentalQueueItem> DentalQueue { get; } = new();
+    public ObservableCollection<CertRequestItem> DentalCertificateVisits { get; } = new();
+    public ObservableCollection<CertRequestItem> DentalCertificateRequests { get; } = new();
 
     [ObservableProperty] private bool hasQueueItems;
+    [ObservableProperty] private bool hasDentalCertificateVisits;
+    [ObservableProperty] private bool hasDentalCertificateRequests;
+    [ObservableProperty] private int dentalCertificateRequestCount;
 
     public async Task RefreshAsync()
     {
@@ -70,6 +75,51 @@ public partial class DentistDashboardViewModel : ObservableObject
 
         HasQueueItems = DentalQueue.Count > 0;
 
+        var todayCertificateAppointments = await Services.AppointmentService.Instance
+            .GetTodayForServiceAsync("Cert Request");
+
+        DentalCertificateVisits.Clear();
+        foreach (var appointment in todayCertificateAppointments.Where(appointment =>
+                     appointment.SubService == "Dental Certificate" &&
+                     (appointment.Status == "CheckedIn" || appointment.Status == "VitalsRecorded")))
+        {
+            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(appointment.PatientEmail);
+            DentalCertificateVisits.Add(new CertRequestItem
+            {
+                AppointmentId = appointment.Id,
+                PatientEmail = appointment.PatientEmail,
+                PatientName = patient?.FullName ?? appointment.PatientEmail,
+                PatientRole = patient?.Role ?? string.Empty,
+                CertificateType = appointment.SubService,
+                Purpose = appointment.ReasonOrPurpose,
+                DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy"),
+                AppointmentStatus = appointment.Status
+            });
+        }
+
+        HasDentalCertificateVisits = DentalCertificateVisits.Count > 0;
+
+        var certificateRequests = await Services.AppointmentService.Instance
+            .GetCertificateRequestsForClinicalReviewAsync(user.Role);
+
+        DentalCertificateRequests.Clear();
+        foreach (var appointment in certificateRequests)
+        {
+            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(appointment.PatientEmail);
+            DentalCertificateRequests.Add(new CertRequestItem
+            {
+                AppointmentId = appointment.Id,
+                PatientEmail = appointment.PatientEmail,
+                PatientName = patient?.FullName ?? appointment.PatientEmail,
+                CertificateType = appointment.SubService,
+                Purpose = appointment.ReasonOrPurpose,
+                DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy")
+            });
+        }
+
+        DentalCertificateRequestCount = DentalCertificateRequests.Count;
+        HasDentalCertificateRequests = DentalCertificateRequests.Count > 0;
+
         UnreadNotificationCount = await Services.NotificationService.Instance.GetUnreadCountAsync(user.Email);
         HasUnreadNotifications = UnreadNotificationCount > 0;
     }
@@ -94,6 +144,24 @@ public partial class DentistDashboardViewModel : ObservableObject
         => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage("Dental"));
 
     [RelayCommand]
+    private async Task StartDentalCertificateVisit(CertRequestItem item)
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.DentalExaminationPage(
+            item.AppointmentId, item.PatientEmail, item.PatientName, item.PatientRole, item.Purpose));
+    }
+
+    [RelayCommand]
+    private async Task GoToCertificates()
+        => await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
+
+    [RelayCommand]
+    private async Task OpenDentalCertificateRequest(CertRequestItem item)
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.IssueCertificatePage(
+            item.AppointmentId, item.PatientEmail, item.PatientName, item.CertificateType, item.Purpose));
+    }
+
+    [RelayCommand]
     private async Task GoToAppointments()
         => await Shell.Current.Navigation.PushAsync(new Views.DentistAppointmentsPage());
 
@@ -105,3 +173,4 @@ public partial class DentistDashboardViewModel : ObservableObject
     private async Task GoToProfile()
         => await Shell.Current.Navigation.PushAsync(new Views.DentistProfilePage());
 }
+

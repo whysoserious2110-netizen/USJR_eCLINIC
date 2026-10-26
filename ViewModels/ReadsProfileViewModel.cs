@@ -10,7 +10,8 @@ public partial class ReadsProfileViewModel : ObservableObject
     [ObservableProperty] private string fullName = string.Empty;
     [ObservableProperty] private string role = "R.E.A.D.S. Scholar";
     [ObservableProperty] private string studentId = string.Empty;
-    [ObservableProperty] private string programAndYear = string.Empty;
+    [ObservableProperty] private string studentProgramAndYear = string.Empty;
+    [ObservableProperty] private string clinicAssignment = string.Empty;
     [ObservableProperty] private string email = string.Empty;
     [ObservableProperty] private string mobileNumber = string.Empty;
     [ObservableProperty] private string profileImagePath = string.Empty;
@@ -19,13 +20,17 @@ public partial class ReadsProfileViewModel : ObservableObject
     public ReadsProfileViewModel()
     {
         var user = Services.AuthService.Instance.CurrentUser;
-        if (user == null) return;
+        if (user == null || user.Role != "R.E.A.D.S. Scholar")
+            return;
 
         _userId = user.Id;
         FullName = user.FullName;
         Role = user.Role;
         StudentId = user.IdNumber;
-        ProgramAndYear = user.ProgramOrDepartment;
+        StudentProgramAndYear = user.StudentProgramAndYear;
+        ClinicAssignment = string.IsNullOrWhiteSpace(user.ProgramOrDepartment)
+            ? "Clinic assignment not set"
+            : user.ProgramOrDepartment;
         Email = user.Email;
         MobileNumber = user.MobileNumber;
         ProfileImagePath = user.ProfileImagePath;
@@ -45,7 +50,6 @@ public partial class ReadsProfileViewModel : ObservableObject
             "Choose from Gallery");
 
         FileResult? result = null;
-
         try
         {
             if (action == "Take Photo" && MediaPicker.Default.IsCaptureSupported)
@@ -62,9 +66,10 @@ public partial class ReadsProfileViewModel : ObservableObject
             return;
         }
 
-        if (result == null) return;
+        if (result == null)
+            return;
 
-        string localPath = Path.Combine(
+        var localPath = Path.Combine(
             FileSystem.AppDataDirectory,
             $"profile_{_userId}.jpg");
 
@@ -77,7 +82,8 @@ public partial class ReadsProfileViewModel : ObservableObject
         ProfileImagePath = localPath;
 
         var current = Services.AuthService.Instance.CurrentUser;
-        if (current == null) return;
+        if (current == null || current.Id != _userId)
+            return;
 
         current.ProfileImagePath = localPath;
         await Services.AuthService.Instance.UpdateProfileAsync(current);
@@ -87,36 +93,38 @@ public partial class ReadsProfileViewModel : ObservableObject
     private async Task Save()
     {
         if (string.IsNullOrWhiteSpace(FullName) ||
-            string.IsNullOrWhiteSpace(ProgramAndYear))
+            string.IsNullOrWhiteSpace(StudentProgramAndYear))
         {
             await Shell.Current.DisplayAlert(
                 "Missing info",
-                "Please fill in your name and program/year.",
+                "Please enter your name and student program/year.",
                 "OK");
             return;
         }
 
         var current = Services.AuthService.Instance.CurrentUser;
-        if (current == null)
+        if (current == null ||
+            current.Id != _userId ||
+            current.Role != "R.E.A.D.S. Scholar")
         {
             await Shell.Current.DisplayAlert(
                 "Not logged in",
-                "Please log in again.",
+                "Please log in again as a R.E.A.D.S. Scholar.",
                 "OK");
             return;
         }
 
-        // Keep the account's other information unchanged.
         var updated = new Models.UserAccount
         {
-            Id = _userId,
-            FullName = FullName,
+            Id = current.Id,
+            FullName = FullName.Trim(),
             Email = current.Email,
             Password = current.Password,
             Role = current.Role,
-            IdNumber = StudentId,
-            ProgramOrDepartment = ProgramAndYear,
-            MobileNumber = MobileNumber,
+            IdNumber = current.IdNumber,
+            ProgramOrDepartment = current.ProgramOrDepartment,
+            StudentProgramAndYear = StudentProgramAndYear.Trim(),
+            MobileNumber = MobileNumber.Trim(),
 
             BloodType = current.BloodType,
             Height = current.Height,
@@ -138,24 +146,18 @@ public partial class ReadsProfileViewModel : ObservableObject
             LicenseExpiration = current.LicenseExpiration
         };
 
-        bool success =
-            await Services.AuthService.Instance.UpdateProfileAsync(updated);
-
-        if (success)
-        {
-            IsEditing = false;
-            await Shell.Current.DisplayAlert(
-                "Profile Updated",
-                "Your profile has been updated.",
-                "OK");
-        }
-        else
+        bool success = await Services.AuthService.Instance.UpdateProfileAsync(updated);
+        if (!success)
         {
             await Shell.Current.DisplayAlert(
                 "Error",
-                "Could not update profile. Please try again.",
+                "Could not update your profile. Please try again.",
                 "OK");
+            return;
         }
+
+        IsEditing = false;
+        await Shell.Current.DisplayAlert("Profile Updated", "Your profile has been updated.", "OK");
     }
 
     [RelayCommand]
@@ -167,7 +169,8 @@ public partial class ReadsProfileViewModel : ObservableObject
             "Log Out",
             "Cancel");
 
-        if (!confirm) return;
+        if (!confirm)
+            return;
 
         await Services.SecureSessionService.Instance.ClearSessionAsync();
         Services.AuthService.Instance.Logout();
@@ -175,8 +178,5 @@ public partial class ReadsProfileViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GoBack()
-    {
-        await Shell.Current.Navigation.PopAsync();
-    }
+    private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 }

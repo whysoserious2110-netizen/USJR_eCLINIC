@@ -7,7 +7,7 @@
     x:Class="USJR_eCLINIC.Views.HomePage"
     x:Name="Root"
     x:DataType="vm:HomeViewModel"
-    BackgroundColor="#F7F8FA">
+    BackgroundColor="White">
 
     <Grid RowDefinitions="*,Auto">
 
@@ -18,62 +18,75 @@
                 Spacing="18">
 
                 <!-- User Header -->
-                <Grid
-                    ColumnDefinitions="Auto,*"
-                    ColumnSpacing="14">
+                <Border BackgroundColor="#F4C400"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 0"
+                        Padding="20,20,20,16"
+                        Margin="-20,-50,-20,0">
+                    <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="12">
 
-                    <Frame
+                        <Frame
                         Grid.Column="0"
-                        WidthRequest="56"
-                        HeightRequest="56"
-                        CornerRadius="28"
+                        WidthRequest="52"
+                        HeightRequest="52"
+                        CornerRadius="26"
                         Padding="0"
                         HasShadow="False"
-                        BackgroundColor="#E2E6EA"
+                        BackgroundColor="White"
                         IsClippedToBounds="True">
 
-                        <Grid>
+                            <Grid>
 
-                            <Label
+                                <Label
                                 Text="&#128100;"
-                                FontSize="24"
+                                FontSize="22"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
-                                TextColor="#9AA4AE"/>
+                                TextColor="#78917F"/>
 
-                            <Image
+                                <Image
                                 Source="{Binding ProfileImageSource,
                                     Converter={StaticResource ImagePathConv}}"
                                 Aspect="AspectFill"/>
 
-                        </Grid>
+                            </Grid>
 
-                    </Frame>
+                        </Frame>
 
-                    <VerticalStackLayout
+                        <VerticalStackLayout
                         Grid.Column="1"
                         VerticalOptions="Center"
                         Spacing="2">
 
-                        <Label
+                            <Label
                             Text="{Binding Greeting}"
-                            FontSize="13"
-                            TextColor="#6B7684"/>
-
-                        <Label
-                            Text="{Binding UserName}"
-                            FontSize="19"
-                            FontAttributes="Bold"
-                            TextColor="#12212E"/>
-
-                        <Label
-                            Text="{Binding IdLabelDisplay}"
                             FontSize="12"
-                            TextColor="#6B7684"/>
+                            TextColor="#315A3F"/>
 
-                    </VerticalStackLayout>
+                            <Label
+                            Text="{Binding UserName}"
+                            FontSize="17"
+                            FontAttributes="Bold"
+                            TextColor="#087A3D"
+                            LineBreakMode="TailTruncation" />
 
-                </Grid>
+                            <Border BackgroundColor="#E8F7EC"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                Padding="7,3"
+                                HorizontalOptions="Start">
+                                <Label Text="{Binding IdLabelDisplay}"
+                                   FontSize="10"
+                                   FontAttributes="Bold"
+                                   TextColor="#087A3D"
+                                   LineBreakMode="TailTruncation" />
+                            </Border>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Border>
 
                 <!-- Announcement -->
                 <Frame
@@ -123,7 +136,8 @@
                     <Frame
                         Grid.Row="0"
                         Grid.Column="0"
-                        BackgroundColor="White"
+                        BackgroundColor="{Binding BookAppointmentCardBackground}"
+                        BorderColor="#E1E8E3"
                         CornerRadius="16"
                         Padding="16"
                         HasShadow="False">
@@ -170,7 +184,8 @@
                     <Frame
                         Grid.Row="0"
                         Grid.Column="1"
-                        BackgroundColor="White"
+                        BackgroundColor="{Binding MedicalRecordsCardBackground}"
+                        BorderColor="#E1E8E3"
                         CornerRadius="16"
                         Padding="16"
                         HasShadow="False">
@@ -217,7 +232,8 @@
                     <Frame
                         Grid.Row="1"
                         Grid.Column="0"
-                        BackgroundColor="White"
+                        BackgroundColor="{Binding DentalRecordsCardBackground}"
+                        BorderColor="#E1E8E3"
                         CornerRadius="16"
                         Padding="16"
                         HasShadow="False">
@@ -264,7 +280,8 @@
                     <Frame
                         Grid.Row="1"
                         Grid.Column="1"
-                        BackgroundColor="White"
+                        BackgroundColor="{Binding PrescriptionsCardBackground}"
+                        BorderColor="#E1E8E3"
                         CornerRadius="16"
                         Padding="16"
                         HasShadow="False">
@@ -313,7 +330,7 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="2"
                         IsVisible="{Binding CanViewApeResults}"
-                        BackgroundColor="White"
+                        BackgroundColor="{Binding ApeLabResultsCardBackground}"
                         BorderColor="#7B61C8"
                         CornerRadius="16"
                         Padding="16"
@@ -404,6 +421,12 @@
                                     Padding="16"
                                     HasShadow="False">
 
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenUpcomingVisitCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+
                                     <Grid
                                         ColumnDefinitions="Auto,*,Auto"
                                         ColumnSpacing="14">
@@ -458,6 +481,13 @@
                                                 Text="{Binding Details}"
                                                 FontSize="12"
                                                 TextColor="#6B7684"/>
+
+                                            <Label
+                                                Text="View appointment details  ›"
+                                                FontSize="10"
+                                                FontAttributes="Bold"
+                                                TextColor="#087A3D"
+                                                Margin="0,5,0,0"/>
 
                                         </VerticalStackLayout>
 
@@ -656,3 +686,4 @@
     </Grid>
 
 </ContentPage>
+

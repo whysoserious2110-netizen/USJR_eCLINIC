@@ -6,12 +6,22 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel _viewModel;
 
-    public AppointmentsPage()
+    public AppointmentsPage() : this(null)
+    {
+    }
+
+    public AppointmentsPage(int? appointmentIdToOpen)
     {
         InitializeComponent();
-        _viewModel = new AppointmentsViewModel();
+        _viewModel = new AppointmentsViewModel(appointmentIdToOpen);
         BindingContext = _viewModel;
     }
+
+
+
+
+
+
 
     protected override async void OnAppearing()
     {

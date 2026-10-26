@@ -4,44 +4,73 @@
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.IssueCertificatePage"
              x:DataType="vm:IssueCertificateViewModel"
-             BackgroundColor="#F7F8FA">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Grid.Row="0" RowDefinitions="Auto,7">
+            <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+                    StrokeShape="Rectangle" Padding="18,50,18,14">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                            TextColor="#087A3D" BackgroundColor="#F4C400"
+                            CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                            Padding="0" Command="{Binding GoBackCommand}" />
+                    <Label Grid.Column="1" Text="Paper Certificate Review" FontSize="17"
+                           FontAttributes="Bold" TextColor="#F4C400"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+        </Grid>
 
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Issue Certificate" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-            </Grid>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Border BackgroundColor="#FFF4C7" Stroke="#E8CF5A" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 15" Padding="15">
+                    <VerticalStackLayout Spacing="7">
+                        <Label Text="{Binding CertificateType}" FontSize="12"
+                               FontAttributes="Bold" TextColor="#087A3D" />
+                        <Label Text="{Binding PatientName}" FontSize="18"
+                               FontAttributes="Bold" TextColor="#17221B" />
+                        <Label Text="{Binding Purpose, StringFormat='Purpose: {0}'}"
+                               FontSize="13" TextColor="#526057" />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
-                <VerticalStackLayout Spacing="4">
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
-                    <Label Text="{Binding CertificateType}" FontSize="12" TextColor="#0F9B8E"/>
-                    <Label Text="{Binding Purpose, StringFormat='Purpose: {0}'}" FontSize="12" TextColor="#6B7684"/>
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="15">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="CLINICAL REVIEW" FontSize="12" FontAttributes="Bold"
+                               TextColor="#68756D" />
+                        <Label Text="{Binding ClinicianRole, StringFormat='Reviewer role: {0}'}"
+                               FontSize="12" TextColor="#526057" />
+                        <Label Text="Review the patient’s visit and supporting records. If approved, prepare and sign the paper certificate before marking it ready for pickup. The app records its status; it does not create a digital certificate."
+                               FontSize="13" TextColor="#17221B" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="7">
+                    <Label Text="Decision note" FontSize="13" FontAttributes="Bold"
+                           TextColor="#17221B" />
+                    <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12" Padding="12,8">
+                        <Editor Placeholder="Required when declining; optional when approving"
+                                Text="{Binding DecisionNote}" HeightRequest="95"
+                                TextColor="#24342B" />
+                    </Border>
                 </VerticalStackLayout>
-            </Frame>
 
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Certificate Content" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Placeholder="This is to certify that..." Text="{Binding CertificateContent}" HeightRequest="160"/>
-                </Frame>
+                <Button Text="Approve &amp; Mark Ready for Pickup"
+                        Command="{Binding ApproveAndMarkReadyCommand}"
+                        BackgroundColor="#087A3D" TextColor="White"
+                        FontAttributes="Bold" CornerRadius="12" HeightRequest="50" />
+
+                <Button Text="Decline Request"
+                        Command="{Binding DeclineRequestCommand}"
+                        BackgroundColor="#FDE8E7" TextColor="#B42318"
+                        FontAttributes="Bold" CornerRadius="12" HeightRequest="48" />
             </VerticalStackLayout>
-
-            <Button Text="Issue Certificate"
-                    Command="{Binding IssueCertificateCommand}"
-                    BackgroundColor="#0F9B8E"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="26"
-                    HeightRequest="54"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </Grid>
 </ContentPage>

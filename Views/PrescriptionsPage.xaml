@@ -3,56 +3,132 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.PrescriptionsPage"
+             x:Name="Root"
              x:DataType="vm:PrescriptionsViewModel"
-             BackgroundColor="#F7F8FA">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
-
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Prescriptions" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F7F8F6">
+        <Grid Grid.Row="0" RowDefinitions="Auto,7">
+            <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+                    StrokeShape="Rectangle" Padding="18,50,18,14">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                            TextColor="#087A3D" BackgroundColor="#F4C400"
+                            CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                            Padding="0" Command="{Binding GoBackCommand}" />
+                    <Label Grid.Column="1" Text="My Prescriptions" FontSize="19"
+                           FontAttributes="Bold" TextColor="#F4C400"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
         </Grid>
 
-        <VerticalStackLayout IsVisible="{Binding HasPrescriptions, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128138;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No prescriptions yet" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
-            <Label Text="Your prescribed medications will appear here after a clinic visit." FontSize="12" TextColor="#9AA4AE"
-                   HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="30,0,30,0"/>
-        </VerticalStackLayout>
+        <Grid Grid.Row="1" Padding="12,14,12,8">
+            <VerticalStackLayout IsVisible="{Binding HasPrescriptions, Converter={StaticResource BoolInverter}}"
+                                 VerticalOptions="Center" Spacing="9">
+                <Label Text="&#128138;" FontSize="40" HorizontalOptions="Center" TextColor="#9AA4AE" />
+                <Label Text="No prescriptions yet" FontSize="15" FontAttributes="Bold"
+                       TextColor="#526057" HorizontalOptions="Center" />
+                <Label Text="Your prescribed medications will appear here after a clinic visit."
+                       FontSize="12" TextColor="#84918A" HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" Margin="22,0" />
+            </VerticalStackLayout>
 
-        <CollectionView ItemsSource="{Binding Prescriptions}" IsVisible="{Binding HasPrescriptions}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="vm:PrescriptionListItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <VerticalStackLayout Spacing="8">
+            <CollectionView ItemsSource="{Binding Prescriptions}" IsVisible="{Binding HasPrescriptions}"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PrescriptionListItem">
+                        <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 14" Padding="12" Margin="0,0,0,9">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenPrescriptionCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="5">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Grid.Column="0" Text="{Binding MedicineName}"
+                                           FontAttributes="Bold" FontSize="13" TextColor="#17221B"
+                                           VerticalOptions="Center" />
+                                    <Border Grid.Column="1" BackgroundColor="{Binding LabelBackgroundColor}"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="7,3">
+                                        <Label Text="{Binding LabelText}" FontSize="9" FontAttributes="Bold"
+                                               TextColor="{Binding LabelForegroundColor}" />
+                                    </Border>
+                                </Grid>
 
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="{Binding MedicineName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
-                                <Frame Grid.Column="1" BackgroundColor="{Binding LabelColor}" CornerRadius="10"
-                                       Padding="10,3" HasShadow="False">
-                                    <Label Text="{Binding LabelText}" FontSize="11" FontAttributes="Bold" TextColor="White"/>
-                                </Frame>
-                            </Grid>
+                                <VerticalStackLayout Spacing="1">
+                                    <Label Text="DOSAGE" FontSize="8" TextColor="#84918A" />
+                                    <Label Text="{Binding Dosage}" FontSize="10" TextColor="#526057"
+                                           LineBreakMode="TailTruncation" MaxLines="2" />
+                                </VerticalStackLayout>
 
-                            <Label Text="{Binding Dosage}" FontSize="13" TextColor="#6B7684"/>
+                                <VerticalStackLayout Spacing="1" IsVisible="{Binding HasInstructions}">
+                                    <Label Text="INSTRUCTIONS" FontSize="8" TextColor="#84918A" />
+                                    <Label Text="{Binding Instructions}" FontSize="10" TextColor="#526057"
+                                           LineBreakMode="TailTruncation" MaxLines="2" />
+                                </VerticalStackLayout>
 
-                            <Label Text="{Binding Instructions}" FontSize="12" TextColor="#9AA4AE"
-                                   IsVisible="{Binding Instructions, Converter={StaticResource StringNotEmpty}}"/>
+                                <VerticalStackLayout Spacing="1" IsVisible="{Binding HasPrescriber}">
+                                    <Label Text="PRESCRIBED BY" FontSize="8" TextColor="#84918A" />
+                                    <Label Text="{Binding PrescribedBy}" FontSize="10" TextColor="#17221B" />
+                                </VerticalStackLayout>
 
-                            <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
+                                <VerticalStackLayout Spacing="1">
+                                    <Label Text="DATE PRESCRIBED" FontSize="8" TextColor="#84918A" />
+                                    <Label Text="{Binding DateDisplay}" FontSize="9" TextColor="#8495B5" />
+                                </VerticalStackLayout>
 
-                        </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                <Border BackgroundColor="#F7F8F6" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 8" Padding="8,5" Margin="0,2,0,0">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="View prescription details" FontSize="9" FontAttributes="Bold"
+                                               TextColor="#17221B" />
+                                        <Label Grid.Column="1" Text="&#8250;" FontSize="16"
+                                               TextColor="#087A3D" VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
 
-    </VerticalStackLayout>
+        <Grid Grid.Row="2" RowDefinitions="1,Auto" BackgroundColor="White">
+            <BoxView Grid.Row="0" Color="#E7EBEF" HeightRequest="1" />
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Padding="0,8,0,5">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#8962;" FontSize="20" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="10" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128197;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128276;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Notifications" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128100;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

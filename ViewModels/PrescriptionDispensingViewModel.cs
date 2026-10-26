@@ -8,48 +8,91 @@ public partial class DispenseListItem : ObservableObject
 {
     public int PrescriptionId { get; set; }
     public string PatientName { get; set; } = string.Empty;
+    public string PatientEmail { get; set; } = string.Empty;
     public string MedicineName { get; set; } = string.Empty;
     public string Dosage { get; set; } = string.Empty;
+    public int Quantity { get; set; }
     public string DateDisplay { get; set; } = string.Empty;
 }
 
 public partial class PrescriptionDispensingViewModel : ObservableObject
 {
+    private List<DispenseListItem> _allPending = new();
+
     public ObservableCollection<DispenseListItem> PendingDispense { get; } = new();
 
-    [ObservableProperty]
-    private bool hasPending;
+    [ObservableProperty] private bool hasPending;
+    [ObservableProperty] private string pendingCountText = "No prescriptions awaiting dispensing";
+    [ObservableProperty] private string searchText = string.Empty;
+    [ObservableProperty] private string emptyMessage = "There are no clinic-given prescriptions waiting to be dispensed.";
 
     public async Task RefreshAsync()
     {
         var prescriptions = await Services.PrescriptionService.Instance.GetClinicGivenUndispensedAsync();
+        _allPending = new List<DispenseListItem>();
 
-        PendingDispense.Clear();
-        foreach (var rx in prescriptions)
+        foreach (var prescription in prescriptions)
         {
-            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(rx.PatientEmail);
-
-            PendingDispense.Add(new DispenseListItem
+            var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(prescription.PatientEmail);
+            _allPending.Add(new DispenseListItem
             {
-                PrescriptionId = rx.Id,
-                PatientName = patient?.FullName ?? rx.PatientEmail,
-                MedicineName = rx.MedicineName,
-                Dosage = rx.Dosage,
-                DateDisplay = rx.DatePrescribed.ToString("MMM dd, yyyy")
+                PrescriptionId = prescription.Id,
+                PatientName = patient?.FullName ?? prescription.PatientEmail,
+                PatientEmail = prescription.PatientEmail,
+                MedicineName = prescription.MedicineName,
+                Dosage = prescription.Dosage,
+                Quantity = prescription.Quantity > 0 ? prescription.Quantity : 1,
+                DateDisplay = prescription.DatePrescribed.ToString("MMM d, yyyy · h:mm tt")
             });
         }
 
-        HasPending = PendingDispense.Count > 0;
+        HasPending = _allPending.Count > 0;
+        PendingCountText = _allPending.Count == 1
+            ? "1 prescription waiting"
+            : $"{_allPending.Count} prescriptions waiting";
+        ApplyFilter();
+    }
+
+    partial void OnSearchTextChanged(string value) => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        var query = SearchText.Trim();
+        var matches = string.IsNullOrWhiteSpace(query)
+            ? _allPending
+            : _allPending.Where(item =>
+                item.PatientName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                item.PatientEmail.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                item.MedicineName.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        PendingDispense.Clear();
+        foreach (var item in matches)
+            PendingDispense.Add(item);
+
+        EmptyMessage = _allPending.Count == 0
+            ? "There are no clinic-given prescriptions waiting to be dispensed."
+            : "No pending prescriptions match your search.";
     }
 
     [RelayCommand]
     private async Task MarkDispensed(DispenseListItem item)
     {
-        bool confirm = await Shell.Current.DisplayAlert("Mark as Dispensed?", $"Confirm {item.MedicineName} was given to {item.PatientName}?", "Confirm", "Cancel");
-        if (!confirm) return;
+        var confirmed = await Shell.Current.DisplayAlert(
+            "Confirm dispensing",
+            $"Confirm that {item.Quantity} unit(s) of {item.MedicineName} were given to {item.PatientName}? Inventory will be updated.",
+            "Confirm",
+            "Cancel");
 
-        await Services.PrescriptionService.Instance.MarkDispensedAsync(item.PrescriptionId);
-        await RefreshAsync();
+        if (!confirmed) return;
+
+        var result = await Services.PrescriptionService.Instance.MarkDispensedAsync(item.PrescriptionId);
+        await Shell.Current.DisplayAlert(
+            result.Success ? "Dispensing complete" : "Cannot dispense",
+            result.Message,
+            "OK");
+
+        if (result.Success)
+            await RefreshAsync();
     }
 
     [RelayCommand]

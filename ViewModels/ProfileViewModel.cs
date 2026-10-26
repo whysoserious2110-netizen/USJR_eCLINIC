@@ -12,6 +12,8 @@ public partial class ProfileViewModel : ObservableObject
     [ObservableProperty] private string idLabel = "Student ID";
     [ObservableProperty] private string idNumber = string.Empty;
     [ObservableProperty] private string programOrDepartment = string.Empty;
+    [ObservableProperty] private string programOrDepartmentLabel = "Program & Year";
+    [ObservableProperty] private string programOrDepartmentPlaceholder = "e.g., BS Computer Science - 3rd Year";
     [ObservableProperty] private string email = string.Empty;
     [ObservableProperty] private string mobileNumber = string.Empty;
 
@@ -59,8 +61,32 @@ public partial class ProfileViewModel : ObservableObject
             "R.E.A.D.S. Scholar" => "Scholar ID",
             _ => "ID Number"
         };
+        ProgramOrDepartmentLabel = Role switch
+        {
+            "Faculty" => "Department",
+            "Admin Personnel" or "Non-Teaching" => "Office / Department",
+            _ => "Program & Year"
+        };
+
+        ProgramOrDepartmentPlaceholder = Role switch
+        {
+            "Faculty" => "e.g., College of Arts and Sciences",
+            "Admin Personnel" => "e.g., Office of Student Affairs",
+            "Non-Teaching" => "e.g., Facilities Management Office",
+            _ => "e.g., BS Computer Science - 3rd Year"
+        };
     }
 
+    public void RefreshAllergiesFromCurrentUser()
+    {
+        Allergies = Services.AuthService.Instance.CurrentUser?.Allergies ?? string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task EditAllergies()
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.EditAllergiesPage());
+    }
     [RelayCommand]
     private void ToggleEdit() => IsEditing = !IsEditing;
 
@@ -111,7 +137,7 @@ public partial class ProfileViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(ProgramOrDepartment))
         {
-            await Shell.Current.DisplayAlert("Missing info", "Please fill in your name and program.", "OK");
+            await Shell.Current.DisplayAlert("Missing info", "Please fill in your name and department, office, or program.", "OK");
             return;
         }
 
@@ -131,6 +157,7 @@ public partial class ProfileViewModel : ObservableObject
             Height = Height,
             Weight = Weight,
             Allergies = Allergies,
+            AllergyDetailsJson = current.AllergyDetailsJson,
             MedicalConditions = MedicalConditions,
             CurrentMedications = CurrentMedications,
             EmergencyContactName = EmergencyContactName,
@@ -169,3 +196,4 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 }
+

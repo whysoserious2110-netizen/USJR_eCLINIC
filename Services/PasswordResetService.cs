@@ -46,11 +46,7 @@ public class PasswordResetService
 
     private PasswordResetService()
     {
-        var dbPath = Path.Combine(
-            FileSystem.AppDataDirectory,
-            "usjr_eclinic.db3");
-
-        _db = new SQLiteAsyncConnection(dbPath);
+        _db = ClinicDatabase.Connection;
     }
 
     private async Task EnsureInitializedAsync()

@@ -6,10 +6,10 @@ public partial class NurseAppointmentsPage : ContentPage
 {
     private readonly NurseAppointmentsViewModel _viewModel;
 
-    public NurseAppointmentsPage()
+    public NurseAppointmentsPage(string? statusFilter = null)
     {
         InitializeComponent();
-        _viewModel = new NurseAppointmentsViewModel();
+        _viewModel = new NurseAppointmentsViewModel(statusFilter);
         BindingContext = _viewModel;
     }
 

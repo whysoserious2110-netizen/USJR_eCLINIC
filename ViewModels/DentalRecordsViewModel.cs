@@ -12,6 +12,26 @@ public partial class DentalRecordListItem : ObservableObject
     public string Diagnosis { get; set; } = string.Empty;
     public string TreatmentRendered { get; set; } = string.Empty;
     public string CareInstructions { get; set; } = string.Empty;
+    public string AttendingDentist { get; set; } = string.Empty;
+    public string DentalNotes { get; set; } = string.Empty;
+    public bool HasCareInstructions => !string.IsNullOrWhiteSpace(CareInstructions);
+    public bool HasAttendingDentist => !string.IsNullOrWhiteSpace(AttendingDentist);
+    public bool HasDentalNotes => !string.IsNullOrWhiteSpace(DentalNotes);
+
+    [RelayCommand]
+    private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
+
+    [RelayCommand]
+    private async Task GoToHome() => await Shell.Current.GoToAsync("//HomePage");
+
+    [RelayCommand]
+    private async Task GoToAppointments() => await Shell.Current.GoToAsync("//AppointmentsPage");
+
+    [RelayCommand]
+    private async Task GoToNotifications() => await Shell.Current.GoToAsync("//NotificationsPage");
+
+    [RelayCommand]
+    private async Task GoToProfile() => await Shell.Current.GoToAsync("//ProfilePage");
 }
 
 public partial class DentalRecordsViewModel : ObservableObject
@@ -34,16 +54,18 @@ public partial class DentalRecordsViewModel : ObservableObject
         var records = await Services.DentalRecordService.Instance.GetForPatientAsync(user.Email);
 
         Records.Clear();
-        foreach (var r in records)
+        foreach (var record in records)
         {
             Records.Add(new DentalRecordListItem
             {
-                Id = r.Id,
-                DateDisplay = r.VisitDate.ToString("MMM dd, yyyy"),
-                ExamFindings = r.ExamFindings,
-                Diagnosis = r.Diagnosis,
-                TreatmentRendered = r.TreatmentRendered,
-                CareInstructions = r.CareInstructions
+                Id = record.Id,
+                DateDisplay = record.VisitDate.ToString("MMM dd, yyyy"),
+                ExamFindings = record.ExamFindings,
+                Diagnosis = record.Diagnosis,
+                TreatmentRendered = record.TreatmentRendered,
+                CareInstructions = record.CareInstructions,
+                AttendingDentist = record.AttendingDentist,
+                DentalNotes = record.DentalNotes
             });
         }
 
@@ -52,10 +74,22 @@ public partial class DentalRecordsViewModel : ObservableObject
 
     [RelayCommand]
     private async Task ViewDetails(DentalRecordListItem item)
-        => await Shell.Current.DisplayAlert(item.DateDisplay,
-            $"Exam Findings: {item.ExamFindings}\n\nDiagnosis: {item.Diagnosis}\n\nTreatment: {item.TreatmentRendered}\n\nCare Instructions: {item.CareInstructions}",
-            "OK");
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.DentalRecordDetailPage(item));
+    }
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
+
+    [RelayCommand]
+    private async Task GoToHome() => await Shell.Current.GoToAsync("//HomePage");
+
+    [RelayCommand]
+    private async Task GoToAppointments() => await Shell.Current.GoToAsync("//AppointmentsPage");
+
+    [RelayCommand]
+    private async Task GoToNotifications() => await Shell.Current.GoToAsync("//NotificationsPage");
+
+    [RelayCommand]
+    private async Task GoToProfile() => await Shell.Current.GoToAsync("//ProfilePage");
 }

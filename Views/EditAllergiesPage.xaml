@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.EditAllergiesPage"
+             x:Name="Root"
+
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto" BackgroundColor="#F7F8F6">
+        <Grid Grid.Row="0" RowDefinitions="Auto,7">
+            <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+                    StrokeShape="Rectangle" Padding="18,50,18,14">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                            TextColor="#087A3D" BackgroundColor="#F4C400"
+                            CornerRadius="10" WidthRequest="40" HeightRequest="40"
+                            Padding="0" Command="{Binding GoBackCommand}" />
+                    <Label Grid.Column="1" Text="Edit Allergies" FontSize="19"
+                           FontAttributes="Bold" TextColor="#F4C400" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,16,16,18" Spacing="14">
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="{Binding FullName}" FontSize="15" FontAttributes="Bold" TextColor="#17221B" />
+                    <Label Text="Keep your allergies up to date for safe treatment at the clinic."
+                           FontSize="12" TextColor="#526057" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <CheckBox IsChecked="{Binding HasNoKnownAllergies}" Color="#087A3D" />
+                    <Label Text="No known allergies" FontSize="13" TextColor="#17221B" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout Spacing="12" IsVisible="{Binding ShowAllergyEntries}"
+                                     BindableLayout.ItemsSource="{Binding AllergyEntries}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14" Padding="13">
+                                <VerticalStackLayout Spacing="7">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Allergy Details" FontSize="13" FontAttributes="Bold" TextColor="#17221B"
+                                               VerticalOptions="Center" />
+                                        <Button Grid.Column="1" Text="Remove" FontSize="11"
+                                                TextColor="#B42318" BackgroundColor="Transparent"
+                                                Padding="6,2" HeightRequest="30"
+                                                Command="{Binding Source={x:Reference Root}, Path=BindingContext.RemoveAllergyCommand}"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+
+                                    <Label Text="Allergy Name" FontSize="11" FontAttributes="Bold" TextColor="#17221B" />
+                                    <Entry Text="{Binding AllergyName}" Placeholder="e.g., Penicillin"
+                                           FontSize="13" TextColor="#17221B" BackgroundColor="White"
+                                           ClearButtonVisibility="WhileEditing" />
+
+                                    <Label Text="Allergy Type" FontSize="11" FontAttributes="Bold" TextColor="#17221B"
+                                           Margin="0,2,0,0" />
+                                    <Picker ItemsSource="{Binding Source={x:Reference Root}, Path=BindingContext.AllergyTypes}"
+                                            SelectedItem="{Binding AllergyType}" Title="Choose type"
+                                            TitleColor="#84918A" TextColor="#17221B" BackgroundColor="White" />
+
+                                    <Label Text="Reaction / Symptoms (optional)" FontSize="11" FontAttributes="Bold"
+                                           TextColor="#17221B" Margin="0,2,0,0" />
+                                    <Editor Text="{Binding Reaction}" Placeholder="Describe the reaction, if known"
+                                            AutoSize="TextChanges" MinimumHeightRequest="64" MaxLength="400"
+                                            FontSize="13" TextColor="#17221B" BackgroundColor="White" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Button Text="＋  Add Another Allergy" Command="{Binding AddAllergyCommand}"
+                        IsVisible="{Binding ShowAllergyEntries}"
+                        BackgroundColor="White" TextColor="#087A3D" BorderColor="#2C9057" BorderWidth="1"
+                        FontSize="13" FontAttributes="Bold" CornerRadius="12" HeightRequest="46" />
+
+                <Label Text="These details are part of your emergency clinical information. Inform clinic staff of any severe reactions."
+                       FontSize="11" TextColor="#526057" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Grid.Row="2" Text="Save Changes" Command="{Binding SaveCommand}"
+                BackgroundColor="#176519" TextColor="White" FontSize="14"
+                FontAttributes="Bold" CornerRadius="12" HeightRequest="48"
+                Margin="16,8,16,10" />
+
+        <Grid Grid.Row="3" RowDefinitions="1,Auto" BackgroundColor="White">
+            <BoxView Grid.Row="0" Color="#E7EBEF" HeightRequest="1" />
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Padding="0,8,0,5">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#8962;" FontSize="20" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128197;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128276;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Notifications" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128100;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="10" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

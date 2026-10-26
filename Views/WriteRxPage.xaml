@@ -10,24 +10,48 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
 
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Write Prescription" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-            </Grid>
+            <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,50,18,14">
+        <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Write Prescription" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
+        </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
 
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
-                    <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
-                            ItemDisplayBinding="{Binding DisplayName}" Title="Select patient" VerticalOptions="Center"/>
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPresetPatient}">
+                <Label Text="Prescription for" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Frame BackgroundColor="#E5F3EA" BorderColor="#B9D8C2" CornerRadius="12" Padding="12" HasShadow="False">
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="{Binding PresetPatientName}" FontSize="14" FontAttributes="Bold" TextColor="#087A3D"/>
+                        <Label Text="Patient selected from the active consultation" FontSize="11" TextColor="#647067"/>
+                    </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>
 
+            <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPresetPatient, Converter={StaticResource BoolInverter}}">
+                <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Only patients with a consultation record or a checked-in visit are listed."
+                       FontSize="11" TextColor="#647067"/>
+                <Frame IsVisible="{Binding HasEligiblePatients}" BackgroundColor="White" BorderColor="#E2E6EA"
+                       CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
+                    <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
+                            ItemDisplayBinding="{Binding DisplayName}" Title="Select patient" VerticalOptions="Center"/>
+                </Frame>
+                <Frame IsVisible="{Binding HasEligiblePatients, Converter={StaticResource BoolInverter}}"
+                       BackgroundColor="#FFF4C7" BorderColor="#E8CF5A" CornerRadius="12" Padding="12"
+                       HasShadow="False">
+                    <Label Text="No eligible patients yet. A patient must have a consultation on record or be checked in before a prescription can be started."
+                           FontSize="12" TextColor="#514A2C"/>
+                </Frame>
+            </VerticalStackLayout>
             <Label Text="Medicines" FontSize="15" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
 
             <CollectionView ItemsSource="{Binding Medicines}">
@@ -44,6 +68,10 @@
                                 <VerticalStackLayout Spacing="6">
                                     <Label Text="Dosage" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
                                     <Entry Placeholder="e.g., 500mg, 3x daily" Text="{Binding Dosage}"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Quantity (units)" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                    <Entry Placeholder="e.g., 10 tablets" Text="{Binding Quantity}" Keyboard="Numeric"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Spacing="6">

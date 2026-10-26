@@ -10,20 +10,24 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
 
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Profile" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-                <Label Grid.Column="2" Text="Edit" FontSize="16" FontAttributes="Bold" TextColor="Blue" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleEditCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
+            <Border Margin="-20,0" BackgroundColor="#2C9057" StrokeThickness="0" Padding="20,8">
+                <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="8">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                            TextColor="#087A3D" BackgroundColor="#F4C400"
+                            CornerRadius="9" WidthRequest="34" HeightRequest="34"
+                            Padding="0" Command="{Binding GoBackCommand}"
+                            VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Profile" FontSize="17"
+                           FontAttributes="Bold" TextColor="#F4C400"
+                           VerticalOptions="Center" />
+                    <Button Grid.Column="2" Text="Edit" FontSize="12"
+                            FontAttributes="Bold" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="8"
+                            Padding="10,3" HeightRequest="30"
+                            Command="{Binding ToggleEditCommand}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Border>
 
             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                 <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"
@@ -57,9 +61,9 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Program &amp; Year" FontSize="12" TextColor="#9AA4AE"/>
+                <Label Text="{Binding ProgramOrDepartmentLabel}" FontSize="12" TextColor="#9AA4AE"/>
                 <Entry Text="{Binding ProgramOrDepartment}" IsEnabled="{Binding IsEditing}"
-                       Placeholder="e.g., BS Computer Science - 3rd Year" FontSize="15" TextColor="#12212E"/>
+                       Placeholder="{Binding ProgramOrDepartmentPlaceholder}" FontSize="15" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
@@ -83,9 +87,14 @@
                             <Label Text="Blood Type" FontSize="11" TextColor="#9AA4AE"/>
                             <Entry Text="{Binding BloodType}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., O+" FontSize="14" TextColor="#12212E"/>
                         </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
                             <Label Text="Allergies" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding Allergies}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Penicillin" FontSize="14" TextColor="#D9534F"/>
+                            <Label Text="{Binding Allergies}" FontSize="12" TextColor="#B42318"
+                                   LineBreakMode="TailTruncation" MaxLines="2" />
+                            <Button Text="Edit Allergies" Command="{Binding EditAllergiesCommand}"
+                                    BackgroundColor="#F4C400" TextColor="#087A3D"
+                                    FontSize="11" FontAttributes="Bold" CornerRadius="10"
+                                    HeightRequest="34" Padding="8,0" />
                         </VerticalStackLayout>
                     </Grid>
 
@@ -159,3 +168,5 @@
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
+
+

@@ -55,7 +55,9 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             {
                 AppointmentId = appointment.Id,
                 PatientName = patient?.FullName ?? appointment.PatientEmail,
-                ServiceType = appointment.ServiceType,
+                ServiceType = appointment.ServiceType == "Cert Request"
+                    ? "Certificate Request"
+                    : appointment.ServiceType,
                 SubService = appointment.SubService,
                 VisitDate = appointment.VisitDate,
                 DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy"),

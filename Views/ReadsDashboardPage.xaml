@@ -381,6 +381,28 @@
 
                 </Grid>
 
+                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
+                       Padding="14" HasShadow="False">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToCertificatePickupCommand}"/>
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Frame Grid.Column="0" BackgroundColor="#FFF4C7" CornerRadius="10"
+                               Padding="8" WidthRequest="42" HeightRequest="42" HasShadow="False">
+                            <Label Text="&#128196;" FontSize="19" HorizontalOptions="Center"
+                                   VerticalOptions="Center" TextColor="#087A3D"/>
+                        </Frame>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="Paper Certificate Pickup" FontSize="14"
+                                   FontAttributes="Bold" TextColor="#12212E"/>
+                            <Label Text="{Binding ReadyCertificateCount, StringFormat='{0} ready for pickup'}"
+                                   FontSize="11" TextColor="#9AA4AE"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="›" FontSize="22" TextColor="#087A3D"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
                 <!-- Next Arrivals below Front Desk panels -->
                 <VerticalStackLayout
                     Spacing="12"
@@ -459,13 +481,13 @@
                                 VerticalOptions="Center">
 
                                 <Label
-                                    Text="No confirmed visits scheduled today"
+                                    Text="No upcoming visits today"
                                     FontSize="13"
                                     FontAttributes="Bold"
                                     TextColor="#6B7684"/>
 
                                 <Label
-                                    Text="Confirmed visits from all service types will appear here."
+                                    Text="Confirmed visits scheduled for later today will appear here."
                                     FontSize="11"
                                     TextColor="#9AA4AE"/>
 
@@ -747,3 +769,4 @@
     </Grid>
 
 </ContentPage>
+

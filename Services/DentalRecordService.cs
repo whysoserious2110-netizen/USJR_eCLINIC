@@ -8,19 +8,14 @@ public class DentalRecordService
     public static DentalRecordService Instance { get; } = new DentalRecordService();
 
     private readonly SQLiteAsyncConnection _db;
-    private bool _initialized = false;
+    private bool _initialized;
     private readonly SemaphoreSlim _initLock = new(1, 1);
 
-    private DentalRecordService()
-    {
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "usjr_eclinic.db3");
-        _db = new SQLiteAsyncConnection(dbPath);
-    }
+    private DentalRecordService() => _db = ClinicDatabase.Connection;
 
     private async Task EnsureInitializedAsync()
     {
         if (_initialized) return;
-
         await _initLock.WaitAsync();
         try
         {
@@ -38,26 +33,37 @@ public class DentalRecordService
     {
         await EnsureInitializedAsync();
         var all = await _db.Table<DentalRecord>().ToListAsync();
-        return all.Where(r => r.AttendingDentist.Equals(attendingDentistName, StringComparison.OrdinalIgnoreCase))
-                   .Select(r => r.PatientEmail).Distinct().ToList();
+        return all
+            .Where(record => record.AttendingDentist.Equals(attendingDentistName, StringComparison.OrdinalIgnoreCase))
+            .Select(record => record.PatientEmail)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    public async Task<List<string>> GetPatientEmailsWithRecordsAsync()
+    {
+        await EnsureInitializedAsync();
+        var all = await _db.Table<DentalRecord>().ToListAsync();
+        return all
+            .Where(record => !string.IsNullOrWhiteSpace(record.PatientEmail))
+            .Select(record => record.PatientEmail.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     public async Task<DateTime?> GetLastVisitDateAsync(string patientEmail)
     {
         var records = await GetForPatientAsync(patientEmail);
-        return records.Count > 0 ? records.Max(r => r.VisitDate) : (DateTime?)null;
+        return records.Count > 0 ? records.Max(record => record.VisitDate) : (DateTime?)null;
     }
-
-
-
 
     public async Task<List<DentalRecord>> GetForPatientAsync(string patientEmail)
     {
         await EnsureInitializedAsync();
         var all = await _db.Table<DentalRecord>().ToListAsync();
         return all
-            .Where(r => r.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(r => r.VisitDate)
+            .Where(record => record.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(record => record.VisitDate)
             .ToList();
     }
 

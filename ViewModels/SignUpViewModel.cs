@@ -54,6 +54,85 @@ public partial class SignUpViewModel :
     [ObservableProperty]
     private bool isRegistering;
 
+    [ObservableProperty]
+    private bool hasNoKnownAllergies;
+
+    [ObservableProperty]
+    private bool hasPenicillinAllergy;
+
+    [ObservableProperty]
+    private bool hasShellfishAllergy;
+
+    [ObservableProperty]
+    private bool hasNutAllergy;
+
+    [ObservableProperty]
+    private bool hasOtherAllergy;
+
+    [ObservableProperty]
+    private string allergyDetails = string.Empty;
+
+    [RelayCommand]
+    private void ToggleAllergy(string allergy)
+    {
+        switch (allergy)
+        {
+            case "No known allergies":
+                HasNoKnownAllergies = !HasNoKnownAllergies;
+
+                if (HasNoKnownAllergies)
+                {
+                    HasPenicillinAllergy = false;
+                    HasShellfishAllergy = false;
+                    HasNutAllergy = false;
+                    HasOtherAllergy = false;
+                    AllergyDetails = string.Empty;
+                }
+                break;
+
+            case "Penicillin":
+                HasPenicillinAllergy = !HasPenicillinAllergy;
+                if (HasPenicillinAllergy) HasNoKnownAllergies = false;
+                break;
+
+            case "Shellfish":
+                HasShellfishAllergy = !HasShellfishAllergy;
+                if (HasShellfishAllergy) HasNoKnownAllergies = false;
+                break;
+
+            case "Nuts":
+                HasNutAllergy = !HasNutAllergy;
+                if (HasNutAllergy) HasNoKnownAllergies = false;
+                break;
+
+            case "Other":
+                HasOtherAllergy = !HasOtherAllergy;
+                if (HasOtherAllergy) HasNoKnownAllergies = false;
+                break;
+        }
+    }
+
+    private string BuildAllergiesSummary()
+    {
+        if (HasNoKnownAllergies)
+            return "No known allergies";
+
+        var selected = new List<string>();
+
+        if (HasPenicillinAllergy) selected.Add("Penicillin");
+        if (HasShellfishAllergy) selected.Add("Shellfish");
+        if (HasNutAllergy) selected.Add("Nuts");
+        if (HasOtherAllergy) selected.Add("Other");
+
+        var details = AllergyDetails?.Trim();
+        if (!string.IsNullOrWhiteSpace(details))
+            selected.Add($"Details: {details}");
+
+        return string.Join("; ", selected);
+    }
+
+
+
     public SignUpViewModel()
     {
         SelectedRole = "Student";
@@ -155,6 +234,8 @@ public partial class SignUpViewModel :
     {
         if (IsRegistering)
             return;
+
+        var accountWasCreated = false;
 
         var normalizedName =
             FullName?.Trim() ??
@@ -276,33 +357,45 @@ public partial class SignUpViewModel :
                 Role = SelectedRole,
                 IdNumber = normalizedStudentId,
                 ProgramOrDepartment =
-                    ProgramOrDepartment?.Trim() ?? string.Empty
+                    ProgramOrDepartment?.Trim() ?? string.Empty,
+                Allergies = BuildAllergiesSummary()
+
             };
 
             await Services.AuthService.Instance
                 .RegisterAsync(account);
+
+            accountWasCreated = true;
 
             Services.AuthService.Instance.Logout();
 
             Password = string.Empty;
             ConfirmPassword = string.Empty;
 
-            await Shell.Current.DisplayAlert(
-                "Account Created",
-                "Your local account has been " +
-                "created. Please log in.",
-                "Continue");
-
             await Shell.Current.Navigation
                 .PopAsync();
+
+            await Shell.Current.Navigation.PushAsync(
+                new Views.RegistrationSuccessPage(account));
         }
         catch
         {
-            await Shell.Current.DisplayAlert(
-                "Registration Unavailable",
-                "The local account database could not complete " +
-                "the registration. Please try again.",
-                "OK");
+            if (accountWasCreated)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Account Created",
+                    "Your account was created. Return to the sign-in " +
+                    "screen to continue.",
+                    "OK");
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(
+                    "Registration Unavailable",
+                    "The local account database could not complete " +
+                    "the registration. Please try again.",
+                    "OK");
+            }
         }
         finally
         {

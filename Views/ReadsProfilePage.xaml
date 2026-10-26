@@ -19,7 +19,6 @@
                         <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
-
                 <Label Grid.Column="1"
                        Text="READS Scholar Profile"
                        FontSize="20"
@@ -43,8 +42,7 @@
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                TextColor="#9AA4AE" />
-                        <Image Source="{Binding ProfileImagePath,
-                                                 Converter={StaticResource ImagePathConv}}"
+                        <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
                                Aspect="AspectFill" />
                     </Grid>
                 </Frame>
@@ -68,7 +66,7 @@
                        Padding="12,5"
                        CornerRadius="12"
                        HasShadow="False">
-                    <Label Text="{Binding Role}"
+                    <Label Text="R.E.A.D.S. Scholar"
                            FontSize="11"
                            FontAttributes="Bold"
                            TextColor="#0F9B8E" />
@@ -87,9 +85,7 @@
                            TextColor="#12212E" />
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Full Name"
-                               FontSize="11"
-                               TextColor="#9AA4AE" />
+                        <Label Text="Full Name" FontSize="11" TextColor="#9AA4AE" />
                         <Entry Text="{Binding FullName}"
                                IsEnabled="{Binding IsEditing}"
                                FontSize="14"
@@ -97,19 +93,15 @@
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Student ID"
-                               FontSize="11"
-                               TextColor="#9AA4AE" />
-                        <Label Text="{Binding StudentId}"
-                               FontSize="14"
-                               TextColor="#12212E" />
+                        <Label Text="Student ID" FontSize="11" TextColor="#9AA4AE" />
+                        <Label Text="{Binding StudentId}" FontSize="14" TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Program &amp; Year"
+                        <Label Text="Student Program &amp; Year"
                                FontSize="11"
                                TextColor="#9AA4AE" />
-                        <Entry Text="{Binding ProgramAndYear}"
+                        <Entry Text="{Binding StudentProgramAndYear}"
                                IsEnabled="{Binding IsEditing}"
                                Placeholder="e.g., BS Computer Science - 3rd Year"
                                FontSize="14"
@@ -117,18 +109,17 @@
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Email"
-                               FontSize="11"
-                               TextColor="#9AA4AE" />
-                        <Label Text="{Binding Email}"
-                               FontSize="14"
-                               TextColor="#12212E" />
+                        <Label Text="Clinic Work Assignment" FontSize="11" TextColor="#9AA4AE" />
+                        <Label Text="{Binding ClinicAssignment}" FontSize="14" TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Mobile Number"
-                               FontSize="11"
-                               TextColor="#9AA4AE" />
+                        <Label Text="Email" FontSize="11" TextColor="#9AA4AE" />
+                        <Label Text="{Binding Email}" FontSize="14" TextColor="#12212E" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Mobile Number" FontSize="11" TextColor="#9AA4AE" />
                         <Entry Text="{Binding MobileNumber}"
                                IsEnabled="{Binding IsEditing}"
                                Placeholder="+63 9XX XXX XXXX"
@@ -149,10 +140,10 @@
                            FontAttributes="Bold"
                            FontSize="14"
                            TextColor="#12212E" />
-                    <Label Text="READS Scholar"
+                    <Label Text="Student working at the university clinic."
                            FontSize="14"
                            TextColor="#0F9B8E" />
-                    <Label Text="Student staff member at the university clinic."
+                    <Label Text="This profile is for the scholar's student and clinic-work information."
                            FontSize="12"
                            TextColor="#4A5B63" />
                 </VerticalStackLayout>

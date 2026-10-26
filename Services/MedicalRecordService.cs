@@ -8,19 +8,14 @@ public class MedicalRecordService
     public static MedicalRecordService Instance { get; } = new MedicalRecordService();
 
     private readonly SQLiteAsyncConnection _db;
-    private bool _initialized = false;
+    private bool _initialized;
     private readonly SemaphoreSlim _initLock = new(1, 1);
 
-    private MedicalRecordService()
-    {
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "usjr_eclinic.db3");
-        _db = new SQLiteAsyncConnection(dbPath);
-    }
+    private MedicalRecordService() => _db = ClinicDatabase.Connection;
 
     private async Task EnsureInitializedAsync()
     {
         if (_initialized) return;
-
         await _initLock.WaitAsync();
         try
         {
@@ -34,22 +29,32 @@ public class MedicalRecordService
         }
     }
 
-
     public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingStaffName)
     {
         await EnsureInitializedAsync();
         var all = await _db.Table<ConsultationRecord>().ToListAsync();
         return all
-            .Where(r => r.AttendingStaff.Equals(attendingStaffName, StringComparison.OrdinalIgnoreCase))
-            .Select(r => r.PatientEmail)
-            .Distinct()
+            .Where(record => record.AttendingStaff.Equals(attendingStaffName, StringComparison.OrdinalIgnoreCase))
+            .Select(record => record.PatientEmail)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    public async Task<List<string>> GetPatientEmailsWithConsultationsAsync()
+    {
+        await EnsureInitializedAsync();
+        var all = await _db.Table<ConsultationRecord>().ToListAsync();
+        return all
+            .Where(record => !string.IsNullOrWhiteSpace(record.PatientEmail))
+            .Select(record => record.PatientEmail.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
 
     public async Task<DateTime?> GetLastVisitDateAsync(string patientEmail)
     {
         var records = await GetForPatientAsync(patientEmail);
-        return records.Count > 0 ? records.Max(r => r.ConsultationDate) : (DateTime?)null;
+        return records.Count > 0 ? records.Max(record => record.ConsultationDate) : (DateTime?)null;
     }
 
     public async Task<List<ConsultationRecord>> GetForPatientAsync(string patientEmail)
@@ -57,8 +62,8 @@ public class MedicalRecordService
         await EnsureInitializedAsync();
         var all = await _db.Table<ConsultationRecord>().ToListAsync();
         return all
-            .Where(r => r.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(r => r.ConsultationDate)
+            .Where(record => record.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(record => record.ConsultationDate)
             .ToList();
     }
 

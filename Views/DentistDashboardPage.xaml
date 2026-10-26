@@ -45,7 +45,7 @@
 
                 <Label Text="Dentist Quick Actions" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="14" RowSpacing="14">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="14" RowSpacing="14">
 
                     <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="False">
                         <Frame.GestureRecognizers>
@@ -99,7 +99,84 @@
                         </VerticalStackLayout>
                     </Frame>
 
+                    <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                           BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="16"
+                           Padding="16" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToCertificatesCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Frame Grid.Column="0" BackgroundColor="#FFF4C7" CornerRadius="10"
+                                   Padding="8" WidthRequest="42" HeightRequest="42" HasShadow="False">
+                                <Label Text="&#128196;" FontSize="19" HorizontalOptions="Center"
+                                       VerticalOptions="Center" TextColor="#087A3D"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Paper Certificate Requests" FontSize="14"
+                                       FontAttributes="Bold" TextColor="#12212E"/>
+                                <Label Text="{Binding DentalCertificateRequestCount, StringFormat='{0} awaiting dental review'}"
+                                       FontSize="11" TextColor="#9AA4AE"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
                 </Grid>
+
+                <VerticalStackLayout IsVisible="{Binding HasDentalCertificateVisits}" Spacing="10" Margin="0,6,0,0">
+                    <Label Text="Checked-In Dental Certificate Visits" FontSize="17"
+                           FontAttributes="Bold" TextColor="#12212E" />
+                    <CollectionView ItemsSource="{Binding DentalCertificateVisits}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CertRequestItem">
+                                <Frame BackgroundColor="White" BorderColor="#0F9B8E" CornerRadius="14"
+                                       Padding="14" Margin="0,0,0,10" HasShadow="False">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.StartDentalCertificateVisitCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding PatientName}" FontSize="14"
+                                               FontAttributes="Bold" TextColor="#12212E" />
+                                        <Label Text="{Binding Purpose}" FontSize="12" TextColor="#6B7684" />
+                                        <Label Text="{Binding TimeDisplay, StringFormat='Appointment time: {0}'}"
+                                               FontSize="10" TextColor="#9AA4AE" />
+                                        <Label Text="Open dental examination  ›" FontSize="11"
+                                               FontAttributes="Bold" TextColor="#087A3D" Margin="0,4,0,0" />
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+                <VerticalStackLayout IsVisible="{Binding HasDentalCertificateRequests}" Spacing="10" Margin="0,6,0,0">
+                    <Label Text="Dental Certificates Awaiting Review" FontSize="17"
+                           FontAttributes="Bold" TextColor="#12212E"/>
+                    <CollectionView ItemsSource="{Binding DentalCertificateRequests}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CertRequestItem">
+                                <Frame BackgroundColor="White" BorderColor="#D14C74" CornerRadius="14"
+                                       Padding="14" Margin="0,0,0,10" HasShadow="False">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenDentalCertificateRequestCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding PatientName}" FontSize="14"
+                                               FontAttributes="Bold" TextColor="#12212E"/>
+                                        <Label Text="{Binding CertificateType}" FontSize="12"
+                                               FontAttributes="Bold" TextColor="#D14C74"/>
+                                        <Label Text="{Binding Purpose}" FontSize="12" TextColor="#6B7684"/>
+                                        <Label Text="{Binding DateDisplay, StringFormat='Completed appointment: {0}'}"
+                                               FontSize="10" TextColor="#9AA4AE"/>
+                                        <Label Text="Review paper request  ›" FontSize="11"
+                                               FontAttributes="Bold" TextColor="#087A3D" Margin="0,4,0,0"/>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasQueueItems}" Spacing="10" Margin="0,6,0,0">
                     <Label Text="Dental Queue" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
