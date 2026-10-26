@@ -11,10 +11,10 @@ public class Prescription
     public DateTime DatePrescribed { get; set; }
     public string MedicineName { get; set; } = string.Empty;
     public string Dosage { get; set; } = string.Empty;
+    public int Quantity { get; set; } = 1;
     public string Instructions { get; set; } = string.Empty;
-    public bool IsClinicGiven { get; set; } // true = Clinic-Given, false = Take-Home
-    public string PrescribedBy { get; set; } = string.Empty; // filled by Doctor later
-    public bool IsDispensed { get; set; } = false;
+    public bool IsClinicGiven { get; set; }
+    public string PrescribedBy { get; set; } = string.Empty;
+    public bool IsDispensed { get; set; }
     public DateTime? DispensedDate { get; set; }
-
 }

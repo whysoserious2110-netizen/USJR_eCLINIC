@@ -4,40 +4,89 @@
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.PostAnnouncementPage"
              x:DataType="vm:PostAnnouncementViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F5F7F9">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,42,20,24" Spacing="18">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                <Button Grid.Column="0"
+                        Text="‹"
+                        Command="{Binding GoBackCommand}"
+                        FontSize="28"
+                        TextColor="#078F83"
+                        BackgroundColor="Transparent"
+                        Padding="4,0"
+                        HeightRequest="44"
+                        WidthRequest="40" />
+                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                    <Label Text="Post Announcement"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="#172B3A" />
+                    <Label Text="Clinic update"
+                           FontSize="13"
+                           TextColor="#687887" />
+                </VerticalStackLayout>
+            </Grid>
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Post Announcement (Staff)" FontSize="18" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-        </Grid>
+            <Border BackgroundColor="#E8F6F4"
+                    Stroke="#BFE8E3"
+                    StrokeThickness="1"
+                    Padding="14"
+                    StrokeShape="RoundRectangle 14">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Posted by the R.E.A.D.S. Scholar"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#087F75" />
+                    <Label 
+                           FontSize="12"
+                           TextColor="#42615F" />
+                </VerticalStackLayout>
+            </Border>
 
-        <Label Text="TEMPORARY: this will move into the Nurse/R.E.A.D.S. dashboard once built."
-               FontSize="11" TextColor="#D9A441" FontAttributes="Italic"/>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Who should see this?"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#172B3A" />
+                <Border BackgroundColor="White"
+                        Stroke="#DDE4E9"
+                        StrokeThickness="1"
+                        Padding="10,2"
+                        StrokeShape="RoundRectangle 12">
+                    <Picker Title="Select audience"
+                            ItemsSource="{Binding TargetRoles}"
+                            SelectedItem="{Binding SelectedTargetRole}"
+                            TextColor="#172B3A" />
+                </Border>
+            </VerticalStackLayout>
 
-        <Label Text="Target Audience" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
-            <Picker ItemsSource="{Binding TargetRoles}" SelectedItem="{Binding SelectedTargetRole}" VerticalOptions="Center"/>
-        </Frame>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Announcement message"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#172B3A" />
+                <Border BackgroundColor="White"
+                        Stroke="#DDE4E9"
+                        StrokeThickness="1"
+                        Padding="12"
+                        StrokeShape="RoundRectangle 12">
+                    <Editor Placeholder="Write a clear clinic update..."
+                            Text="{Binding Message}"
+                            AutoSize="TextChanges"
+                            MinimumHeightRequest="140"
+                            TextColor="#172B3A" />
+                </Border>
+            </VerticalStackLayout>
 
-        <Label Text="Message" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-            <Editor Placeholder="e.g., Annual physical examination is ongoing at the Main Campus Clinic." Text="{Binding Message}" HeightRequest="100"/>
-        </Frame>
-
-        <Button Text="Post Announcement"
-                Command="{Binding PostCommand}"
-                BackgroundColor="#0F9B8E"
-                TextColor="White"
-                FontAttributes="Bold"
-                CornerRadius="26"
-                HeightRequest="54"/>
-
-    </VerticalStackLayout>
+            <Button Text="Post announcement"
+                    Command="{Binding PostCommand}"
+                    BackgroundColor="#079B8E"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    HeightRequest="52" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -16,19 +16,33 @@ public partial class PatientListItem : ObservableObject
 public partial class PatientsListViewModel : ObservableObject
 {
     private readonly string? _serviceTypeFilter;
+    private readonly bool _consultedOnly;
     private List<PatientListItem> _allPatients = new();
 
     public ObservableCollection<PatientListItem> Patients { get; } = new();
 
-    [ObservableProperty]
-    private string searchText = string.Empty;
+    [ObservableProperty] private string searchText = string.Empty;
+    [ObservableProperty] private bool hasPatients;
+    [ObservableProperty] private string listTitle = "Patients";
+    [ObservableProperty] private string listDescription = "Registered clinic patients";
+    [ObservableProperty] private string emptyMessage = "No patients found. Try another name or ID.";
+    [ObservableProperty] private string resultCountText = "0 patients";
 
-    [ObservableProperty]
-    private bool hasPatients;
-
-    public PatientsListViewModel(string? serviceTypeFilter = null)
+    public PatientsListViewModel(string? serviceTypeFilter = null, bool consultedOnly = false)
     {
         _serviceTypeFilter = serviceTypeFilter;
+        _consultedOnly = consultedOnly;
+
+        if (_consultedOnly)
+        {
+            ListTitle = "Patient Records";
+            ListDescription = "Patients with a saved medical or dental consultation";
+            EmptyMessage = "No consultation records yet. Patients appear here after a medical or dental record is saved.";
+        }
+        else if (!string.IsNullOrWhiteSpace(_serviceTypeFilter))
+        {
+            ListDescription = $"Patients with {serviceTypeFilter.ToLowerInvariant()} appointments";
+        }
     }
 
     public async Task RefreshAsync()
@@ -39,24 +53,32 @@ public partial class PatientsListViewModel : ObservableObject
         {
             var appointments = await Services.AppointmentService.Instance
                 .GetAllForServiceAsync(_serviceTypeFilter);
-
             var eligibleEmails = appointments
-                .Where(a => a.Status != "Cancelled")
-                .Select(a => a.PatientEmail)
+                .Where(appointment => appointment.Status != "Cancelled")
+                .Select(appointment => appointment.PatientEmail)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            patients = patients
-                .Where(p => eligibleEmails.Contains(p.Email))
-                .ToList();
+            patients = patients.Where(patient => eligibleEmails.Contains(patient.Email)).ToList();
         }
 
-        _allPatients = patients.Select(p => new PatientListItem
+        if (_consultedOnly)
         {
-            Email = p.Email,
-            FullName = p.FullName,
-            Role = p.Role,
-            IdNumber = p.IdNumber,
-            ProfileImagePath = p.ProfileImagePath
+            var medicalEmails = await Services.MedicalRecordService.Instance
+                .GetPatientEmailsWithConsultationsAsync();
+            var dentalEmails = await Services.DentalRecordService.Instance
+                .GetPatientEmailsWithRecordsAsync();
+            var consultedEmails = medicalEmails
+                .Concat(dentalEmails)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            patients = patients.Where(patient => consultedEmails.Contains(patient.Email)).ToList();
+        }
+
+        _allPatients = patients.Select(patient => new PatientListItem
+        {
+            Email = patient.Email,
+            FullName = patient.FullName,
+            Role = patient.Role,
+            IdNumber = patient.IdNumber,
+            ProfileImagePath = patient.ProfileImagePath
         }).ToList();
 
         ApplyFilter();
@@ -66,23 +88,33 @@ public partial class PatientsListViewModel : ObservableObject
 
     private void ApplyFilter()
     {
-        var filtered = string.IsNullOrWhiteSpace(SearchText)
+        var query = SearchText.Trim();
+        var filtered = string.IsNullOrWhiteSpace(query)
             ? _allPatients
-            : _allPatients.Where(p =>
-                p.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                p.IdNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
-              .ToList();
+            : _allPatients.Where(patient =>
+                patient.FullName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                patient.IdNumber.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
 
         Patients.Clear();
-        foreach (var p in filtered)
-            Patients.Add(p);
+        foreach (var patient in filtered)
+            Patients.Add(patient);
 
         HasPatients = Patients.Count > 0;
+        ResultCountText = Patients.Count == 1 ? "1 patient" : $"{Patients.Count} patients";
+        if (Patients.Count == 0)
+        {
+            EmptyMessage = _allPatients.Count == 0 && _consultedOnly
+                ? "No consultation records yet. Patients appear here after a medical or dental record is saved."
+                : _allPatients.Count == 0
+                    ? "No patients found."
+                    : "No patient records match your search.";
+        }
     }
 
     [RelayCommand]
     private async Task OpenPatient(PatientListItem patient)
-        => await Shell.Current.Navigation.PushAsync(new Views.PatientDetailPage(patient.Email, patient.FullName, patient.Role, patient.IdNumber));
+        => await Shell.Current.Navigation.PushAsync(
+            new Views.PatientDetailPage(patient.Email, patient.FullName, patient.Role, patient.IdNumber));
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();

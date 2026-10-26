@@ -14,15 +14,21 @@
 
     <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Appointments" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,50,18,14">
+        <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Appointments" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
         </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
 
         <!-- Tabs -->
         <Grid ColumnDefinitions="*,*,*">
@@ -67,14 +73,12 @@
                 <DataTemplate x:DataType="vm:DoctorAppointmentItem">
                     <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                            Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}" CommandParameter="{Binding .}"/>
-                        </Frame.GestureRecognizers>
+
                         <VerticalStackLayout Spacing="4">
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label Grid.Column="0" Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
                                 <Frame Grid.Column="1" BackgroundColor="{Binding StatusColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
-                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
+                                    <Label Text="{Binding StatusDisplay}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
                                 </Frame>
                             </Grid>
                             <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#9AA4AE"/>
@@ -88,6 +92,13 @@
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
+                            <Button IsVisible="{Binding CanConsult}" Text="Start Consultation"
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenConsultationCommand}"
+                                    CommandParameter="{Binding .}" BackgroundColor="#087A3D" TextColor="White"
+                                    FontAttributes="Bold" CornerRadius="10" HeightRequest="42" Margin="0,5,0,0"/>
+                            <Label IsVisible="{Binding CanConsult, Converter={StaticResource BoolInverter}}"
+                                   Text="Consultation opens after R.E.A.D.S. checks in the patient."
+                                   FontSize="11" TextColor="#8A6A1B" Margin="0,3,0,0"/>
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>

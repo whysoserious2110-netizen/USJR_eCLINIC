@@ -9,16 +9,23 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
 
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Consultation" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-            </Grid>
+            <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,50,18,14">
+        <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Medical Consultation" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
+        </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
 
+            <Label Text="Review the recorded vital signs, document findings, then complete the visit. You may add a prescription for this same patient before saving." FontSize="12" TextColor="#647067"/>
             <!-- Patient info -->
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
                 <VerticalStackLayout Spacing="2">
@@ -182,9 +189,13 @@
                 </Frame>
             </VerticalStackLayout>
 
-            <Button Text="Save Consultation"
+            <Button Text="Write Prescription for This Patient"
+                    Command="{Binding OpenPrescriptionCommand}"
+                    BackgroundColor="White" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
+                    FontAttributes="Bold" CornerRadius="12" HeightRequest="48"/>
+            <Button Text="Save &amp; Complete Visit"
                     Command="{Binding SaveConsultationCommand}"
-                    BackgroundColor="#0F9B8E"
+                    BackgroundColor="#087A3D"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="26"

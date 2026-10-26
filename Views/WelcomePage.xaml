@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.WelcomePage"
              x:DataType="vm:WelcomeViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#2C9057">
 
     <Grid RowDefinitions="*, Auto" Padding="40,0">
 
@@ -12,35 +12,36 @@
                               VerticalOptions="Center"
                               HorizontalOptions="Center"
                               Spacing="20">
+            <Image
+    Source="eclinic.png"
+    WidthRequest="180"
+    HeightRequest="180"
+    Aspect="AspectFit"
+    HorizontalOptions="Center"
+    Margin="0,0,0,0" />
 
-            <Frame BackgroundColor="#D5F5EF"
-                   WidthRequest="110"
-                   HeightRequest="110"
-                   CornerRadius="24"
-                   Padding="0"
-                   HasShadow="False"
-                   HorizontalOptions="Center">
-                <Label Text="&#128737;"
-                       FontSize="46"
-                       TextColor="#0F9B8E"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
-            </Frame>
-
-            <Label Text="USJ-R e-Clinic"
-                   FontSize="28"
-                   FontAttributes="Bold"
-                   TextColor="#12212E"
-                   HorizontalOptions="Center"/>
-
+            <Label
+                    FontSize="27"
+                    FontFamily="GeistBold"
+    
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="NoWrap">
+                        <Label.FormattedText>
+                        <FormattedString>
+                        <Span Text="USJ-R " TextColor="#36C65B" />
+                        <Span Text="e-Clinic" TextColor="#FFD000" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
             <Label Text="Your Health, Our Priority"
                    FontSize="15"
-                   TextColor="#6B7684"
+                   TextColor="White"
                    HorizontalOptions="Center"/>
 
             <Button Text="Sign in"
                     Command="{Binding SignInCommand}"
-                    BackgroundColor="#0F9B8E"
+                    BackgroundColor="#176519"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="26"
@@ -55,7 +56,7 @@
                Text="UNIVERSITY OF SAN JOSE - RECOLETOS"
                FontSize="11"
                CharacterSpacing="1"
-               TextColor="#A0A8B2"
+               TextColor="LightGreen"
                HorizontalOptions="Center"
                Margin="0,0,0,30"/>
 

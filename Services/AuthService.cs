@@ -35,11 +35,7 @@ public class AuthService
 
     private AuthService()
     {
-        var dbPath = Path.Combine(
-            FileSystem.AppDataDirectory,
-            "usjr_eclinic.db3");
-
-        _db = new SQLiteAsyncConnection(dbPath);
+        _db = ClinicDatabase.Connection;
     }
 
     private async Task EnsureInitializedAsync()
@@ -55,6 +51,26 @@ public class AuthService
                 return;
 
             await _db.CreateTableAsync<UserAccount>();
+            await _db.RunInTransactionAsync(connection =>
+            {
+                var columns = connection.GetTableInfo("UserAccount");
+                if (!columns.Any(column =>
+                        string.Equals(column.Name, "StudentProgramAndYear", StringComparison.OrdinalIgnoreCase)))
+                {
+                    connection.Execute(
+                        "ALTER TABLE UserAccount ADD COLUMN StudentProgramAndYear TEXT NOT NULL DEFAULT ''");
+                }
+            });
+            await _db.RunInTransactionAsync(connection =>
+            {
+                var columns = connection.GetTableInfo("UserAccount");
+                if (!columns.Any(column =>
+                        string.Equals(column.Name, "AllergyDetailsJson", StringComparison.OrdinalIgnoreCase)))
+                {
+                    connection.Execute(
+                        "ALTER TABLE UserAccount ADD COLUMN AllergyDetailsJson TEXT NOT NULL DEFAULT ''");
+                }
+            });
             await SeedTestAccountsAsync();
 
             _initialized = true;
@@ -423,24 +439,13 @@ public class AuthService
     {
         await EnsureInitializedAsync();
 
-        var all =
-            await _db.Table<UserAccount>()
-                .ToListAsync();
-
-        var staffRoles =
-            new[]
-            {
-                "Doctor",
-                "Nurse",
-                "Dentist"
-            };
+        var all = await _db.Table<UserAccount>().ToListAsync();
 
         return all
-            .Where(a =>
-                !staffRoles.Contains(
-                    a.Role))
-            .OrderBy(a =>
-                a.FullName)
+            .Where(account => CentralPatientRoles.Contains(
+                account.Role,
+                StringComparer.OrdinalIgnoreCase))
+            .OrderBy(account => account.FullName)
             .ToList();
     }
 
@@ -464,6 +469,12 @@ public class AuthService
     {
         await EnsureInitializedAsync();
 
+        // Preserve structured allergies when older profile editors update the account.
+        if (CurrentUser?.Id == updatedAccount.Id &&
+            string.IsNullOrWhiteSpace(updatedAccount.AllergyDetailsJson))
+        {
+            updatedAccount.AllergyDetailsJson = CurrentUser.AllergyDetailsJson;
+        }
         var result =
             await _db.UpdateAsync(
                 updatedAccount);
@@ -548,3 +559,6 @@ public class AuthService
         return true;
     }
 }
+
+
+

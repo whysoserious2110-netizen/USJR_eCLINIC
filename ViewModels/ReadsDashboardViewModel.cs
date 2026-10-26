@@ -54,10 +54,13 @@ public partial class ReadsDashboardViewModel : ObservableObject
     private bool hasPendingApprovals;
 
     [ObservableProperty]
+    private int readyCertificateCount;
+
+    [ObservableProperty]
     private bool hasNextArrivals;
 
     [ObservableProperty]
-    private string nextArrivalsSummary = "No confirmed visits scheduled today.";
+    private string nextArrivalsSummary = "No upcoming confirmed visits today.";
 
     public ObservableCollection<ReadsNextArrivalItem>
         NextArrivals
@@ -76,6 +79,8 @@ public partial class ReadsDashboardViewModel : ObservableObject
         await LoadAnnouncementAsync();
         await LoadNotificationSummaryAsync(user.Email);
         await LoadDashboardAppointmentsAsync();
+        ReadyCertificateCount = await Services.AppointmentService.Instance
+            .GetReadyCertificatePickupCountAsync();
     }
 
     private async Task LoadAnnouncementAsync()
@@ -120,55 +125,54 @@ public partial class ReadsDashboardViewModel : ObservableObject
             await Services.AppointmentService.Instance
                 .GetAllAppointmentsAsync();
 
+        var now = DateTime.Now;
         var todaysAppointments = allAppointments
             .Where(a =>
-                a.VisitDate.Date == DateTime.Today &&
+                a.VisitDate.Date == now.Date &&
                 a.Status == "Confirmed")
             .ToList();
 
-        await LoadNextArrivalsAsync(todaysAppointments);
+        await LoadNextArrivalsAsync(todaysAppointments, now);
     }
 
     private async Task LoadNextArrivalsAsync(
-        List<Models.Appointment> todaysAppointments)
+        List<Models.Appointment> todaysAppointments,
+        DateTime now)
     {
-        var now = DateTime.Now;
-
-        var confirmedAppointments = todaysAppointments
-            .OrderBy(a =>
+        // "Next Arrivals" should only show appointments that have not started yet.
+        // This removes yesterday's records and earlier appointments from today.
+        var upcomingAppointments = todaysAppointments
+            .Select(appointment => new
             {
-                if (DateTime.TryParse(
-                    a.VisitTime,
-                    out var parsedTime))
-                {
-                    return parsedTime.TimeOfDay;
-                }
-
-                return TimeSpan.MaxValue;
+                Appointment = appointment,
+                AppointmentDateTime = GetAppointmentDateTime(appointment)
             })
-            .Take(3)
+            .Where(item =>
+                item.AppointmentDateTime.HasValue &&
+                item.AppointmentDateTime.Value > now)
+            .OrderBy(item => item.AppointmentDateTime)
             .ToList();
 
-        NextArrivalsSummary = todaysAppointments.Count switch
+        NextArrivalsSummary = upcomingAppointments.Count switch
         {
-            0 => "No confirmed visits scheduled today.",
-            1 => "1 confirmed visit scheduled today.",
-            <= 3 => $"{todaysAppointments.Count} confirmed visits scheduled today.",
-            _ => $"Showing the next 3 of {todaysAppointments.Count} confirmed visits today."
+            0 => "No upcoming confirmed visits today.",
+            1 => "1 upcoming confirmed visit today.",
+            <= 3 => $"{upcomingAppointments.Count} upcoming confirmed visits today.",
+            _ => $"Showing the next 3 of {upcomingAppointments.Count} upcoming confirmed visits today."
         };
 
         NextArrivals.Clear();
 
-        foreach (var appointment in confirmedAppointments)
+        foreach (var upcoming in upcomingAppointments.Take(3))
         {
+            var appointment = upcoming.Appointment;
             var patient =
                 await Services.AuthService.Instance
                     .GetAccountByEmailAsync(
                         appointment.PatientEmail);
 
             var arrivalContext = GetArrivalTimeContext(
-                appointment.VisitDate,
-                appointment.VisitTime,
+                upcoming.AppointmentDateTime!.Value,
                 now);
 
             NextArrivals.Add(new ReadsNextArrivalItem
@@ -212,19 +216,20 @@ public partial class ReadsDashboardViewModel : ObservableObject
             NextArrivals.Count > 0;
     }
 
+    private static DateTime? GetAppointmentDateTime(
+        Models.Appointment appointment)
+    {
+        if (!DateTime.TryParse(appointment.VisitTime, out var parsedTime))
+            return null;
+
+        return appointment.VisitDate.Date.Add(parsedTime.TimeOfDay);
+    }
+
     private static (string label, Color color) GetArrivalTimeContext(
-        DateTime visitDate,
-        string visitTime,
+        DateTime appointmentDateTime,
         DateTime now)
     {
-        if (!DateTime.TryParse(visitTime, out var parsedTime))
-            return ("Scheduled", Color.FromArgb("#8793A0"));
-
-        var appointmentDateTime = visitDate.Date.Add(parsedTime.TimeOfDay);
         var timeUntilAppointment = appointmentDateTime - now;
-
-        if (timeUntilAppointment <= TimeSpan.Zero)
-            return ("Overdue", Color.FromArgb("#C54848"));
 
         if (timeUntilAppointment <= TimeSpan.FromMinutes(30))
             return ("Due soon", Color.FromArgb("#B47B19"));
@@ -300,6 +305,12 @@ public partial class ReadsDashboardViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task GoToCertificatePickup()
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
+    }
+
+    [RelayCommand]
     private async Task GoToTodaysOverview()
     {
         await Shell.Current.Navigation.PushAsync(
@@ -341,3 +352,4 @@ public partial class ReadsDashboardViewModel : ObservableObject
             new Views.ReadsProfilePage());
     }
 }
+

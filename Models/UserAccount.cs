@@ -13,12 +13,14 @@ public class UserAccount
     public string Role { get; set; } = string.Empty;
     public string IdNumber { get; set; } = string.Empty;
     public string ProgramOrDepartment { get; set; } = string.Empty;
+    public string StudentProgramAndYear { get; set; } = string.Empty;
     public string MobileNumber { get; set; } = string.Empty;
 
     public string BloodType { get; set; } = string.Empty;
     public string Height { get; set; } = string.Empty;
     public string Weight { get; set; } = string.Empty;
     public string Allergies { get; set; } = string.Empty;
+    public string AllergyDetailsJson { get; set; } = string.Empty;
     public string MedicalConditions { get; set; } = string.Empty;
     public string CurrentMedications { get; set; } = string.Empty;
     public string EmergencyContactName { get; set; } = string.Empty;
@@ -35,4 +37,7 @@ public class UserAccount
     public string EmploymentStatus { get; set; } = "Active"; // Active, On Leave, Inactive
 
     public string LicenseExpiration { get; set; } = string.Empty;
+
+
 }
+

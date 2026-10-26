@@ -13,8 +13,7 @@ public class AnnouncementService
 
     private AnnouncementService()
     {
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "usjr_eclinic.db3");
-        _db = new SQLiteAsyncConnection(dbPath);
+        _db = ClinicDatabase.Connection;
     }
 
     private async Task EnsureInitializedAsync()
@@ -49,10 +48,16 @@ public class AnnouncementService
         }
     }
 
-    public async Task AddAsync(Announcement announcement)
+    public async Task<bool> AddAsync(Announcement announcement)
     {
+        // R.E.A.D.S. Scholars are the clinic student workers responsible
+        // for posting announcements. Enforce this here as well as in the UI.
+        if (AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+            return false;
+
         await EnsureInitializedAsync();
         await _db.InsertAsync(announcement);
+        return true;
     }
 
     public async Task<Announcement?> GetActiveForRoleAsync(string role)

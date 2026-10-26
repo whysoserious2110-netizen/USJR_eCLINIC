@@ -5,55 +5,87 @@
              x:Class="USJR_eCLINIC.Views.PrescriptionDispensingPage"
              x:Name="Root"
              x:DataType="vm:PrescriptionDispensingViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F5F7F9">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
-
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Prescription Dispensing" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20,42,20,20" RowSpacing="14">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="30"
+                    TextColor="#078F83" BackgroundColor="Transparent" Padding="0"
+                    HeightRequest="42" WidthRequest="38" />
+            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                <Label Text="Dispensing" FontSize="22" FontAttributes="Bold" TextColor="#172B3A" />
+                <Label Text="Clinic-given prescriptions" FontSize="12" TextColor="#72808D" />
+            </VerticalStackLayout>
         </Grid>
 
-        <Label Text="Clinic-Given prescriptions awaiting dispensing." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
-
-        <VerticalStackLayout IsVisible="{Binding HasPending, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128137;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="Nothing pending dispensing" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Border BackgroundColor="#FFF6E5" Stroke="#F3E1B7" StrokeThickness="1"
+                    Padding="14" StrokeShape="RoundRectangle 14">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                    <Border WidthRequest="38" HeightRequest="38" BackgroundColor="White"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 19">
+                        <Label Text="&#128137;" FontSize="19" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="{Binding PendingCountText}" FontSize="14" FontAttributes="Bold" TextColor="#775817" />
+                        <Label Text="Stock is checked and deducted when dispensing is confirmed."
+                               FontSize="11" TextColor="#8F6B28" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+            <Border BackgroundColor="White" Stroke="#DDE4E9" StrokeThickness="1"
+                    Padding="12,1" StrokeShape="RoundRectangle 12">
+                <Entry Placeholder="Search patient or medicine" Text="{Binding SearchText}"
+                       ClearButtonVisibility="WhileEditing" TextColor="#172B3A" />
+            </Border>
         </VerticalStackLayout>
 
-        <CollectionView ItemsSource="{Binding PendingDispense}" IsVisible="{Binding HasPending}">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding PendingDispense}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20,52,20,20" Spacing="8" HorizontalOptions="Center">
+                    <Label Text="All caught up" FontSize="18" FontAttributes="Bold"
+                           TextColor="#425466" HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding EmptyMessage}" FontSize="12" TextColor="#72808D"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:DispenseListItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label FontSize="13" TextColor="#6B7684">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding MedicineName}"/>
-                                        <Span Text=" — "/>
-                                        <Span Text="{Binding Dosage}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
-                            <Button Text="Mark as Dispensed"
+                    <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
+                            Padding="15" Margin="0,0,0,11" StrokeShape="RoundRectangle 16">
+                        <VerticalStackLayout Spacing="11">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <VerticalStackLayout Spacing="3">
+                                    <Label Text="{Binding PatientName}" FontSize="15" FontAttributes="Bold"
+                                           TextColor="#172B3A" LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#8795A1" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="1" BackgroundColor="#FFF6E5" StrokeThickness="0"
+                                        Padding="9,4" StrokeShape="RoundRectangle 9" VerticalOptions="Start">
+                                    <Label Text="PENDING" FontSize="9" FontAttributes="Bold" TextColor="#916B1B" />
+                                </Border>
+                            </Grid>
+                            <BoxView HeightRequest="1" BackgroundColor="#EEF1F3" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <VerticalStackLayout Spacing="3">
+                                    <Label Text="{Binding MedicineName}" FontSize="14" FontAttributes="Bold" TextColor="#078F83" />
+                                    <Label Text="{Binding Dosage}" FontSize="12" TextColor="#5F6F7C" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" Spacing="3" HorizontalOptions="End" VerticalOptions="Center">
+                                    <Label Text="QUANTITY" FontSize="9" FontAttributes="Bold" TextColor="#8795A1" HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding Quantity, StringFormat='{0} units'}" FontSize="14"
+                                           FontAttributes="Bold" TextColor="#172B3A" HorizontalTextAlignment="End" />
+                                </VerticalStackLayout>
+                            </Grid>
+                            <Button Text="Confirm dispensing"
                                     Command="{Binding Source={x:Reference Root}, Path=BindingContext.MarkDispensedCommand}"
-                                    CommandParameter="{Binding .}"
-                                    BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
-                                    CornerRadius="18" HeightRequest="42" Margin="0,4,0,0"/>
+                                    CommandParameter="{Binding .}" BackgroundColor="#078F83"
+                                    TextColor="White" FontAttributes="Bold" CornerRadius="12"
+                                    HeightRequest="46" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -171,6 +171,15 @@ public partial class TodaysOverviewViewModel : ObservableObject
 
         await RefreshAsync();
 
+        if (checkedInAppointment == null)
+        {
+            await Shell.Current.DisplayAlert(
+                "Check-In Unavailable",
+                "This appointment is no longer eligible for check-in. Today's overview has been refreshed.",
+                "OK");
+            return;
+        }
+
         string queueNumber = checkedInAppointment.QueueNumber?.ToString()
             ?? "Not assigned";
 

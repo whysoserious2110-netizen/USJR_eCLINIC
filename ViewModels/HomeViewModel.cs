@@ -8,6 +8,8 @@ public partial class UpcomingVisitItem : ObservableObject
 {
     public int AppointmentId { get; set; }
 
+    public DateTime VisitDateTime { get; set; }
+
     public string Day { get; set; } = string.Empty;
 
     public string Month { get; set; } = string.Empty;
@@ -64,9 +66,45 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     private bool canViewApeResults;
 
+    [ObservableProperty]
+    private Color bookAppointmentCardBackground = Colors.White;
+
+    [ObservableProperty]
+    private Color medicalRecordsCardBackground = Colors.White;
+
+    [ObservableProperty]
+    private Color dentalRecordsCardBackground = Colors.White;
+
+    [ObservableProperty]
+    private Color prescriptionsCardBackground = Colors.White;
+
+    [ObservableProperty]
+    private Color apeLabResultsCardBackground = Colors.White;
+
     public ObservableCollection<UpcomingVisitItem>
         UpcomingVisits
     { get; } = new();
+
+    private void SelectServiceCard(string selectedCard)
+    {
+        var selectedColor = Color.FromArgb("#FFF3C4");
+
+        BookAppointmentCardBackground = selectedCard == "BookAppointment"
+            ? selectedColor
+            : Colors.White;
+        MedicalRecordsCardBackground = selectedCard == "MedicalRecords"
+            ? selectedColor
+            : Colors.White;
+        DentalRecordsCardBackground = selectedCard == "DentalRecords"
+            ? selectedColor
+            : Colors.White;
+        PrescriptionsCardBackground = selectedCard == "Prescriptions"
+            ? selectedColor
+            : Colors.White;
+        ApeLabResultsCardBackground = selectedCard == "ApeLabResults"
+            ? selectedColor
+            : Colors.White;
+    }
 
     public async Task RefreshAsync()
     {
@@ -116,7 +154,7 @@ public partial class HomeViewModel : ObservableObject
         return hour switch
         {
             < 11 => "Good morning,",
-            < 18=> "Good afternoon,",
+            < 18 => "Good afternoon,",
             _ => "Good evening,"
         };
     }
@@ -162,20 +200,10 @@ public partial class HomeViewModel : ObservableObject
             UnseenAppointmentCount > 0;
     }
 
-    private async Task LoadUpcomingVisitsAsync(
-        string patientEmail)
+    private async Task LoadUpcomingVisitsAsync(string patientEmail)
     {
-        var appointments =
-            await Services.AppointmentService.Instance
-                .GetAllForPatientAsync(patientEmail);
-
-        var upcoming = appointments
-            .Where(a =>
-                a.VisitDate.Date >= DateTime.Today &&
-                a.Status != "Cancelled")
-            .OrderBy(a => a.VisitDate)
-            .ThenBy(a => a.VisitTime)
-            .ToList();
+        var upcoming = await Services.AppointmentService.Instance
+            .GetUpcomingForPatientAsync(patientEmail);
 
         UpcomingVisits.Clear();
 
@@ -184,65 +212,35 @@ public partial class HomeViewModel : ObservableObject
             UpcomingVisits.Add(new UpcomingVisitItem
             {
                 AppointmentId = appointment.Id,
-
-                Day =
-                    appointment.VisitDate.Day.ToString(),
-
-                Month =
-                    appointment.VisitDate
-                        .ToString("MMM")
-                        .ToUpper(),
-
-                Title =
-                    appointment.ServiceType,
-
-                SubService =
-                    appointment.SubService,
-
-                Details =
-                    $"{appointment.VisitTime} · " +
-                    $"{appointment.Location}",
-
+                VisitDateTime = Services.AppointmentService.GetVisitDateTime(appointment),
+                Day = appointment.VisitDate.Day.ToString(),
+                Month = appointment.VisitDate.ToString("MMM").ToUpperInvariant(),
+                Title = appointment.ServiceType,
+                SubService = appointment.SubService,
+                Details = $"{appointment.VisitTime} · {appointment.Location}",
                 Status = appointment.Status switch
                 {
                     "CheckedIn" => "Checked In",
-
-                    "VitalsRecorded" =>
-                        "Vitals Recorded",
-
+                    "VitalsRecorded" => "Vitals Recorded",
                     _ => appointment.Status
                 },
-
                 StatusColor = appointment.Status switch
                 {
-                    "Confirmed" =>
-                        Color.FromArgb("#0F9B8E"),
-
-                    "CheckedIn" =>
-                        Color.FromArgb("#2E6FDB"),
-
-                    "VitalsRecorded" =>
-                        Color.FromArgb("#7B61C8"),
-
-                    "Completed" =>
-                        Color.FromArgb("#4A90D9"),
-
-                    "Cancelled" =>
-                        Color.FromArgb("#E05B5B"),
-
-                    _ =>
-                        Color.FromArgb("#D9A441")
+                    "Confirmed" => Color.FromArgb("#0F9B8E"),
+                    "CheckedIn" => Color.FromArgb("#2E6FDB"),
+                    "VitalsRecorded" => Color.FromArgb("#7B61C8"),
+                    _ => Color.FromArgb("#D9A441")
                 }
             });
         }
 
-        HasUpcomingVisits =
-            UpcomingVisits.Count > 0;
+        HasUpcomingVisits = UpcomingVisits.Count > 0;
     }
-
     [RelayCommand]
     private async Task BookAppointment()
     {
+        SelectServiceCard("BookAppointment");
+
         await Shell.Current.Navigation.PushAsync(
             new Views.BookAppointmentPage());
     }
@@ -250,6 +248,8 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task MedicalRecords()
     {
+        SelectServiceCard("MedicalRecords");
+
         await Shell.Current.Navigation.PushAsync(
             new Views.MedicalRecordsPage());
     }
@@ -257,6 +257,8 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task DentalRecords()
     {
+        SelectServiceCard("DentalRecords");
+
         await Shell.Current.Navigation.PushAsync(
             new Views.DentalRecordsPage());
     }
@@ -264,6 +266,8 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task Prescriptions()
     {
+        SelectServiceCard("Prescriptions");
+
         await Shell.Current.Navigation.PushAsync(
             new Views.PrescriptionsPage());
     }
@@ -291,8 +295,20 @@ public partial class HomeViewModel : ObservableObject
             return;
         }
 
+        SelectServiceCard("ApeLabResults");
+
         await Shell.Current.Navigation.PushAsync(
             new Views.ApeLabResultsPage());
+    }
+
+    [RelayCommand]
+    private async Task OpenUpcomingVisit(UpcomingVisitItem? item)
+    {
+        if (item == null)
+            return;
+
+        await Shell.Current.Navigation.PushAsync(
+            new Views.AppointmentsPage(item.AppointmentId));
     }
 
     [RelayCommand]
@@ -316,3 +332,4 @@ public partial class HomeViewModel : ObservableObject
             new Views.ProfilePage());
     }
 }
+

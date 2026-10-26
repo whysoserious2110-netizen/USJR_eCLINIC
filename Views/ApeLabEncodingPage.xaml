@@ -3,69 +3,182 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.ApeLabEncodingPage"
+             x:Name="Root"
              x:DataType="vm:ApeLabEncodingViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F5F7F9">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="16">
-
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="APE Lab Result Encoding" FontSize="18" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+        <VerticalStackLayout Padding="20,40,20,28" Spacing="16">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="30"
+                        TextColor="#078F83" BackgroundColor="Transparent" Padding="0"
+                        HeightRequest="42" WidthRequest="38" />
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                    <Label Text="APE &amp; Lab Results" FontSize="21" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Enter results from verified laboratory reports" FontSize="12" TextColor="#72808D" />
+                </VerticalStackLayout>
             </Grid>
 
-            <Label Text="For Faculty, Admin Personnel, and Non-Teaching Personnel only." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+            <Border BackgroundColor="#F1ECFA" Stroke="#E2DAF4" StrokeThickness="1"
+                    Padding="13" StrokeShape="RoundRectangle 14">
+                <Label Text="For Faculty, Admin Personnel, and Non-Teaching patients. Select the correct patient before entering results."
+                       FontSize="12" TextColor="#5E5279" />
+            </Border>
 
-            <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
-                <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
-                        ItemDisplayBinding="{Binding DisplayName}" Title="Select patient" VerticalOptions="Center"/>
-            </Frame>
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
+                    Padding="15" StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="9">
+                    <Label Text="PATIENT" FontSize="10" FontAttributes="Bold" TextColor="#72808D" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#DDE4E9" StrokeThickness="1"
+                            Padding="10,1" StrokeShape="RoundRectangle 11">
+                        <Entry Placeholder="Search by patient name or ID" Text="{Binding PatientSearchText}"
+                               ClearButtonVisibility="WhileEditing" IsEnabled="{Binding HasPatients}"
+                               TextColor="#172B3A" />
+                    </Border>
+                    <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding IsLoadingPatients}" ColumnSpacing="8">
+                        <ActivityIndicator IsRunning="{Binding IsLoadingPatients}" Color="#078F83"
+                                           HeightRequest="20" WidthRequest="20" />
+                        <Label Grid.Column="1" Text="{Binding PatientLoadMessage}" FontSize="11"
+                               TextColor="#72808D" VerticalOptions="Center" />
+                    </Grid>
+                    <Label Text="{Binding PatientLoadMessage}" IsVisible="{Binding HasNoPatients}"
+                           FontSize="11" TextColor="#A36E1D" />
+                    <Label Text="Type the patient's name or ID, then select the matching record."
+                           IsVisible="{Binding IsSearchPromptVisible}" FontSize="11" TextColor="#72808D" />
 
-            <Label Text="CBC" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                <Entry Placeholder="e.g., Normal" Text="{Binding Cbc}"/>
-            </Frame>
+                    <CollectionView ItemsSource="{Binding FilteredPatients}"
+                                    IsVisible="{Binding HasSearchResults}"
+                                    HeightRequest="210" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ApePatientOption">
+                                <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
+                                        Padding="11" Margin="0,0,0,6" StrokeShape="RoundRectangle 11">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectPatientCommand}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding FullName}" FontSize="13" FontAttributes="Bold"
+                                                   TextColor="#172B3A" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding IdNumberDisplay}" FontSize="11"
+                                                   FontAttributes="Bold" TextColor="#078F83" />
+                                            <Label Text="{Binding Role}" FontSize="10" TextColor="#72808D" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Text="›" FontSize="24" TextColor="#9AA6B2"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-            <Label Text="Urinalysis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                <Entry Placeholder="e.g., Normal" Text="{Binding Urinalysis}"/>
-            </Frame>
+                    <Label Text="No matching patient. Search again using the registered name or ID."
+                           IsVisible="{Binding HasNoSearchResults}" FontSize="11" TextColor="#A36E1D" />
 
-            <Label Text="Chest X-ray" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                <Entry Placeholder="e.g., Clear lung fields" Text="{Binding ChestXray}"/>
-            </Frame>
+                    <Border IsVisible="{Binding HasSelectedPatient}" BackgroundColor="#EAF6F4"
+                            Stroke="#CFE9E4" StrokeThickness="1" Padding="12"
+                            StrokeShape="RoundRectangle 12">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="3">
+                            <Label Text="{Binding SelectedPatient.FullName}" FontSize="14"
+                                   FontAttributes="Bold" TextColor="#172B3A" />
+                            <Button Grid.Column="1" Grid.RowSpan="3" Text="Change"
+                                    Command="{Binding ChangePatientCommand}" FontSize="11"
+                                    TextColor="#078F83" BackgroundColor="White" CornerRadius="10"
+                                    Padding="11,5" VerticalOptions="Center" />
+                            <Label Grid.Row="1" Text="{Binding SelectedPatient.IdNumberDisplay}"
+                                   FontSize="12" FontAttributes="Bold" TextColor="#078F83" />
+                            <Label Grid.Row="2" Text="{Binding SelectedPatient.Role}"
+                                   FontSize="11" TextColor="#57756F" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            <Label Text="ECG" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                <Entry Placeholder="e.g., Normal sinus rhythm" Text="{Binding Ecg}"/>
-            </Frame>
+            <Grid ColumnDefinitions="*,Auto" Margin="2,2,2,0">
+                <Label Text="Laboratory results" FontSize="16" FontAttributes="Bold" TextColor="#172B3A" />
+                <Label Grid.Column="1" Text="OPTIONAL IF NOT PERFORMED" FontSize="9" FontAttributes="Bold"
+                       TextColor="#8795A1" VerticalOptions="Center" />
+            </Grid>
 
-            <Label Text="Drug Test" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                <Entry Placeholder="e.g., Negative" Text="{Binding DrugTest}"/>
-            </Frame>
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="CBC" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Complete Blood Count" FontSize="11" TextColor="#8795A1" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Enter the CBC result" Text="{Binding Cbc}"
+                                AutoSize="TextChanges" MinimumHeightRequest="58" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            <Label Text="Overall Findings" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                <Editor Placeholder="Summary of overall findings..." Text="{Binding OverallFindings}" HeightRequest="80"/>
-            </Frame>
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Urinalysis" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Enter the urinalysis result" Text="{Binding Urinalysis}"
+                                AutoSize="TextChanges" MinimumHeightRequest="58" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            <Button Text="Save Results"
-                    Command="{Binding SaveResultCommand}"
-                    BackgroundColor="#0F9B8E"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="26"
-                    HeightRequest="54"
-                    Margin="0,10,0,0"/>
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Chest X-ray" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Enter the chest X-ray report summary" Text="{Binding ChestXray}"
+                                AutoSize="TextChanges" MinimumHeightRequest="58" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="ECG" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Electrocardiogram" FontSize="11" TextColor="#8795A1" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Enter the ECG result" Text="{Binding Ecg}"
+                                AutoSize="TextChanges" MinimumHeightRequest="58" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Drug test" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Enter the drug test result" Text="{Binding DrugTest}"
+                                AutoSize="TextChanges" MinimumHeightRequest="58" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="#EAF6F4" Stroke="#CFE9E4" StrokeThickness="1" Padding="14"
+                    StrokeShape="RoundRectangle 15">
+                <VerticalStackLayout Spacing="7">
+                    <Label Text="Overall findings" FontSize="13" FontAttributes="Bold" TextColor="#087D70" />
+                    <Label Text="Add a concise summary based on the verified results." FontSize="11" TextColor="#57756F" />
+                    <Border BackgroundColor="White" Stroke="#D6E8E4" StrokeThickness="1" Padding="10,5"
+                            StrokeShape="RoundRectangle 10">
+                        <Editor Placeholder="Summary and relevant notes" Text="{Binding OverallFindings}"
+                                AutoSize="TextChanges" MinimumHeightRequest="88" TextColor="#172B3A" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Save APE results" Command="{Binding SaveResultCommand}"
+                    BackgroundColor="#078F83" TextColor="White" FontSize="15"
+                    FontAttributes="Bold" CornerRadius="14" HeightRequest="52" Margin="0,2,0,0" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

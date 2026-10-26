@@ -1,193 +1,173 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
 <ContentPage
     x:Class="USJR_eCLINIC.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
     x:DataType="vm:LoginViewModel"
-    BackgroundColor="#F7F8FA">
+    BackgroundColor="White"
+    Shell.NavBarIsVisible="False"
+    NavigationPage.HasNavigationBar="False">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,70,30,30"
-            Spacing="0">
+        <VerticalStackLayout Padding="20,22,20,28" Spacing="0">
 
-            <!-- Header -->
-            <Label
-                Text="Welcome Back"
-                FontSize="30"
-                FontAttributes="Bold"
-                TextColor="#12212E"/>
+            <Image Source="eclinic.png"
+                   WidthRequest="100"
+                   HeightRequest="100"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,8" />
 
-            <Label
-                Text="Log in to manage your medical records online"
-                FontSize="14"
-                TextColor="#6B7684"
-                Margin="0,6,0,30"/>
+            <Label HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   Margin="0,0,0,25">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="USJ-R " TextColor="#2C9057" />
+                        <Span Text="e-Clinic" TextColor="#F4C400" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
 
-            <!-- Email or ID -->
-            <Label
-                Text="Email or Student/Employee ID"
-                FontSize="13"
-                FontAttributes="Bold"
-                TextColor="#12212E"
-                Margin="0,50,0,8"/>
+            <Label Text="Welcome Back"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="#17221B" />
 
-            <Frame
-                BackgroundColor="White"
-                BorderColor="#E2E6EA"
-                CornerRadius="12"
-                Padding="14,0"
-                HeightRequest="52"
-                HasShadow="False"
-                Margin="0,0,0,20">
+            <Label Text="Log in to manage your medical records online"
+                   FontSize="14"
+                   TextColor="#526057"
+                   Margin="0,10,0,18" />
 
-                <Grid
-                    ColumnDefinitions="Auto,*"
-                    ColumnSpacing="10">
+            <Label Text="Email or Student/Employee ID"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#17221B"
+                   Margin="0,0,0,7" />
 
-                    <Label
-                        Grid.Column="0"
-                        Text="&#9993;"
-                        FontSize="18"
-                        TextColor="#9AA4AE"
-                        VerticalOptions="Center"/>
+            <Border BackgroundColor="White"
+                    Stroke="#DCE5DD"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12,0"
+                    HeightRequest="48"
+                    Margin="0,0,0,16">
+                <Entry Text="{Binding EmailOrId}"
+                       Placeholder="Enter your email or ID"
+                       PlaceholderColor="#8B9DB5"
+                       Keyboard="Text"
+                       BackgroundColor="Transparent"
+                       TextColor="#24342B"
+                       FontSize="14"
+                       VerticalOptions="Center"
+                       ReturnType="Next" />
+            </Border>
 
-                    <Entry
-                        Grid.Column="1"
-                        Text="{Binding EmailOrId}"
-                        Placeholder="e.g., student-id@usjr.edu.ph"
-                        BackgroundColor="Transparent"
-                        VerticalOptions="Center"
-                        ReturnType="Next"/>
-                </Grid>
-            </Frame>
+            <Label Text="Password"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#17221B"
+                   Margin="0,0,0,7" />
 
-            <!-- Password -->
-            <Label
-                Text="Password"
-                FontSize="13"
-                FontAttributes="Bold"
-                TextColor="#12212E"
-                Margin="0,0,0,8"/>
+            <Border BackgroundColor="White"
+                    Stroke="#DCE5DD"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12,0"
+                    HeightRequest="48">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Entry Grid.Column="0"
+                           Text="{Binding Password}"
+                           Placeholder="Enter your password"
+                           PlaceholderColor="#8B9DB5"
+                           IsPassword="{Binding IsPasswordHidden}"
+                           BackgroundColor="Transparent"
+                           TextColor="#24342B"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           ReturnType="Done"
+                           ReturnCommand="{Binding LogInCommand}" />
 
-            <Frame
-                BackgroundColor="White"
-                BorderColor="#E2E6EA"
-                CornerRadius="12"
-                Padding="14,0"
-                HeightRequest="52"
-                HasShadow="False"
-                Margin="0,0,0,10">
-
-                <Grid
-                    ColumnDefinitions="Auto,*,Auto"
-                    ColumnSpacing="10">
-
-                    <Label
-                        Grid.Column="0"
-                        Text="&#128274;"
-                        FontSize="16"
-                        TextColor="#9AA4AE"
-                        VerticalOptions="Center"/>
-
-                    <Entry
-                        Grid.Column="1"
-                        Text="{Binding Password}"
-                        Placeholder="Enter your password"
-                        IsPassword="{Binding IsPasswordHidden}"
-                        BackgroundColor="Transparent"
-                        VerticalOptions="Center"
-                        ReturnType="Done"
-                        ReturnCommand="{Binding LogInCommand}"/>
-
-                    <Label
-                        Grid.Column="2"
-                        Text="{Binding ShowHideText}"
-                        FontSize="13"
-                        FontAttributes="Bold"
-                        TextColor="#0F9B8E"
-                        VerticalOptions="Center">
-
+                    <Label Grid.Column="1"
+                           Text="{Binding ShowHideText}"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#087A3D"
+                           VerticalOptions="Center"
+                           Padding="4,10,0,10">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding TogglePasswordVisibilityCommand}"/>
+                                Command="{Binding TogglePasswordVisibilityCommand}" />
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
-            </Frame>
+            </Border>
 
-            <!-- Remember me and Forgot Password -->
-            <Grid
-                ColumnDefinitions="*,Auto"
-                Margin="0,0,0,24">
-
-                <HorizontalStackLayout
-                    Grid.Column="0"
-                    Spacing="8"
-                    VerticalOptions="Center">
-
-                    <CheckBox
-                        IsChecked="{Binding RememberMe}"
-                        Color="#0F9B8E"
-                        HeightRequest="22"
-                        WidthRequest="22"/>
-
-                    <Label
-                        Text="Remember me"
-                        FontSize="14"
-                        TextColor="#12212E"
-                        VerticalOptions="Center"/>
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="8"
+                  Margin="0,12,0,18">
+                <HorizontalStackLayout Grid.Column="0"
+                                       Spacing="3"
+                                       VerticalOptions="Center">
+                    <CheckBox IsChecked="{Binding RememberMe}"
+                              Color="#087A3D"
+                              HeightRequest="24"
+                              WidthRequest="24"
+                              VerticalOptions="Center" />
+                    <Label Text="Remember me"
+                           FontSize="12"
+                           TextColor="#526057"
+                           VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
-                <Label
-                    Grid.Column="1"
-                    Text="Forgot Password?"
-                    FontSize="14"
-                    FontAttributes="Bold"
-                    TextColor="#0F9B8E"
-                    VerticalOptions="Center">
-
+                <Label Grid.Column="1"
+                       Text="Forgot Password?"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#087A3D"
+                       VerticalOptions="Center"
+                       Padding="4,8,0,8">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer
-                            Command="{Binding ForgotPasswordCommand}"/>
+                            Command="{Binding ForgotPasswordCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
 
-            <!-- Log In -->
-            <Button
-                Text="Log In"
-                Command="{Binding LogInCommand}"
-                IsEnabled="{Binding IsLoggingIn,
-                    Converter={StaticResource BoolInverter}}"
-                BackgroundColor="#0F9B8E"
-                TextColor="White"
-                FontAttributes="Bold"
-                CornerRadius="26"
-                HeightRequest="54"/>
-
-            <!-- Sign Up -->
-            <HorizontalStackLayout
-                HorizontalOptions="Center"
-                Margin="0,24,0,0"
-                Spacing="4">
-
-                <Label
-                    Text="Don't have an account?"
-                    FontSize="14"
-                    TextColor="#12212E"/>
-
-                <Label
-                    Text="Sign Up"
+            <Button Text="Log In"
+                    Command="{Binding LogInCommand}"
+                    IsEnabled="{Binding IsLoggingIn, Converter={StaticResource BoolInverter}}"
+                    BackgroundColor="#176519"
+                    TextColor="White"
                     FontSize="14"
                     FontAttributes="Bold"
-                    TextColor="#0F9B8E">
+                    CornerRadius="12"
+                    HeightRequest="48" />
 
+            <ActivityIndicator IsVisible="{Binding IsLoggingIn}"
+                               IsRunning="{Binding IsLoggingIn}"
+                               Color="#087A3D"
+                               Margin="0,8,0,0" />
+
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="5"
+                                   Margin="0,16,0,0">
+                <Label Text="Don't have an account?"
+                       FontSize="12"
+                       TextColor="#526057"
+                       VerticalOptions="Center" />
+                <Label Text="Sign Up"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#087A3D"
+                       VerticalOptions="Center"
+                       Padding="2,8">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer
-                            Command="{Binding SignUpCommand}"/>
+                            Command="{Binding SignUpCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>

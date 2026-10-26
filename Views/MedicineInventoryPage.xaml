@@ -5,106 +5,146 @@
              x:Class="USJR_eCLINIC.Views.MedicineInventoryPage"
              x:Name="Root"
              x:DataType="vm:MedicineInventoryViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F5F7F9">
 
     <Grid>
-        <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
-
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Medicine Inventory" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-                <Label Grid.Column="2" Text="&#10133;" FontSize="20" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenAddNewCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
+        <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="20,40,20,18" RowSpacing="14">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="30"
+                        TextColor="#078F83" BackgroundColor="Transparent" Padding="0"
+                        HeightRequest="42" WidthRequest="36" />
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                    <Label Text="Medicine Inventory" FontSize="21" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Track stock and restock levels" FontSize="12" TextColor="#72808D" />
+                </VerticalStackLayout>
+                <Button Grid.Column="2" Text="+ Add medicine" Command="{Binding OpenAddNewCommand}"
+                        FontSize="12" FontAttributes="Bold" TextColor="White" BackgroundColor="#078F83"
+                        CornerRadius="12" Padding="12,8" VerticalOptions="Center" />
             </Grid>
 
-            <CollectionView ItemsSource="{Binding Items}">
+            <Border Grid.Row="1" BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
+                    Padding="14" StrokeShape="RoundRectangle 15">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <Border WidthRequest="42" HeightRequest="42" BackgroundColor="#E8F6F4"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 21">
+                        <Label Text="&#128138;" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="{Binding StockSummaryText}" FontSize="14" FontAttributes="Bold" TextColor="#172B3A" />
+                        <Label Text="{Binding TotalItemCount, StringFormat='{0} medicine types in inventory'}"
+                               FontSize="12" TextColor="#72808D" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2" RowDefinitions="Auto,Auto" RowSpacing="9">
+                <Border Grid.Row="0" BackgroundColor="White" Stroke="#DDE4E9" StrokeThickness="1"
+                        Padding="12,1" StrokeShape="RoundRectangle 12">
+                    <Entry Placeholder="Search medicine name" Text="{Binding SearchText}"
+                           ClearButtonVisibility="WhileEditing" TextColor="#172B3A" />
+                </Border>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Border BackgroundColor="White" Stroke="#DDE4E9" StrokeThickness="1"
+                            Padding="10,0" StrokeShape="RoundRectangle 12">
+                        <Picker Title="Filter inventory" ItemsSource="{Binding FilterOptions}"
+                                SelectedItem="{Binding SelectedFilter}" TextColor="#172B3A" />
+                    </Border>
+                    <Label Grid.Column="1" Text="{Binding ResultCountText}" FontSize="12"
+                           TextColor="#72808D" VerticalOptions="Center" />
+                </Grid>
+            </Grid>
+
+            <CollectionView Grid.Row="3" ItemsSource="{Binding Items}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="20,50,20,20" Spacing="8" HorizontalOptions="Center">
+                        <Label Text="Inventory is empty" FontSize="17" FontAttributes="Bold"
+                               TextColor="#425466" HorizontalTextAlignment="Center" />
+                        <Label Text="{Binding EmptyMessage}" FontSize="12" TextColor="#72808D"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:MedicineStockItem">
-                        <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                               Padding="16" Margin="0,0,0,12" HasShadow="False">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                    <Label Text="{Binding MedicineName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                    <Label FontSize="12">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding Quantity}"/>
-                                                <Span Text=" "/>
-                                                <Span Text="{Binding Unit}"/>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                    <Frame IsVisible="{Binding IsLowStock}" BackgroundColor="#FDECEC" CornerRadius="8"
-                                           Padding="8,2" HasShadow="False" HorizontalOptions="Start">
-                                        <Label Text="Low Stock" FontSize="10" FontAttributes="Bold" TextColor="#E05B5B"/>
-                                    </Frame>
+                        <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
+                                Padding="14" Margin="0,0,0,10" StrokeShape="RoundRectangle 15">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                                    <Label Text="{Binding MedicineName}" FontSize="15" FontAttributes="Bold"
+                                           TextColor="#172B3A" />
+                                    <Label Text="{Binding ThresholdDisplay}" FontSize="11" TextColor="#72808D" />
                                 </VerticalStackLayout>
-                                <Button Grid.Column="1" Text="Add Stock"
+                                <Border Grid.Row="0" Grid.Column="1"
+                                        BackgroundColor="{Binding StockBadgeColor}"
+                                        Padding="8,4" StrokeThickness="0" StrokeShape="RoundRectangle 9"
+                                        VerticalOptions="Start">
+                                    <Label Text="{Binding StockStateText}" FontSize="9" FontAttributes="Bold"
+                                           TextColor="#FFFFFF" />
+                                </Border>
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding QuantityDisplay}"
+                                       FontSize="19" FontAttributes="Bold" TextColor="#078F83" VerticalOptions="Center" />
+                                <Button Grid.Row="1" Grid.Column="1" Text="Add stock"
                                         Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenAddStockCommand}"
-                                        CommandParameter="{Binding .}"
-                                        BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
-                                        CornerRadius="16" HeightRequest="36" FontSize="12"
-                                        VerticalOptions="Center"/>
+                                        CommandParameter="{Binding .}" BackgroundColor="#E8F6F4"
+                                        TextColor="#078F83" FontSize="12" FontAttributes="Bold"
+                                        CornerRadius="11" HeightRequest="38" Padding="12,0" />
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-        </VerticalStackLayout>
-
-        <!-- Add Stock modal -->
-        <Grid IsVisible="{Binding IsAddingStock}" BackgroundColor="#66000000">
-            <Frame BackgroundColor="White" CornerRadius="16" Padding="20" Margin="40" VerticalOptions="Center" HasShadow="True">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="{Binding SelectedItem.MedicineName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-                    <Label Text="Amount to add" FontSize="12" TextColor="#9AA4AE"/>
-                    <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,0" HeightRequest="48" HasShadow="False">
-                        <Entry Placeholder="e.g., 50" Text="{Binding AmountToAdd}" Keyboard="Numeric"/>
-                    </Frame>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Button Grid.Column="0" Text="Cancel" Command="{Binding CancelAddStockCommand}"
-                                BackgroundColor="#F0F2F4" TextColor="#12212E" FontAttributes="Bold" CornerRadius="18" HeightRequest="44"/>
-                        <Button Grid.Column="1" Text="Add" Command="{Binding ConfirmAddStockCommand}"
-                                BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold" CornerRadius="18" HeightRequest="44"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
         </Grid>
 
-        <!-- Add New Medicine modal -->
-        <Grid IsVisible="{Binding IsAddingNew}" BackgroundColor="#66000000">
-            <Frame BackgroundColor="White" CornerRadius="16" Padding="20" Margin="40" VerticalOptions="Center" HasShadow="True">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Add New Medicine" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-
-                    <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,0" HeightRequest="48" HasShadow="False">
-                        <Entry Placeholder="Medicine name" Text="{Binding NewMedicineName}"/>
-                    </Frame>
-                    <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,0" HeightRequest="48" HasShadow="False">
-                        <Entry Placeholder="Starting quantity" Text="{Binding NewQuantity}" Keyboard="Numeric"/>
-                    </Frame>
-                    <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,0" HeightRequest="48" HasShadow="False">
-                        <Entry Placeholder="Unit (e.g., tablets, bottles)" Text="{Binding NewUnit}"/>
-                    </Frame>
-
+        <Grid IsVisible="{Binding IsAddingStock}" BackgroundColor="#660E1B24">
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="20"
+                    Margin="28" VerticalOptions="Center" StrokeShape="RoundRectangle 18">
+                <VerticalStackLayout Spacing="13">
+                    <Label Text="Restock medicine" FontSize="18" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="{Binding SelectedItem.MedicineName}" FontSize="14" TextColor="#078F83" />
+                    <Label Text="{Binding SelectedItem.Quantity, StringFormat='Current quantity: {0}'}"
+                           FontSize="12" TextColor="#72808D" />
+                    <Border BackgroundColor="#F5F7F9" Stroke="#DDE4E9" StrokeThickness="1"
+                            Padding="12,1" StrokeShape="RoundRectangle 12">
+                        <Entry Placeholder="Quantity to add" Text="{Binding AmountToAdd}"
+                               Keyboard="Numeric" TextColor="#172B3A" />
+                    </Border>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <Button Grid.Column="0" Text="Cancel" Command="{Binding CancelAddNewCommand}"
-                                BackgroundColor="#F0F2F4" TextColor="#12212E" FontAttributes="Bold" CornerRadius="18" HeightRequest="44"/>
-                        <Button Grid.Column="1" Text="Add" Command="{Binding ConfirmAddNewCommand}"
-                                BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold" CornerRadius="18" HeightRequest="44"/>
+                        <Button Text="Cancel" Command="{Binding CancelAddStockCommand}"
+                                BackgroundColor="#EEF1F3" TextColor="#425466" CornerRadius="12" />
+                        <Button Grid.Column="1" Text="Add stock" Command="{Binding ConfirmAddStockCommand}"
+                                BackgroundColor="#078F83" TextColor="White" FontAttributes="Bold" CornerRadius="12" />
                     </Grid>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
         </Grid>
 
+        <Grid IsVisible="{Binding IsAddingNew}" BackgroundColor="#660E1B24">
+            <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="20"
+                    Margin="28" VerticalOptions="Center" StrokeShape="RoundRectangle 18">
+                <VerticalStackLayout Spacing="11">
+                    <Label Text="Add medicine" FontSize="18" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Border BackgroundColor="#F5F7F9" Stroke="#DDE4E9" StrokeThickness="1" Padding="12,1" StrokeShape="RoundRectangle 12">
+                        <Entry Placeholder="Medicine name" Text="{Binding NewMedicineName}" TextColor="#172B3A" />
+                    </Border>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="9">
+                        <Border BackgroundColor="#F5F7F9" Stroke="#DDE4E9" StrokeThickness="1" Padding="12,1" StrokeShape="RoundRectangle 12">
+                            <Entry Placeholder="Starting quantity" Text="{Binding NewQuantity}" Keyboard="Numeric" TextColor="#172B3A" />
+                        </Border>
+                        <Border Grid.Column="1" BackgroundColor="#F5F7F9" Stroke="#DDE4E9" StrokeThickness="1" Padding="12,1" StrokeShape="RoundRectangle 12">
+                            <Entry Placeholder="Unit (tablets, pcs)" Text="{Binding NewUnit}" TextColor="#172B3A" />
+                        </Border>
+                    </Grid>
+                    <Border BackgroundColor="#F5F7F9" Stroke="#DDE4E9" StrokeThickness="1" Padding="12,1" StrokeShape="RoundRectangle 12">
+                        <Entry Placeholder="Restock alert threshold" Text="{Binding NewLowStockThreshold}"
+                               Keyboard="Numeric" TextColor="#172B3A" />
+                    </Border>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,3,0,0">
+                        <Button Text="Cancel" Command="{Binding CancelAddNewCommand}"
+                                BackgroundColor="#EEF1F3" TextColor="#425466" CornerRadius="12" />
+                        <Button Grid.Column="1" Text="Save medicine" Command="{Binding ConfirmAddNewCommand}"
+                                BackgroundColor="#078F83" TextColor="White" FontAttributes="Bold" CornerRadius="12" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

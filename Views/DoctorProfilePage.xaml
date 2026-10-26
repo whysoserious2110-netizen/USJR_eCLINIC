@@ -10,20 +10,27 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
 
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Doctor Profile" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-                <Label Grid.Column="2" Text="Edit" FontSize="14" FontAttributes="Bold" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleEditCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
+            <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
+    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            StrokeShape="Rectangle" Padding="18,50,18,14">
+        <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    TextColor="#087A3D" BackgroundColor="#F4C400"
+                    CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                    Padding="0" Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1" Text="Doctor Profile" FontSize="18"
+                   FontAttributes="Bold" TextColor="#F4C400"
+                   VerticalOptions="Center" />
+            <Label Grid.Column="2" Text="Edit" FontSize="13" FontAttributes="Bold"
+                   TextColor="#F4C400" VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleEditCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+    </Border>
+    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
+</Grid>
 
             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                 <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"

@@ -17,31 +17,50 @@ public partial class PostAnnouncementViewModel : ObservableObject
     [ObservableProperty]
     private string message = string.Empty;
 
-    [ObservableProperty]
-    private DateTime? expiresOn;
-
     [RelayCommand]
     private async Task Post()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only the R.E.A.D.S. Scholar clinic student worker can post announcements.",
+                "OK");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(Message))
         {
-            await Shell.Current.DisplayAlert("Missing info", "Please enter an announcement message.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Missing message",
+                "Please enter an announcement message.",
+                "OK");
             return;
         }
 
         var announcement = new Models.Announcement
         {
-            Message = Message,
+            Message = Message.Trim(),
             DatePosted = DateTime.Now,
-            ExpiresOn = ExpiresOn,
             IsActive = true,
             TargetRole = SelectedTargetRole
         };
 
-        await Services.AnnouncementService.Instance.AddAsync(announcement);
+        var posted = await Services.AnnouncementService.Instance.AddAsync(announcement);
+        if (!posted)
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only the R.E.A.D.S. Scholar clinic student worker can post announcements.",
+                "OK");
+            return;
+        }
 
-        await Shell.Current.DisplayAlert("Posted", "Announcement has been posted.", "OK");
         Message = string.Empty;
+        await Shell.Current.DisplayAlert(
+            "Announcement posted",
+            "Your announcement is now available to the selected audience.",
+            "OK");
     }
 
     [RelayCommand]

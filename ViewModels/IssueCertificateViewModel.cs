@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace USJR_eCLINIC.ViewModels;
@@ -7,48 +6,94 @@ namespace USJR_eCLINIC.ViewModels;
 public partial class IssueCertificateViewModel : ObservableObject
 {
     private readonly int _appointmentId;
-    private readonly string _patientEmail;
 
     [ObservableProperty] private string patientName = string.Empty;
     [ObservableProperty] private string certificateType = string.Empty;
     [ObservableProperty] private string purpose = string.Empty;
-    [ObservableProperty] private string certificateContent = string.Empty;
+    [ObservableProperty] private string decisionNote = string.Empty;
+    [ObservableProperty] private string clinicianRole = string.Empty;
 
     public IssueCertificateViewModel(int appointmentId, string patientEmail, string patientName, string certificateType, string purpose)
     {
         _appointmentId = appointmentId;
-        _patientEmail = patientEmail;
         PatientName = patientName;
         CertificateType = certificateType;
         Purpose = purpose;
+        ClinicianRole = Services.AuthService.Instance.CurrentUser?.Role ?? "Clinic clinician";
     }
 
     [RelayCommand]
-    private async Task IssueCertificate()
+    private async Task ApproveAndMarkReady()
     {
-        if (string.IsNullOrWhiteSpace(CertificateContent))
+        var confirmed = await Shell.Current.DisplayAlert(
+            "Mark Paper Certificate Ready?",
+            $"Confirm that the paper {CertificateType.ToLowerInvariant()} has been reviewed, signed, and prepared for pickup.",
+            "Mark Ready",
+            "Cancel");
+
+        if (!confirmed)
+            return;
+
+        var success = await Services.AppointmentService.Instance
+            .ReviewCertificateRequestAsync(
+                _appointmentId,
+                approve: true,
+                decisionNote: DecisionNote);
+
+        if (!success)
         {
-            await Shell.Current.DisplayAlert("Missing info", "Please enter the certificate content.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Request Unavailable",
+                "This request may no longer be awaiting clinical review, or your role cannot review this certificate type.",
+                "OK");
             return;
         }
 
-        var success = await Services.AppointmentService.Instance.IssueCertificateAsync(_appointmentId, CertificateContent);
+        await Shell.Current.DisplayAlert(
+            "Ready for Pickup",
+            "The patient has been notified that the paper certificate is ready.",
+            "OK");
+        await Shell.Current.Navigation.PopAsync();
+    }
 
-        if (success)
+    [RelayCommand]
+    private async Task DeclineRequest()
+    {
+        if (string.IsNullOrWhiteSpace(DecisionNote))
         {
-            var doctor = Services.AuthService.Instance.CurrentUser;
-            await Services.NotificationService.Instance.AddAsync(
-                _patientEmail,
-                "Certificate Issued",
-                $"Your {CertificateType} has been issued by Dr. {doctor?.FullName}. Check your Appointments for details.");
+            await Shell.Current.DisplayAlert(
+                "Reason Required",
+                "Enter a brief reason before declining the certificate request.",
+                "OK");
+            return;
+        }
 
-            await Shell.Current.DisplayAlert("Issued", "Certificate has been issued.", "OK");
-            await Shell.Current.Navigation.PopAsync();
-        }
-        else
+        var confirmed = await Shell.Current.DisplayAlert(
+            "Decline Certificate Request?",
+            "The patient will be notified with the reason entered below.",
+            "Decline Request",
+            "Cancel");
+
+        if (!confirmed)
+            return;
+
+        var success = await Services.AppointmentService.Instance
+            .ReviewCertificateRequestAsync(
+                _appointmentId,
+                approve: false,
+                decisionNote: DecisionNote);
+
+        if (!success)
         {
-            await Shell.Current.DisplayAlert("Error", "Could not issue certificate. Please try again.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Request Unavailable",
+                "This request may no longer be awaiting clinical review, or your role cannot review this certificate type.",
+                "OK");
+            return;
         }
+
+        await Shell.Current.DisplayAlert("Request Declined", "The patient has been notified.", "OK");
+        await Shell.Current.Navigation.PopAsync();
     }
 
     [RelayCommand]

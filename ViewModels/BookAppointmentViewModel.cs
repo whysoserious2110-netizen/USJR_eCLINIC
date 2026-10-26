@@ -1,33 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
 
 namespace USJR_eCLINIC.ViewModels;
 
 public partial class BookAppointmentViewModel : ObservableObject
 {
-    private static readonly HashSet<DateTime> SchoolHolidays = new()
-    {
-        new DateTime(2026, 8, 6),
-        new DateTime(2026, 8, 19),
-        new DateTime(2026, 8, 21),
-        new DateTime(2026, 8, 28),
-        new DateTime(2026, 8, 31),
-        new DateTime(2026, 9, 9),
-        new DateTime(2026, 10, 2),
-        new DateTime(2026, 10, 31),
-        new DateTime(2026, 11, 1),
-        new DateTime(2026, 11, 2),
-        new DateTime(2026, 11, 30),
-        new DateTime(2026, 12, 8),
-        new DateTime(2026, 12, 19),
-        new DateTime(2027, 1, 22),
-        new DateTime(2027, 1, 23),
-    };
-
-    private bool IsSchoolHoliday(DateTime date) => SchoolHolidays.Contains(date.Date);
-
-    // ---- Service Type ----
     public ObservableCollection<string> ServiceTypes { get; } = new()
     {
         "Medical", "Dental", "Follow-up", "Cert Request"
@@ -42,9 +20,10 @@ public partial class BookAppointmentViewModel : ObservableObject
     public bool IsCertRequest => SelectedServiceType == "Cert Request";
 
     private bool _isResettingPickerDate;
+    private bool _isResettingSelections;
     private string? _unavailableDateMessage;
+    private int _dateRequestVersion;
 
-    // ---- Medical ----
     public ObservableCollection<string> MedicalReasons { get; } = new()
     {
         "General Consultation", "Fever / Temperature", "Headache", "Cough / Cold",
@@ -60,7 +39,6 @@ public partial class BookAppointmentViewModel : ObservableObject
     [ObservableProperty]
     private string otherReasonText = string.Empty;
 
-    // ---- Dental ----
     public ObservableCollection<string> DentalServices { get; } = new()
     {
         "Oral Prophylaxis", "Tooth Restoration", "Tooth Extraction", "Dental Consultation"
@@ -70,12 +48,16 @@ public partial class BookAppointmentViewModel : ObservableObject
     private string selectedDentalService = string.Empty;
 
     public bool IsDentalConsultation => SelectedDentalService == "Dental Consultation";
-    public bool IsDentalWithSchedule => IsDental && !string.IsNullOrEmpty(SelectedDentalService) && !IsDentalConsultation;
 
-    // ---- Follow-up ----
+    public bool IsDentalWithSchedule =>
+        IsDental &&
+        !string.IsNullOrWhiteSpace(SelectedDentalService) &&
+        !IsDentalConsultation;
+
     public ObservableCollection<string> FollowUpReasons { get; } = new()
     {
-        "Follow-up consultation", "Re-evaluation", "Treatment follow-up", "Medication follow-up", "Other"
+        "Follow-up consultation", "Re-evaluation", "Treatment follow-up",
+        "Medication follow-up", "Other"
     };
 
     [ObservableProperty]
@@ -84,10 +66,9 @@ public partial class BookAppointmentViewModel : ObservableObject
     [ObservableProperty]
     private string additionalNotes = string.Empty;
 
-    // ---- Certificate Request ----
     public ObservableCollection<string> CertificateTypes { get; } = new()
     {
-        "Medical Certificate", "Other Certificate"
+        "Medical Certificate", "Dental Certificate"
     };
 
     [ObservableProperty]
@@ -96,28 +77,29 @@ public partial class BookAppointmentViewModel : ObservableObject
     [ObservableProperty]
     private string certificatePurpose = string.Empty;
 
-    // ---- Date ----
     [ObservableProperty]
     private DateTime pickerDate = DateTime.Today.AddDays(1);
 
     [ObservableProperty]
     private DateTime? selectedDate;
 
-    public string DateDisplayText => SelectedDate.HasValue ? SelectedDate.Value.ToString("MMM dd, yyyy (ddd)") : "Select a date";
+    public string DateDisplayText =>
+        SelectedDate.HasValue
+            ? SelectedDate.Value.ToString("MMM dd, yyyy (ddd)")
+            : "Select a date";
 
     public bool HasSelectedDate => SelectedDate.HasValue;
 
-    // ---- Time (dropdown) ----
     public ObservableCollection<string> AvailableTimeOptions { get; } = new();
 
     [ObservableProperty]
     private string? selectedTimeOption;
 
     public bool ShowDateTimeSection =>
-        (IsMedical) ||
+        IsMedical ||
         (IsDental && IsDentalWithSchedule) ||
-        (IsFollowUp) ||
-        (IsCertRequest);
+        IsFollowUp ||
+        IsCertRequest;
 
     public BookAppointmentViewModel()
     {
@@ -134,77 +116,182 @@ public partial class BookAppointmentViewModel : ObservableObject
     }
 
     partial void OnSelectedMedicalReasonChanged(string value)
-        => OnPropertyChanged(nameof(ShowOtherReason));
+    {
+        OnPropertyChanged(nameof(ShowOtherReason));
+        ResetDateAfterSubServiceChange();
+    }
 
     partial void OnSelectedDentalServiceChanged(string value)
     {
         OnPropertyChanged(nameof(IsDentalConsultation));
         OnPropertyChanged(nameof(IsDentalWithSchedule));
         OnPropertyChanged(nameof(ShowDateTimeSection));
+        ResetDateAfterSubServiceChange();
+    }
+
+    partial void OnSelectedFollowUpReasonChanged(string value)
+    {
+        ResetDateAfterSubServiceChange();
+    }
+
+    partial void OnSelectedCertificateTypeChanged(string value)
+    {
+        ResetDateAfterSubServiceChange();
     }
 
     partial void OnPickerDateChanged(DateTime value)
     {
-        if (!_isResettingPickerDate)
-            _ = HandleDatePickedAsync(value);
+        if (_isResettingPickerDate)
+            return;
+
+        var version = Interlocked.Increment(ref _dateRequestVersion);
+        _ = HandleDatePickedAsync(value, version);
     }
 
-    private async Task HandleDatePickedAsync(DateTime date)
+    private void ResetDateAfterSubServiceChange()
     {
-        if (!ShowDateTimeSection) return;
-
-        var allowedDays = GetAllowedDays();
-        bool isPast = date.Date < DateTime.Today;
-        bool isAvailable = allowedDays.Contains(date.DayOfWeek) && !isPast && !IsSchoolHoliday(date);
-
-        if (!isAvailable)
-        {
-            _unavailableDateMessage = IsSchoolHoliday(date)
-                ? "This date is a school holiday."
-                : isPast
-                    ? "Please pick a future date."
-                    : "This service is not available on the selected day. Please choose a different date.";
-
-            SelectedDate = null;
-            AvailableTimeOptions.Clear();
-            SelectedTimeOption = null;
-            OnPropertyChanged(nameof(HasSelectedDate));
-            OnPropertyChanged(nameof(DateDisplayText));
-
-            // Reset the picker so choosing the same unavailable date again triggers its change handler.
-            _isResettingPickerDate = true;
-            PickerDate = DateTime.Today;
-            _isResettingPickerDate = false;
-
-            await Shell.Current.DisplayAlert("Date Not Available", _unavailableDateMessage, "OK");
+        if (_isResettingSelections)
             return;
-        }
 
+        ClearDateSelection(resetPickerToToday: true);
+    }
+
+    private void ClearDateSelection(bool resetPickerToToday)
+    {
+        Interlocked.Increment(ref _dateRequestVersion);
         _unavailableDateMessage = null;
-        SelectedDate = date;
+        SelectedDate = null;
+        SelectedTimeOption = null;
+        AvailableTimeOptions.Clear();
         OnPropertyChanged(nameof(HasSelectedDate));
         OnPropertyChanged(nameof(DateDisplayText));
 
-        await RegenerateTimeOptionsAsync(date);
+        if (resetPickerToToday)
+        {
+            _isResettingPickerDate = true;
+            PickerDate = DateTime.Today;
+            _isResettingPickerDate = false;
+        }
+    }
+
+    private async Task HandleDatePickedAsync(DateTime date, int requestVersion)
+    {
+        if (!ShowDateTimeSection)
+            return;
+
+        var subService = GetCurrentSubService();
+        if (string.IsNullOrWhiteSpace(subService))
+        {
+            if (requestVersion == Volatile.Read(ref _dateRequestVersion))
+            {
+                _unavailableDateMessage = "Please choose a service before selecting a date.";
+                ClearInvalidDateSelection();
+            }
+
+            return;
+        }
+
+        try
+        {
+            var schedule = Services.ClinicScheduleService.Instance;
+            var unavailableReason = await schedule.GetDateUnavailableReasonAsync(
+                date,
+                SelectedServiceType,
+                subService);
+
+            if (requestVersion != Volatile.Read(ref _dateRequestVersion))
+                return;
+
+            if (unavailableReason != null)
+            {
+                _unavailableDateMessage = unavailableReason;
+                ClearInvalidDateSelection();
+                await Shell.Current.DisplayAlert("Date Not Available", unavailableReason, "OK");
+                return;
+            }
+
+            _unavailableDateMessage = null;
+            SelectedDate = date.Date;
+            SelectedTimeOption = null;
+            AvailableTimeOptions.Clear();
+            OnPropertyChanged(nameof(HasSelectedDate));
+            OnPropertyChanged(nameof(DateDisplayText));
+
+            await RegenerateTimeOptionsAsync(date.Date, subService, requestVersion);
+        }
+        catch
+        {
+            if (requestVersion != Volatile.Read(ref _dateRequestVersion))
+                return;
+
+            _unavailableDateMessage = "The clinic schedule could not be loaded. Please try again.";
+            ClearInvalidDateSelection();
+            await Shell.Current.DisplayAlert("Schedule Unavailable", _unavailableDateMessage, "OK");
+        }
+    }
+
+    private void ClearInvalidDateSelection()
+    {
+        SelectedDate = null;
+        SelectedTimeOption = null;
+        AvailableTimeOptions.Clear();
+        OnPropertyChanged(nameof(HasSelectedDate));
+        OnPropertyChanged(nameof(DateDisplayText));
+
+        _isResettingPickerDate = true;
+        PickerDate = DateTime.Today;
+        _isResettingPickerDate = false;
     }
 
     private void ResetSelections()
     {
-        _unavailableDateMessage = null;
+        _isResettingSelections = true;
         SelectedDentalService = string.Empty;
         SelectedMedicalReason = string.Empty;
         SelectedFollowUpReason = string.Empty;
         SelectedCertificateType = string.Empty;
-        SelectedDate = null;
-        SelectedTimeOption = null;
-        AvailableTimeOptions.Clear();
+        OtherReasonText = string.Empty;
+        AdditionalNotes = string.Empty;
+        CertificatePurpose = string.Empty;
+        _isResettingSelections = false;
+
+        ClearDateSelection(resetPickerToToday: false);
+        _isResettingPickerDate = true;
         PickerDate = DateTime.Today.AddDays(1);
-        OnPropertyChanged(nameof(HasSelectedDate));
-        OnPropertyChanged(nameof(DateDisplayText));
+        _isResettingPickerDate = false;
+    }
+
+    private string GetCurrentSubService()
+    {
+        if (IsMedical)
+            return SelectedMedicalReason;
+        if (IsDental)
+            return SelectedDentalService;
+        if (IsFollowUp)
+            return SelectedFollowUpReason;
+        return SelectedCertificateType;
     }
 
     [RelayCommand]
     private void SelectServiceType(string type) => SelectedServiceType = type;
+
+    [RelayCommand]
+    private async Task GoToAppointments()
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.AppointmentsPage());
+    }
+
+    [RelayCommand]
+    private async Task GoToNotifications()
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.NotificationsPage());
+    }
+
+    [RelayCommand]
+    private async Task GoToProfile()
+    {
+        await Shell.Current.Navigation.PushAsync(new Views.ProfilePage());
+    }
 
     [RelayCommand]
     private void SelectDentalService(string service) => SelectedDentalService = service;
@@ -218,83 +305,34 @@ public partial class BookAppointmentViewModel : ObservableObject
     [RelayCommand]
     private void SelectCertificateType(string type) => SelectedCertificateType = type;
 
-    // ---- Availability rules ----
-
-    private List<DayOfWeek> GetAllowedDays()
+    private async Task RegenerateTimeOptionsAsync(
+        DateTime date,
+        string subService,
+        int requestVersion)
     {
-        if (IsMedical)
-            return new() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+        var timeOptions = await Services.ClinicScheduleService.Instance
+            .GetAvailableTimeOptionsAsync(date, SelectedServiceType, subService);
 
-        if (IsDental)
+        var bookedTimes = await Services.AppointmentService.Instance
+            .GetBookedTimesAsync(date, SelectedServiceType, subService);
+
+        if (requestVersion != Volatile.Read(ref _dateRequestVersion) ||
+            SelectedDate?.Date != date.Date ||
+            !string.Equals(subService, GetCurrentSubService(), StringComparison.Ordinal))
         {
-            return SelectedDentalService switch
-            {
-                "Oral Prophylaxis" => new() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Saturday },
-                "Tooth Restoration" => new() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday },
-                "Tooth Extraction" => new() { DayOfWeek.Friday, DayOfWeek.Saturday },
-                _ => new()
-            };
+            return;
         }
 
-        return new() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
-    }
-
-    private (TimeSpan start, TimeSpan end) GetHoursForDay(DayOfWeek day)
-    {
-        if (IsMedical)
-            return (new TimeSpan(7, 0, 0), new TimeSpan(21, 0, 0));
-
-        if (IsDental)
-        {
-            return SelectedDentalService switch
-            {
-                "Oral Prophylaxis" => day == DayOfWeek.Friday
-                    ? (new TimeSpan(13, 0, 0), new TimeSpan(20, 0, 0))
-                    : day == DayOfWeek.Saturday
-                        ? (new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0))
-                        : (new TimeSpan(8, 0, 0), new TimeSpan(20, 0, 0)),
-
-                "Tooth Restoration" => day == DayOfWeek.Saturday
-                    ? (new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0))
-                    : (new TimeSpan(8, 0, 0), new TimeSpan(21, 0, 0)),
-
-                "Tooth Extraction" => day == DayOfWeek.Friday
-                    ? (new TimeSpan(8, 0, 0), new TimeSpan(12, 0, 0))
-                    : (new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0)),
-
-                _ => (TimeSpan.Zero, TimeSpan.Zero)
-            };
-        }
-
-        return (new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0));
-    }
-
-    private async Task RegenerateTimeOptionsAsync(DateTime date)
-    {
         AvailableTimeOptions.Clear();
         SelectedTimeOption = null;
 
-        var (start, end) = GetHoursForDay(date.DayOfWeek);
-        if (start == TimeSpan.Zero && end == TimeSpan.Zero) return;
-
-        var subService = IsDental ? SelectedDentalService
-                        : IsMedical ? SelectedMedicalReason
-                        : IsFollowUp ? SelectedFollowUpReason
-                        : SelectedCertificateType;
-
-        var bookedTimes = await Services.AppointmentService.Instance.GetBookedTimesAsync(date, SelectedServiceType, subService);
-
-        var current = start;
-        while (current < end)
+        foreach (var option in timeOptions)
         {
-            var label = DateTime.Today.Add(current).ToString("h:mm tt");
-            var isPastTime = date.Date == DateTime.Today
-     && current <= DateTime.Now.TimeOfDay;
-
-            if (!bookedTimes.Contains(label) && !isPastTime)
-                AvailableTimeOptions.Add(label);
-
-            current = current.Add(TimeSpan.FromMinutes(30));
+            if (!bookedTimes.Any(booked =>
+                    string.Equals(booked, option, StringComparison.OrdinalIgnoreCase)))
+            {
+                AvailableTimeOptions.Add(option);
+            }
         }
     }
 
@@ -308,16 +346,6 @@ public partial class BookAppointmentViewModel : ObservableObject
             return;
         }
 
-        if (DateTime.TryParse(SelectedTimeOption, out var selectedTime)
-    && SelectedDate!.Value.Date.Add(selectedTime.TimeOfDay) <= DateTime.Now)
-        {
-            await Shell.Current.DisplayAlert(
-                "Time Not Available",
-                "That time has already passed. Please choose a future time.",
-                "OK");
-            return;
-        }
-
         string subService;
         string reasonOrPurpose = string.Empty;
 
@@ -328,8 +356,10 @@ public partial class BookAppointmentViewModel : ObservableObject
                 await Shell.Current.DisplayAlert("Missing info", "Please select a reason for visit.", "OK");
                 return;
             }
+
             subService = SelectedMedicalReason;
-            if (ShowOtherReason) reasonOrPurpose = OtherReasonText;
+            if (ShowOtherReason)
+                reasonOrPurpose = OtherReasonText;
         }
         else if (IsDental)
         {
@@ -338,11 +368,14 @@ public partial class BookAppointmentViewModel : ObservableObject
                 await Shell.Current.DisplayAlert("Missing info", "Please select a dental service.", "OK");
                 return;
             }
-            subService = SelectedDentalService;
 
+            subService = SelectedDentalService;
             if (IsDentalConsultation)
             {
-                await Shell.Current.DisplayAlert("Dental Consultation", "This is a walk-in service. No appointment is required — please visit the clinic during operating hours.", "OK");
+                await Shell.Current.DisplayAlert(
+                    "Dental Consultation",
+                    "This is a walk-in service. No appointment is required — please visit the clinic during operating hours.",
+                    "OK");
                 return;
             }
         }
@@ -353,6 +386,7 @@ public partial class BookAppointmentViewModel : ObservableObject
                 await Shell.Current.DisplayAlert("Missing info", "Please select a follow-up reason.", "OK");
                 return;
             }
+
             subService = SelectedFollowUpReason;
             reasonOrPurpose = AdditionalNotes;
         }
@@ -360,11 +394,18 @@ public partial class BookAppointmentViewModel : ObservableObject
         {
             if (string.IsNullOrWhiteSpace(SelectedCertificateType))
             {
-                await Shell.Current.DisplayAlert("Missing info", "Please select a certificate type.", "OK");
+                await Shell.Current.DisplayAlert("Missing info", "Please select Medical Certificate or Dental Certificate.", "OK");
                 return;
             }
+
+            if (string.IsNullOrWhiteSpace(CertificatePurpose))
+            {
+                await Shell.Current.DisplayAlert("Missing info", "Please enter the purpose for the paper certificate request.", "OK");
+                return;
+            }
+
             subService = SelectedCertificateType;
-            reasonOrPurpose = CertificatePurpose;
+            reasonOrPurpose = CertificatePurpose.Trim();
         }
 
         if (ShowDateTimeSection)
@@ -377,9 +418,34 @@ public partial class BookAppointmentViewModel : ObservableObject
                     "OK");
                 return;
             }
-            if (SelectedDate == null || string.IsNullOrEmpty(SelectedTimeOption))
+
+            if (!SelectedDate.HasValue || string.IsNullOrWhiteSpace(SelectedTimeOption))
             {
                 await Shell.Current.DisplayAlert("Missing info", "Please select a date and time.", "OK");
+                return;
+            }
+
+            string? scheduleError;
+            try
+            {
+                scheduleError = await Services.ClinicScheduleService.Instance.ValidateSlotAsync(
+                    SelectedDate.Value,
+                    SelectedServiceType,
+                    subService,
+                    SelectedTimeOption);
+            }
+            catch
+            {
+                await Shell.Current.DisplayAlert(
+                    "Schedule Unavailable",
+                    "The clinic schedule could not be loaded. Please try again.",
+                    "OK");
+                return;
+            }
+
+            if (scheduleError != null)
+            {
+                await Shell.Current.DisplayAlert("Time Not Available", scheduleError, "OK");
                 return;
             }
         }
@@ -387,9 +453,11 @@ public partial class BookAppointmentViewModel : ObservableObject
         bool proceed = await Shell.Current.DisplayAlert(
             "Confirm Appointment Request?",
             "Review your appointment details before submitting your request.",
-            "Confirm", "Cancel");
+            "Confirm",
+            "Cancel");
 
-        if (!proceed) return;
+        if (!proceed)
+            return;
 
         var appointment = new Models.Appointment
         {
@@ -397,17 +465,35 @@ public partial class BookAppointmentViewModel : ObservableObject
             ServiceType = SelectedServiceType,
             SubService = subService,
             ReasonOrPurpose = reasonOrPurpose,
-            VisitDate = SelectedDate ?? DateTime.Today,
-            VisitTime = SelectedTimeOption ?? string.Empty,
-            Status = "Pending"
+            VisitDate = ShowDateTimeSection ? SelectedDate!.Value.Date : DateTime.Today,
+            VisitTime = ShowDateTimeSection ? SelectedTimeOption! : string.Empty,
+            Status = "Pending",
+            CertificateStatus = IsCertRequest ? "Awaiting Appointment Approval" : string.Empty
         };
 
-        await Services.AppointmentService.Instance.BookAsync(appointment);
+        try
+        {
+            var result = await Services.AppointmentService.Instance.BookAsync(appointment);
+            if (!result.Success)
+            {
+                await Shell.Current.DisplayAlert("Appointment Not Available", result.Message, "OK");
+                return;
+            }
 
-        await Shell.Current.DisplayAlert("Appointment Request Sent", "Your appointment request has been successfully submitted.\nStatus: Pending", "OK");
-        await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.DisplayAlert("Appointment Request", result.Message, "OK");
+            await Shell.Current.Navigation.PopAsync();
+        }
+        catch
+        {
+            await Shell.Current.DisplayAlert(
+                "Unable to Submit",
+                "The request could not be saved. Please try again.",
+                "OK");
+        }
     }
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 }
+
+

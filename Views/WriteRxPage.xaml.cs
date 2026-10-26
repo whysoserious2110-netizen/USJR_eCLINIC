@@ -4,9 +4,9 @@ namespace USJR_eCLINIC.Views;
 
 public partial class WriteRxPage : ContentPage
 {
-    public WriteRxPage()
+    public WriteRxPage(string? patientEmail = null)
     {
         InitializeComponent();
-        BindingContext = new WriteRxViewModel();
+        BindingContext = new WriteRxViewModel(patientEmail);
     }
 }

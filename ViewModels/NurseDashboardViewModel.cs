@@ -13,13 +13,10 @@ public partial class NurseDashboardViewModel : ObservableObject
     [ObservableProperty] private int unreadNotificationCount;
     [ObservableProperty] private bool hasUnreadNotifications;
     [ObservableProperty] private string profileImagePath = string.Empty;
-
+    [ObservableProperty] private string summaryDateText = string.Empty;
     [ObservableProperty] private int todayPatientCount;
-
     [ObservableProperty] private int awaitingVitalsCount;
-
     [ObservableProperty] private int vitalsRecordedCount;
-
     [ObservableProperty] private int completedTodayCount;
 
     public async Task RefreshAsync()
@@ -28,57 +25,39 @@ public partial class NurseDashboardViewModel : ObservableObject
         if (user == null) return;
 
         NurseName = user.FullName;
+        SummaryDateText = DateTime.Today.ToString("dddd, MMMM d");
 
         var announcement = await Services.AnnouncementService.Instance.GetActiveForRoleAsync("Nurse");
-        if (announcement != null)
-        {
-            HasAnnouncement = true;
-            AnnouncementText = announcement.Message;
-        }
-        else
-        {
-            HasAnnouncement = false;
-        }
+        HasAnnouncement = announcement != null;
+        AnnouncementText = announcement?.Message ?? string.Empty;
 
         var stock = await Services.MedicineStockService.Instance.GetAllAsync();
-        LowStockCount = stock.Count(s => s.Quantity <= s.LowStockThreshold);
+        LowStockCount = stock.Count(item => item.Quantity <= item.LowStockThreshold);
 
         var undispensed = await Services.PrescriptionService.Instance.GetClinicGivenUndispensedAsync();
         PendingDispenseCount = undispensed.Count;
 
         UnreadNotificationCount = await Services.NotificationService.Instance.GetUnreadCountAsync(user.Email);
         HasUnreadNotifications = UnreadNotificationCount > 0;
-
         ProfileImagePath = user.ProfileImagePath;
-        var allAppointments = await Services.AppointmentService.Instance
-    .GetAllAppointmentsAsync();
 
+        var allAppointments = await Services.AppointmentService.Instance.GetAllAppointmentsAsync();
         var todaysAppointments = allAppointments
-            .Where(a =>
-                a.VisitDate.Date == DateTime.Today &&
-                a.Status != "Cancelled" &&
-                (a.ServiceType == "Medical" ||
-                 a.ServiceType == "Dental"))
+            .Where(appointment =>
+                appointment.VisitDate.Date == DateTime.Today &&
+                (appointment.Status is "Confirmed" or "CheckedIn" or "VitalsRecorded" or "Completed") &&
+                (appointment.ServiceType == "Medical" || appointment.ServiceType == "Dental"))
             .ToList();
 
         TodayPatientCount = todaysAppointments.Count;
-
-        AwaitingVitalsCount = todaysAppointments.Count(
-            a => a.Status == "CheckedIn");
-
-        VitalsRecordedCount = todaysAppointments.Count(
-            a => a.Status == "VitalsRecorded");
-
-        CompletedTodayCount = todaysAppointments.Count(
-            a => a.Status == "Completed");
-
-
-
+        AwaitingVitalsCount = todaysAppointments.Count(appointment => appointment.Status == "CheckedIn");
+        VitalsRecordedCount = todaysAppointments.Count(appointment => appointment.Status == "VitalsRecorded");
+        CompletedTodayCount = todaysAppointments.Count(appointment => appointment.Status == "Completed");
     }
 
     [RelayCommand]
     private async Task GoToPatientRecord()
-        => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage());
+        => await Shell.Current.Navigation.PushAsync(new Views.PatientsListPage(consultedOnly: true));
 
     [RelayCommand]
     private async Task GoToInventory()
@@ -98,23 +77,21 @@ public partial class NurseDashboardViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoToProfile()
-    => await Shell.Current.Navigation.PushAsync(new Views.NurseProfilePage());
+        => await Shell.Current.Navigation.PushAsync(new Views.NurseProfilePage());
 
     [RelayCommand]
     private async Task GoToAppointments()
-    => await Shell.Current.Navigation.PushAsync(new Views.NurseAppointmentsPage());
+        => await Shell.Current.Navigation.PushAsync(new Views.NurseAppointmentsPage());
 
     [RelayCommand]
     private async Task Logout()
     {
-        bool confirm = await Shell.Current.DisplayAlert("Log Out", "Are you sure you want to log out?", "Log Out", "Cancel");
+        var confirm = await Shell.Current.DisplayAlert(
+            "Log Out", "Are you sure you want to log out?", "Log Out", "Cancel");
         if (!confirm) return;
 
-        await Services.SecureSessionService.Instance
-    .ClearSessionAsync();
-
+        await Services.SecureSessionService.Instance.ClearSessionAsync();
         Services.AuthService.Instance.Logout();
-
         await Shell.Current.Navigation.PopToRootAsync();
     }
 }

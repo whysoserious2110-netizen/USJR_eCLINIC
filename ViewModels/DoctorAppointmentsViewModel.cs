@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -15,6 +15,12 @@ public partial class DoctorAppointmentItem : ObservableObject
     public string TimeDisplay { get; set; } = string.Empty;
     public string ChiefComplaint { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public string StatusDisplay => Status switch
+    {
+        "VitalsRecorded" => "Vitals recorded",
+        "CheckedIn" => "Checked in",
+        _ => Status
+    };
     public Color StatusColor { get; set; } = Colors.Gray;
     public bool CanConsult { get; set; }
 }
@@ -25,11 +31,8 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
 
     public ObservableCollection<DoctorAppointmentItem> Appointments { get; } = new();
 
-    [ObservableProperty]
-    private bool hasAppointments;
-
-    [ObservableProperty]
-    private string selectedTab = "Upcoming";
+    [ObservableProperty] private bool hasAppointments;
+    [ObservableProperty] private string selectedTab = "Upcoming";
 
     public bool IsAllTab => SelectedTab == "All";
     public bool IsUpcomingTab => SelectedTab == "Upcoming";
@@ -38,13 +41,11 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
     public async Task RefreshAsync()
     {
         var appointments = await Services.AppointmentService.Instance.GetAllForServiceAsync("Medical");
-
         _all.Clear();
 
         foreach (var appt in appointments)
         {
             var patient = await Services.AuthService.Instance.GetAccountByEmailAsync(appt.PatientEmail);
-
             _all.Add(new DoctorAppointmentItem
             {
                 AppointmentId = appt.Id,
@@ -56,12 +57,13 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
                 TimeDisplay = appt.VisitTime,
                 ChiefComplaint = string.IsNullOrWhiteSpace(appt.ReasonOrPurpose) ? appt.SubService : appt.ReasonOrPurpose,
                 Status = appt.Status,
-                CanConsult = appt.Status == "Pending" || appt.Status == "Confirmed",
+                CanConsult = appt.Status is "CheckedIn" or "VitalsRecorded",
                 StatusColor = appt.Status switch
                 {
-                    "Confirmed" => Color.FromArgb("#0F9B8E"),
+                    "CheckedIn" or "VitalsRecorded" => Color.FromArgb("#087A3D"),
+                    "Confirmed" => Color.FromArgb("#2C9057"),
                     "Completed" => Color.FromArgb("#4A90D9"),
-                    "Cancelled" => Color.FromArgb("#E05B5B"),
+                    "Cancelled" or "Expired" or "Missed" => Color.FromArgb("#E05B5B"),
                     _ => Color.FromArgb("#D9A441")
                 }
             });
@@ -73,12 +75,12 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
     private void ApplyFilter()
     {
         var today = DateTime.Today;
-
         IEnumerable<DoctorAppointmentItem> filtered = SelectedTab switch
         {
-            "Upcoming" => _all.Where(a => a.VisitDate.Date >= today && a.Status != "Cancelled" && a.Status != "Completed")
+            "Upcoming" => _all.Where(a => a.VisitDate.Date >= today && a.Status is not ("Cancelled" or "Completed" or "Expired" or "Missed"))
                                .OrderBy(a => a.VisitDate),
-            "Past" => _all.Where(a => a.VisitDate.Date < today || a.Status == "Completed" || a.Status == "Cancelled")
+            "Past" => _all.Where(a => a.VisitDate.Date < today || a.Status == "Completed" || a.Status == "Cancelled" ||
+                                      a.Status == "Expired" || a.Status == "Missed")
                            .OrderByDescending(a => a.VisitDate),
             _ => _all.OrderByDescending(a => a.VisitDate)
         };
@@ -103,9 +105,26 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenConsultation(DoctorAppointmentItem item)
     {
+        if (item == null)
+            return;
+
         if (!item.CanConsult)
         {
-            await Shell.Current.DisplayAlert("Not available", $"This appointment is already {item.Status}.", "OK");
+            await Shell.Current.DisplayAlert(
+                "Not ready for consultation",
+                "The patient must be checked in by R.E.A.D.S. before the doctor can start the visit.",
+                "OK");
+            return;
+        }
+
+        var appointment = await Services.AppointmentService.Instance.GetByIdAsync(item.AppointmentId);
+        if (appointment == null || appointment.Status is not ("CheckedIn" or "VitalsRecorded"))
+        {
+            await Shell.Current.DisplayAlert(
+                "Visit unavailable",
+                "This appointment is no longer checked in. Refresh the schedule to see its latest status.",
+                "OK");
+            await RefreshAsync();
             return;
         }
 

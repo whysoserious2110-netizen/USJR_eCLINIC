@@ -82,6 +82,15 @@ public partial class CheckInViewModel : ObservableObject
     private async Task ConfirmCheckIn()
     {
         var appt = await Services.AppointmentService.Instance.CheckInAsync(_currentAppointmentId);
+        if (appt == null)
+        {
+            ShowApprovedFound = false;
+            await Shell.Current.DisplayAlert(
+                "Check-In Unavailable",
+                "This appointment is no longer eligible for check-in. Search for the patient again to see the latest status.",
+                "OK");
+            return;
+        }
 
         QueueNumber = appt.QueueNumber ?? 0;
         CheckInTimeDisplay = appt.CheckInTime?.ToString("h:mm tt") ?? string.Empty;

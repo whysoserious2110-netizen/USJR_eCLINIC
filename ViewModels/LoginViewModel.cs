@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Linq;
-
 namespace USJR_eCLINIC.ViewModels;
 
 public partial class LoginViewModel :
     ObservableObject
 {
+    private const string RememberLoginIdKey =
+        "usjr_eclinic_remember_login_id";
+
+    private const string SavedLoginIdKey =
+        "usjr_eclinic_saved_login_id";
+
     [ObservableProperty]
     private string emailOrId = string.Empty;
 
@@ -20,10 +24,39 @@ public partial class LoginViewModel :
     private string showHideText = "SHOW";
 
     [ObservableProperty]
-    private bool rememberMe= true;
+    private bool rememberMe;
 
     [ObservableProperty]
     private bool isLoggingIn;
+
+    public LoginViewModel()
+    {
+        RememberMe =
+            Microsoft.Maui.Storage.Preferences.Default.Get(
+                RememberLoginIdKey,
+                false);
+
+        if (RememberMe)
+        {
+            EmailOrId =
+                Microsoft.Maui.Storage.Preferences.Default.Get(
+                    SavedLoginIdKey,
+                    string.Empty);
+        }
+    }
+
+    partial void OnRememberMeChanged(bool value)
+    {
+        Microsoft.Maui.Storage.Preferences.Default.Set(
+            RememberLoginIdKey,
+            value);
+
+        if (!value)
+        {
+            Microsoft.Maui.Storage.Preferences.Default.Remove(
+                SavedLoginIdKey);
+        }
+    }
 
     [RelayCommand]
     private void TogglePasswordVisibility()
@@ -97,83 +130,14 @@ public partial class LoginViewModel :
 
             if (RememberMe)
             {
-                await Services.SecureSessionService
-                    .Instance
-                    .CreateSessionAsync(user);
-
-                var shouldOfferBiometric =
-                    Services
-                        .BiometricAuthenticationService
-                        .Instance
-                        .IsSupported &&
-                    await Services
-                        .BiometricPreferenceService
-                        .Instance
-                        .ShouldOfferSetupAsync(
-                            user.Id);
-
-                if (shouldOfferBiometric)
-                {
-                    var enableBiometric =
-                        await Shell.Current.DisplayAlert(
-                            "Enable biometric login?",
-                            "Use your fingerprint to " +
-                            "quickly access USJ-R " +
-                            "e-Clinic next time.",
-                            "Enable",
-                            "Not Now");
-
-                    if (enableBiometric)
-                    {
-                        var biometricResult =
-                            await Services
-                                .BiometricAuthenticationService
-                                .Instance
-                                .AuthenticateAsync();
-
-                        if (biometricResult
-                            .IsSuccessful)
-                        {
-                            await Services
-                                .BiometricPreferenceService
-                                .Instance
-                                .EnableAsync(
-                                    user.Id);
-
-                            await Shell.Current
-                                .DisplayAlert(
-                                    "Biometric Login Enabled",
-                                    "You can use your " +
-                                    "fingerprint to unlock " +
-                                    "USJ-R e-Clinic next time.",
-                                    "OK");
-                        }
-                        else
-                        {
-                            await Shell.Current
-                                .DisplayAlert(
-                                    "Biometric Setup Not Completed",
-                                    "Your fingerprint could " +
-                                    "not be verified. You can " +
-                                    "continue using your password.",
-                                    "OK");
-                        }
-                    }
-                    else
-                    {
-                        await Services
-                            .BiometricPreferenceService
-                            .Instance
-                            .DeclineAsync(
-                                user.Id);
-                    }
-                }
+                Microsoft.Maui.Storage.Preferences.Default.Set(
+                    SavedLoginIdKey,
+                    input);
             }
             else
             {
-                await Services.SecureSessionService
-                    .Instance
-                    .ClearSessionAsync();
+                Microsoft.Maui.Storage.Preferences.Default.Remove(
+                    SavedLoginIdKey);
             }
 
             Password = string.Empty;
