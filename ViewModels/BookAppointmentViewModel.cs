@@ -54,11 +54,19 @@ public partial class BookAppointmentViewModel : ObservableObject
         !string.IsNullOrWhiteSpace(SelectedDentalService) &&
         !IsDentalConsultation;
 
+    public ObservableCollection<string> FollowUpClinicTypes { get; } = new()
+    {
+        "Medical", "Dental"
+    };
+
     public ObservableCollection<string> FollowUpReasons { get; } = new()
     {
         "Follow-up consultation", "Re-evaluation", "Treatment follow-up",
         "Medication follow-up", "Other"
     };
+
+    [ObservableProperty]
+    private string selectedFollowUpClinicType = string.Empty;
 
     [ObservableProperty]
     private string selectedFollowUpReason = string.Empty;
@@ -129,6 +137,11 @@ public partial class BookAppointmentViewModel : ObservableObject
         ResetDateAfterSubServiceChange();
     }
 
+    partial void OnSelectedFollowUpClinicTypeChanged(string value)
+    {
+        ResetDateAfterSubServiceChange();
+    }
+
     partial void OnSelectedFollowUpReasonChanged(string value)
     {
         ResetDateAfterSubServiceChange();
@@ -196,7 +209,7 @@ public partial class BookAppointmentViewModel : ObservableObject
             var schedule = Services.ClinicScheduleService.Instance;
             var unavailableReason = await schedule.GetDateUnavailableReasonAsync(
                 date,
-                SelectedServiceType,
+                GetEffectiveServiceType(),
                 subService);
 
             if (requestVersion != Volatile.Read(ref _dateRequestVersion))
@@ -248,6 +261,7 @@ public partial class BookAppointmentViewModel : ObservableObject
         _isResettingSelections = true;
         SelectedDentalService = string.Empty;
         SelectedMedicalReason = string.Empty;
+        SelectedFollowUpClinicType = string.Empty;
         SelectedFollowUpReason = string.Empty;
         SelectedCertificateType = string.Empty;
         OtherReasonText = string.Empty;
@@ -261,6 +275,9 @@ public partial class BookAppointmentViewModel : ObservableObject
         _isResettingPickerDate = false;
     }
 
+    private string GetEffectiveServiceType() =>
+        IsFollowUp ? SelectedFollowUpClinicType : SelectedServiceType;
+
     private string GetCurrentSubService()
     {
         if (IsMedical)
@@ -268,7 +285,9 @@ public partial class BookAppointmentViewModel : ObservableObject
         if (IsDental)
             return SelectedDentalService;
         if (IsFollowUp)
-            return SelectedFollowUpReason;
+            return string.IsNullOrWhiteSpace(SelectedFollowUpClinicType)
+                ? string.Empty
+                : $"{SelectedFollowUpClinicType} Follow-up";
         return SelectedCertificateType;
     }
 
@@ -310,11 +329,12 @@ public partial class BookAppointmentViewModel : ObservableObject
         string subService,
         int requestVersion)
     {
+        var serviceType = GetEffectiveServiceType();
         var timeOptions = await Services.ClinicScheduleService.Instance
-            .GetAvailableTimeOptionsAsync(date, SelectedServiceType, subService);
+            .GetAvailableTimeOptionsAsync(date, serviceType, subService);
 
         var bookedTimes = await Services.AppointmentService.Instance
-            .GetBookedTimesAsync(date, SelectedServiceType, subService);
+            .GetBookedTimesAsync(date, serviceType, subService);
 
         if (requestVersion != Volatile.Read(ref _dateRequestVersion) ||
             SelectedDate?.Date != date.Date ||
@@ -381,14 +401,25 @@ public partial class BookAppointmentViewModel : ObservableObject
         }
         else if (IsFollowUp)
         {
+            if (SelectedFollowUpClinicType is not ("Medical" or "Dental"))
+            {
+                await Shell.Current.DisplayAlert(
+                    "Missing info",
+                    "Choose whether this follow-up is for Medical or Dental care.",
+                    "OK");
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(SelectedFollowUpReason))
             {
                 await Shell.Current.DisplayAlert("Missing info", "Please select a follow-up reason.", "OK");
                 return;
             }
 
-            subService = SelectedFollowUpReason;
-            reasonOrPurpose = AdditionalNotes;
+            subService = $"{SelectedFollowUpClinicType} Follow-up";
+            reasonOrPurpose = string.IsNullOrWhiteSpace(AdditionalNotes)
+                ? SelectedFollowUpReason
+                : $"{SelectedFollowUpReason}. {AdditionalNotes.Trim()}";
         }
         else
         {
@@ -430,7 +461,7 @@ public partial class BookAppointmentViewModel : ObservableObject
             {
                 scheduleError = await Services.ClinicScheduleService.Instance.ValidateSlotAsync(
                     SelectedDate.Value,
-                    SelectedServiceType,
+                    GetEffectiveServiceType(),
                     subService,
                     SelectedTimeOption);
             }
@@ -462,7 +493,7 @@ public partial class BookAppointmentViewModel : ObservableObject
         var appointment = new Models.Appointment
         {
             PatientEmail = user.Email,
-            ServiceType = SelectedServiceType,
+            ServiceType = GetEffectiveServiceType(),
             SubService = subService,
             ReasonOrPurpose = reasonOrPurpose,
             VisitDate = ShowDateTimeSection ? SelectedDate!.Value.Date : DateTime.Today,

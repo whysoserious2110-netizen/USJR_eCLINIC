@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using USJR_eCLINIC.Services;
 
@@ -18,7 +18,10 @@ public partial class CheckInViewModel : ObservableObject
     // Patient/appointment display
     [ObservableProperty] private string patientName = string.Empty;
     [ObservableProperty] private string patientIdNumber = string.Empty;
+    [ObservableProperty] private string patientIdDisplay = string.Empty;
     [ObservableProperty] private string patientProgram = string.Empty;
+    [ObservableProperty] private bool isLateArrival;
+    [ObservableProperty] private string arrivalGuidance = string.Empty;
     [ObservableProperty] private string appointmentService = string.Empty;
     [ObservableProperty] private string appointmentDate = string.Empty;
     [ObservableProperty] private string appointmentTime = string.Empty;
@@ -34,14 +37,27 @@ public partial class CheckInViewModel : ObservableObject
     {
         ResetResultState();
 
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only R.E.A.D.S. Scholars can check in patients.",
+                "OK");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(ScannedId))
         {
             await Shell.Current.DisplayAlert("Missing info", "Please enter or scan a Student/Employee ID.", "OK");
             return;
         }
 
+        ScannedId = ScannedId.Trim();
         var account = await Services.AuthService.Instance.GetAccountByIdNumberAsync(ScannedId);
-        if (account == null)
+        if (account == null ||
+            !Services.AuthService.CentralPatientRoles.Contains(
+                account.Role,
+                StringComparer.OrdinalIgnoreCase))
         {
             ShowNotFound = true;
             return;
@@ -53,6 +69,7 @@ public partial class CheckInViewModel : ObservableObject
         {
             PatientName = account.FullName;
             PatientIdNumber = account.IdNumber;
+            PatientIdDisplay = $"{(account.Role == "Student" ? "Student ID" : "Employee ID")}: {account.IdNumber}";
             QueueNumber = checkedIn.QueueNumber ?? 0;
             CheckInTimeDisplay = checkedIn.CheckInTime?.ToString("h:mm tt") ?? string.Empty;
             ShowAlreadyCheckedIn = true;
@@ -64,6 +81,8 @@ public partial class CheckInViewModel : ObservableObject
         if (approved == null)
         {
             PatientName = account.FullName;
+            PatientIdNumber = account.IdNumber;
+            PatientIdDisplay = $"{(account.Role == "Student" ? "Student ID" : "Employee ID")}: {account.IdNumber}";
             ShowNoApproved = true;
             return;
         }
@@ -71,10 +90,19 @@ public partial class CheckInViewModel : ObservableObject
         _currentAppointmentId = approved.Id;
         PatientName = account.FullName;
         PatientIdNumber = account.IdNumber;
+        PatientIdDisplay = $"{(account.Role == "Student" ? "Student ID" : "Employee ID")}: {account.IdNumber}";
         PatientProgram = account.ProgramOrDepartment;
         AppointmentService = string.IsNullOrWhiteSpace(approved.ReasonOrPurpose) ? approved.SubService : approved.ReasonOrPurpose;
         AppointmentDate = approved.VisitDate.ToString("MMMM dd, yyyy");
         AppointmentTime = approved.VisitTime;
+        IsLateArrival = Services.AppointmentService.GetVisitDateTime(approved) < DateTime.Now;
+        var clinicClosing = await Services.ClinicScheduleService.Instance.GetClinicClosingDateTimeAsync(
+            approved.VisitDate,
+            approved.ServiceType,
+            approved.SubService);
+        ArrivalGuidance = IsLateArrival
+            ? $"Late arrival. ID check-in is available until {(clinicClosing?.ToString("h:mm tt") ?? "clinic closing")} today."
+            : "Please confirm the patient is present before checking them in.";
         ShowApprovedFound = true;
     }
 
@@ -108,6 +136,8 @@ public partial class CheckInViewModel : ObservableObject
 
     private void ResetResultState()
     {
+        IsLateArrival = false;
+        ArrivalGuidance = string.Empty;
         ShowNotFound = false;
         ShowNoApproved = false;
         ShowAlreadyCheckedIn = false;

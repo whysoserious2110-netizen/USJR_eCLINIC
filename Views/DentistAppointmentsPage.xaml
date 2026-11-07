@@ -6,82 +6,98 @@
              x:Class="USJR_eCLINIC.Views.DentistAppointmentsPage"
              x:Name="Root"
              x:DataType="vm:DentistAppointmentsViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F7F8F6">
 
     <ContentPage.Resources>
         <conv:TabTextColorConverter x:Key="TabTextColor"/>
     </ContentPage.Resources>
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+    <Grid RowDefinitions="Auto,6,Auto,*">
+        <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                StrokeShape="RoundRectangle 0" Padding="18,42,18,12">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="27"
+                        TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
+                        HeightRequest="38" WidthRequest="38" CornerRadius="10"/>
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                    <Label Text="{Binding HeaderTitle}" FontSize="17" FontAttributes="Bold" TextColor="#F4C400"/>
+                    <Label Text="{Binding HeaderSubtitle}" FontSize="10" TextColor="White"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+        <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6"/>
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#D14C74" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Appointments" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-        </Grid>
-
-        <!-- Tabs -->
-        <Grid ColumnDefinitions="*,*,*">
-            <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Center">
+        <Grid Grid.Row="2" ColumnDefinitions="*,*,*" Margin="16,12,16,6">
+            <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="All"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="All" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="All" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsAllTab}" Color="#D14C74"/>
+                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsAllTab}" Color="#F4C400"/>
             </VerticalStackLayout>
-
-            <VerticalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Center">
+            <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Center">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Upcoming"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Upcoming" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="Upcoming" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="60" IsVisible="{Binding IsUpcomingTab}" Color="#D14C74"/>
+                <BoxView HeightRequest="2" WidthRequest="60" IsVisible="{Binding IsUpcomingTab}" Color="#F4C400"/>
             </VerticalStackLayout>
-
-            <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Center">
+            <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Past"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Past" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="Past" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}"/>
-                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsPastTab}" Color="#D14C74"/>
+                <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsPastTab}" Color="#F4C400"/>
             </VerticalStackLayout>
         </Grid>
 
-        <BoxView HeightRequest="1" BackgroundColor="#E2E6EA" Margin="0,-10,0,0"/>
-
-        <VerticalStackLayout IsVisible="{Binding HasAppointments, Converter={StaticResource BoolInverter}}"
-                              VerticalOptions="Center" Margin="0,40,0,0" Spacing="10">
-            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No appointments here" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
-        </VerticalStackLayout>
-
-        <CollectionView ItemsSource="{Binding Appointments}" IsVisible="{Binding HasAppointments}">
+        <CollectionView Grid.Row="3" ItemsSource="{Binding Appointments}" SelectionMode="None"
+                        Margin="14,0,14,12">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="24,56,24,20" Spacing="8" HorizontalOptions="Center">
+                    <Label Text="&#128197;" FontSize="38" HorizontalOptions="Center" TextColor="#9AA6B2"/>
+                    <Label Text="{Binding EmptyMessage}" FontSize="15" FontAttributes="Bold"
+                           TextColor="#17221B" HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:DentistAppointmentItem">
-                    <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
-                           Padding="16" Margin="0,0,0,12" HasShadow="False">
-                        <VerticalStackLayout Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Frame Grid.Column="1" BackgroundColor="{Binding StatusColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
-                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
-                                </Frame>
+                    <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 14" Padding="12" Margin="0,0,0,9">
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <VerticalStackLayout Spacing="1">
+                                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="13"
+                                           TextColor="#17221B" LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding PatientIdDisplay}" FontSize="10" TextColor="#647067"/>
+                                </VerticalStackLayout>
+                                <Border Grid.Column="1" BackgroundColor="{Binding StatusColor}" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 9" Padding="8,3" VerticalOptions="Start">
+                                    <Label Text="{Binding Status}" FontSize="8" FontAttributes="Bold" TextColor="White"/>
+                                </Border>
                             </Grid>
-                            <Label Text="{Binding DentalService}" FontSize="13" TextColor="#6B7684"/>
-                            <Label Text="{Binding DateDisplay}" FontSize="12" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding TimeDisplay}" FontSize="12" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding DentalService}" FontSize="12" FontAttributes="Bold" TextColor="#087A3D"/>
+                            <Label Text="{Binding ReasonOrPurpose}" FontSize="10" TextColor="#647067"
+                                   IsVisible="{Binding HasReasonOrPurpose}"/>
+                            <Label FontSize="10" TextColor="#77847B">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding DateDisplay}"/>
+                                        <Span Text=" · "/>
+                                        <Span Text="{Binding TimeDisplay}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
+
+
+

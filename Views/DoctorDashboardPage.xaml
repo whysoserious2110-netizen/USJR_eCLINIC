@@ -12,7 +12,7 @@
             <VerticalStackLayout Padding="18,44,18,22" Spacing="16">
 
                 <Grid RowDefinitions="Auto,7" Margin="-18,-44,-18,0">
-    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+    <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,44,18,13">
         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
             <Frame WidthRequest="48" HeightRequest="48" CornerRadius="24" Padding="0"
@@ -109,6 +109,12 @@
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
                     <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
                             StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Today">
+                                <Setter Property="BackgroundColor" Value="#FFF3CD"/>
+                                <Setter Property="Stroke" Value="#F4C400"/>
+                            </DataTrigger>
+                        </Border.Triggers>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToTodaysVisitsCommand}"/>
                         </Border.GestureRecognizers>
@@ -121,6 +127,12 @@
                     </Border>
                     <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
                             StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="PatientRecords">
+                                <Setter Property="BackgroundColor" Value="#FFF3CD"/>
+                                <Setter Property="Stroke" Value="#F4C400"/>
+                            </DataTrigger>
+                        </Border.Triggers>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToPatientRecordsCommand}"/>
                         </Border.GestureRecognizers>
@@ -132,6 +144,12 @@
                     </Border>
                     <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
                             StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Prescription">
+                                <Setter Property="BackgroundColor" Value="#FFF3CD"/>
+                                <Setter Property="Stroke" Value="#F4C400"/>
+                            </DataTrigger>
+                        </Border.Triggers>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToWriteRxCommand}"/>
                         </Border.GestureRecognizers>
@@ -141,8 +159,14 @@
                             <Label Text="Select a patient" FontSize="11" TextColor="#647067"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#E8CF5A"
+                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
                             StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Certificates">
+                                <Setter Property="BackgroundColor" Value="#FFF3CD"/>
+                                <Setter Property="Stroke" Value="#F4C400"/>
+                            </DataTrigger>
+                        </Border.Triggers>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToCertificatesCommand}"/>
                         </Border.GestureRecognizers>

@@ -3,6 +3,12 @@ using USJR_eCLINIC.Models;
 
 namespace USJR_eCLINIC.Services;
 
+public sealed class DentalRecordColumnInfo
+{
+    [Column("name")]
+    public string Name { get; set; } = string.Empty;
+}
+
 public class DentalRecordService
 {
     public static DentalRecordService Instance { get; } = new DentalRecordService();
@@ -21,6 +27,14 @@ public class DentalRecordService
         {
             if (_initialized) return;
             await _db.CreateTableAsync<DentalRecord>();
+
+            var columns = await _db.QueryAsync<DentalRecordColumnInfo>("PRAGMA table_info('DentalRecord');");
+            if (!columns.Any(column => column.Name.Equals("AppointmentId", StringComparison.OrdinalIgnoreCase)))
+            {
+                await _db.ExecuteAsync(
+                    "ALTER TABLE DentalRecord ADD COLUMN AppointmentId INTEGER NOT NULL DEFAULT 0");
+            }
+
             _initialized = true;
         }
         finally
@@ -71,5 +85,51 @@ public class DentalRecordService
     {
         await EnsureInitializedAsync();
         await _db.InsertAsync(record);
+    }
+
+    public async Task<bool> AddForAppointmentAndCompleteAsync(DentalRecord record)
+    {
+        var dentist = AuthService.Instance.CurrentUser;
+        if (dentist?.Role != "Dentist" || record.AppointmentId <= 0)
+            return false;
+
+        await EnsureInitializedAsync();
+
+        // Initialize the appointment table and any existing appointment workflow columns.
+        await AppointmentService.Instance.GetByIdAsync(record.AppointmentId);
+
+        var saved = false;
+        await _db.RunInTransactionAsync(connection =>
+        {
+            var appointment = connection.Find<Appointment>(record.AppointmentId);
+            if (appointment == null ||
+                appointment.VisitDate.Date != DateTime.Today ||
+                appointment.Status != "VitalsRecorded" ||
+                (appointment.ServiceType != "Dental" &&
+                 !(appointment.ServiceType == "Cert Request" && appointment.SubService == "Dental Certificate")))
+            {
+                return;
+            }
+
+            var existingRecord = connection.Table<DentalRecord>()
+                .Where(existing => existing.AppointmentId == record.AppointmentId)
+                .FirstOrDefault();
+            if (existingRecord != null)
+                return;
+
+            record.PatientEmail = appointment.PatientEmail;
+            record.VisitDate = DateTime.Now;
+            record.AttendingDentist = dentist.FullName;
+            connection.Insert(record);
+
+            appointment.Status = "Completed";
+            if (appointment.ServiceType == "Cert Request")
+                appointment.CertificateStatus = "Awaiting Clinical Review";
+
+            connection.Update(appointment);
+            saved = true;
+        });
+
+        return saved;
     }
 }

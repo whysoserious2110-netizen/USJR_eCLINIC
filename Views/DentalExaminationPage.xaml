@@ -2,73 +2,147 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
              x:Class="USJR_eCLINIC.Views.DentalExaminationPage"
              x:DataType="vm:DentalExaminationViewModel"
-             BackgroundColor="#F7F8FA">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
-
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Dental Examination" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+    <Grid RowDefinitions="Auto,6,*,Auto">
+        <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                StrokeShape="RoundRectangle 0" Padding="16,42,16,11">
+            <Grid ColumnDefinitions="32,*" ColumnSpacing="8">
+                <Button Text="&#8592;" FontSize="21" TextColor="#087A3D"
+                        BackgroundColor="#F4C400" CornerRadius="8" WidthRequest="30"
+                        HeightRequest="32" Padding="0" Command="{Binding GoBackCommand}"/>
+                <Label Grid.Column="1" Text="Dental Examination" FontSize="16"
+                       FontAttributes="Bold" TextColor="#F4C400" VerticalOptions="Center"/>
             </Grid>
+        </Border>
+        <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6"/>
 
-            <Frame BackgroundColor="#FDE6EC" CornerRadius="12" Padding="14" HasShadow="False">
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientRole}" FontSize="12" TextColor="#D14C74"/>
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="12,12,12,18" Spacing="12">
+                <Border BackgroundColor="#FFF3BF" Stroke="#E8D36A" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12" Padding="10">
+                    <Grid ColumnDefinitions="42,*" ColumnSpacing="9">
+                        <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#E7E9E8"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="0">
+                            <Grid>
+                                <Label Text="{Binding PatientInitials}" FontSize="12" FontAttributes="Bold"
+                                       TextColor="#7F8C95" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
+                                       Aspect="AspectFill"/>
+                            </Grid>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="{Binding PatientName}" FontSize="12" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="{Binding PatientIdDisplay}" FontSize="9" TextColor="#526057"/>
+                            <Label Text="{Binding PatientAcademicDisplay}" FontSize="9" TextColor="#526057"/>
+                            <Label Text="{Binding AppointmentContext}" FontSize="9" TextColor="#087A3D"
+                                   LineBreakMode="TailTruncation" MaxLines="2"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E1E8EE" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Oral Diagnosis Details" FontSize="13" FontAttributes="Bold" TextColor="#17221B"/>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Oral Examination Findings *" FontSize="10"
+                                   FontAttributes="Bold" TextColor="#526057"/>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10" Padding="8,5">
+                                <Editor Placeholder="Describe the oral examination findings"
+                                        Text="{Binding ExamFindings}" HeightRequest="66" AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Dental Diagnosis / Impression *" FontSize="10"
+                                   FontAttributes="Bold" TextColor="#526057"/>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10" Padding="8,5">
+                                <Editor Placeholder="e.g., Dental caries, tooth number, diagnosis"
+                                        Text="{Binding Diagnosis}" HeightRequest="70" AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#E1E8EE" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Treatments &amp; Advice" FontSize="13" FontAttributes="Bold" TextColor="#17221B"/>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Treatment Performed *" FontSize="10"
+                                   FontAttributes="Bold" TextColor="#526057"/>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10" Padding="8,5">
+                                <Editor Placeholder="Describe the treatment performed during this visit"
+                                        Text="{Binding TreatmentRendered}" HeightRequest="68" AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Dental Notes &amp; Observations (optional)" FontSize="10"
+                                   FontAttributes="Bold" TextColor="#526057"/>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10" Padding="8,5">
+                                <Editor Placeholder="Additional clinical observations"
+                                        Text="{Binding DentalNotes}" HeightRequest="68" AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Recommended Follow-up (optional)" FontSize="10"
+                                   FontAttributes="Bold" TextColor="#526057"/>
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 10" Padding="8,5">
+                                <Editor Placeholder="e.g., Return for a cleaning in six months"
+                                        Text="{Binding CareInstructions}" HeightRequest="68" AutoSize="TextChanges"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="Save Examination" Command="{Binding SaveExaminationCommand}"
+                        BackgroundColor="#2C9057" TextColor="White" FontAttributes="Bold"
+                        CornerRadius="12" HeightRequest="48" Margin="10,2"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="3" BackgroundColor="White" Stroke="#E1E8EE" StrokeThickness="1"
+                Padding="4,6" StrokeShape="RoundRectangle 0">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <VerticalStackLayout Grid.Column="0" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToHomeCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#8962;" FontSize="17" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Home" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
-            </Frame>
-
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Exam Findings" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Text="{Binding ExamFindings}" HeightRequest="60"/>
-                </Frame>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Diagnosis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Placeholder="e.g., Caries / Tooth Cavity (Tooth #46)" Text="{Binding Diagnosis}" HeightRequest="60"/>
-                </Frame>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Treatment Rendered" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Placeholder="e.g., Composite filling on distal occlusal surface" Text="{Binding TreatmentRendered}" HeightRequest="80"/>
-                </Frame>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Dental Notes" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Placeholder="Additional clinical notes..." Text="{Binding DentalNotes}" HeightRequest="60"/>
-                </Frame>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Care Instructions (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
-                <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
-                    <Editor Placeholder="e.g., Avoid hard chewing on the right side for 24 hours." Text="{Binding CareInstructions}" HeightRequest="60"/>
-                </Frame>
-            </VerticalStackLayout>
-
-            <Button Text="Save Examination"
-                    Command="{Binding SaveExaminationCommand}"
-                    BackgroundColor="#0F9B8E"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="26"
-                    HeightRequest="54"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+                <VerticalStackLayout Grid.Column="1" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToPatientsCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128100;" FontSize="16" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Patients" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128197;" FontSize="16" TextColor="#00A99A" HorizontalOptions="Center"/>
+                    <Label Text="Appointments" FontSize="8" FontAttributes="Bold"
+                           TextColor="#00A99A" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="3" Spacing="1" HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="&#128100;" FontSize="16" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Profile" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+    </Grid>
 </ContentPage>

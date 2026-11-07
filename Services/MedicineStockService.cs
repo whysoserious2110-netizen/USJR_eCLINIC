@@ -62,7 +62,7 @@ public class MedicineStockService
 
     public async Task<bool> AddStockAsync(int id, int amountToAdd)
     {
-        if (amountToAdd <= 0)
+        if (AuthService.Instance.CurrentUser?.Role != "Nurse" || amountToAdd <= 0)
             return false;
 
         await EnsureInitializedAsync();
@@ -71,7 +71,7 @@ public class MedicineStockService
         await _db.RunInTransactionAsync(connection =>
         {
             var item = connection.Find<MedicineStock>(id);
-            if (item == null)
+            if (item == null || amountToAdd > int.MaxValue - item.Quantity)
                 return;
 
             item.Quantity += amountToAdd;
@@ -85,7 +85,8 @@ public class MedicineStockService
 
     public async Task<bool> AddNewMedicineAsync(MedicineStock item)
     {
-        if (string.IsNullOrWhiteSpace(item.MedicineName) ||
+        if (AuthService.Instance.CurrentUser?.Role != "Nurse" ||
+            string.IsNullOrWhiteSpace(item.MedicineName) ||
             string.IsNullOrWhiteSpace(item.Unit) ||
             item.Quantity < 0 ||
             item.LowStockThreshold < 0)

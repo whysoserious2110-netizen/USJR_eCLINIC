@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace USJR_eCLINIC
 {
@@ -14,6 +14,18 @@ namespace USJR_eCLINIC
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+#if ANDROID
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoAndroidEntryUnderline", (handler, view) =>
+            {
+                handler.PlatformView.Background = null;
+            });
+
+            Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("NoAndroidEditorUnderline", (handler, view) =>
+            {
+                handler.PlatformView.Background = null;
+            });
+#endif
 
 #if DEBUG
     		builder.Logging.AddDebug();

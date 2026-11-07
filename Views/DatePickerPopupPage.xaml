@@ -11,17 +11,11 @@
         <Frame BackgroundColor="White" CornerRadius="24" Padding="0" HasShadow="True" BorderColor="Transparent">
             <VerticalStackLayout Spacing="0">
 
-                <Frame CornerRadius="24,24,0,0" Padding="18,16" HasShadow="False" BorderColor="Transparent">
-                    <Frame.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#0F9B8E" Offset="0.0"/>
-                            <GradientStop Color="#12B5A5" Offset="1.0"/>
-                        </LinearGradientBrush>
-                    </Frame.Background>
+                <Frame CornerRadius="24,24,0,0" Padding="18,16" HasShadow="False" BorderColor="Transparent" BackgroundColor="#176B38">
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <Frame Grid.Column="0" BackgroundColor="#1FFFFFFF" CornerRadius="18" Padding="0"
+                        <Frame Grid.Column="0" BackgroundColor="#F4C400" CornerRadius="9" Padding="0"
                                WidthRequest="34" HeightRequest="34" HasShadow="False" BorderColor="Transparent">
-                            <Label Text="&#8249;" FontSize="18" FontAttributes="Bold" TextColor="White"
+                            <Label Text="&#8249;" FontSize="18" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding PreviousMonthCommand}"/>
@@ -29,11 +23,11 @@
                         </Frame>
 
                         <Label Grid.Column="1" Text="{Binding CurrentMonthLabel}" FontSize="17" FontAttributes="Bold"
-                               TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                               TextColor="#F4C400" HorizontalOptions="Center" VerticalOptions="Center"/>
 
-                        <Frame Grid.Column="2" BackgroundColor="#1FFFFFFF" CornerRadius="18" Padding="0"
+                        <Frame Grid.Column="2" BackgroundColor="#F4C400" CornerRadius="9" Padding="0"
                                WidthRequest="34" HeightRequest="34" HasShadow="False" BorderColor="Transparent">
-                            <Label Text="&#8250;" FontSize="18" FontAttributes="Bold" TextColor="White"
+                            <Label Text="&#8250;" FontSize="18" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding NextMonthCommand}"/>
@@ -41,6 +35,7 @@
                         </Frame>
                     </Grid>
                 </Frame>
+                <BoxView HeightRequest="5" Color="#F4C400" />
 
                 <VerticalStackLayout Padding="16,14" Spacing="12">
 

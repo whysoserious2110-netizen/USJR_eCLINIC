@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -17,9 +17,18 @@ public partial class ReadsAppointmentOverviewItem : ObservableObject
     public Color StatusColor { get; set; } = Colors.Gray;
 
     public bool CanApprove => Status == "Pending";
+    public bool CanDecline => Status == "Pending";
 
     public string StatusDisplay =>
-        Status == "CheckedIn" ? "Checked in" : Status;
+        Status switch
+        {
+            "CheckedIn" => "Checked in",
+            "VitalsRecorded" => "Vitals recorded",
+            "Declined" => "Declined",
+            "Expired" => "Expired",
+            "Missed" => "Missed",
+            _ => Status
+        };
 }
 
 public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
@@ -69,6 +78,7 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
                     "CheckedIn" => Color.FromArgb("#2E6FDB"),
                     "Completed" => Color.FromArgb("#4A90D9"),
                     "Cancelled" => Color.FromArgb("#E05B5B"),
+                    "Declined" or "Expired" or "Missed" => Color.FromArgb("#8793A0"),
                     _ => Color.FromArgb("#D9A441")
                 }
             });
@@ -86,8 +96,7 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             "Upcoming" => _all
                 .Where(a =>
                     a.VisitDate.Date >= today &&
-                    a.Status != "Cancelled" &&
-                    a.Status != "Completed")
+                    a.Status is not ("Cancelled" or "Completed" or "Declined" or "Expired" or "Missed"))
                 .OrderBy(a => a.CanApprove ? 0 : 1)
                 .ThenBy(a => a.VisitDate)
                 .ThenBy(a => a.TimeDisplay),
@@ -95,8 +104,7 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             "Past" => _all
                 .Where(a =>
                     a.VisitDate.Date < today ||
-                    a.Status == "Completed" ||
-                    a.Status == "Cancelled")
+                    a.Status is "Completed" or "Cancelled" or "Declined" or "Expired" or "Missed")
                 .OrderByDescending(a => a.VisitDate)
                 .ThenBy(a => a.TimeDisplay),
 
@@ -187,6 +195,51 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             "OK");
     }
 
+    [RelayCommand]
+    private async Task DeclineAppointment(ReadsAppointmentOverviewItem? item)
+    {
+        if (item == null || !item.CanDecline)
+            return;
+
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only R.E.A.D.S. Scholars can review clinic appointment requests.",
+                "OK");
+            return;
+        }
+
+        var reason = await Shell.Current.DisplayPromptAsync(
+            "Decline Request",
+            "Enter a short reason for the patient:",
+            "Decline",
+            "Cancel",
+            "e.g., requested time is unavailable",
+            maxLength: 160);
+
+        if (string.IsNullOrWhiteSpace(reason))
+            return;
+
+        var declined = await Services.AppointmentService.Instance
+            .DeclinePendingAsync(item.AppointmentId, reason);
+
+        if (!declined)
+        {
+            await Shell.Current.DisplayAlert(
+                "Request not updated",
+                "This request may have changed or its appointment time has passed. Refresh and review it again.",
+                "OK");
+            await RefreshAsync();
+            return;
+        }
+
+        await RefreshAsync();
+        await Shell.Current.DisplayAlert(
+            "Request declined",
+            "The patient will receive the reason in their notifications.",
+            "OK");
+    }
     [RelayCommand]
     private async Task GoBack()
     {

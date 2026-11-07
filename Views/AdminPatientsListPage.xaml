@@ -8,23 +8,37 @@
              x:DataType="vm:AdminPatientsListViewModel"
              BackgroundColor="#F7F8FA">
 
-    <VerticalStackLayout Padding="20,50,20,20" Spacing="16">
+    <VerticalStackLayout Padding="16,16,16,20" Spacing="16">
 
-        <Grid ColumnDefinitions="Auto,*">
-            <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
-            <Label Grid.Column="1" Text="Patient Search" FontSize="20" FontAttributes="Bold"
-                   TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+                <Grid RowDefinitions="Auto,5" RowSpacing="0">
+            <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                    StrokeShape="Rectangle" Padding="12,10">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;"
+                            FontSize="21" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="9"
+                            WidthRequest="38" HeightRequest="38" Padding="0"
+                            Command="{Binding GoBackCommand}" />
+                    <Label Grid.Column="1" Text="Patient Lookup"
+                           FontSize="18" FontAttributes="Bold"
+                           TextColor="#F4C400" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <BoxView Grid.Row="1" Color="#F4C400" />
         </Grid>
-
         <Frame x:Name="SearchFrame" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="48" HasShadow="False">
             <Entry x:Name="SearchEntry" Placeholder="Search by name or ID..." Text="{Binding SearchText}" VerticalOptions="Center"
                    Focused="SearchEntry_Focused" Unfocused="SearchEntry_Unfocused"/>
         </Frame>
 
+        <Button Text="Register New Patient"
+                IsVisible="{Binding CanRegisterPatients}"
+                Command="{Binding RegisterPatientCommand}"
+                BackgroundColor="#087A3D"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="12"
+                HeightRequest="46"/>
         <VerticalStackLayout IsVisible="{Binding HasSearched, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
             <Label Text="&#128269;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>

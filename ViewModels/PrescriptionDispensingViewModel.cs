@@ -9,6 +9,8 @@ public partial class DispenseListItem : ObservableObject
     public int PrescriptionId { get; set; }
     public string PatientName { get; set; } = string.Empty;
     public string PatientEmail { get; set; } = string.Empty;
+    public string PatientIdNumber { get; set; } = string.Empty;
+    public string PatientIdDisplay => string.IsNullOrWhiteSpace(PatientIdNumber) ? "ID unavailable" : $"ID: {PatientIdNumber}";
     public string MedicineName { get; set; } = string.Empty;
     public string Dosage { get; set; } = string.Empty;
     public int Quantity { get; set; }
@@ -18,6 +20,7 @@ public partial class DispenseListItem : ObservableObject
 public partial class PrescriptionDispensingViewModel : ObservableObject
 {
     private List<DispenseListItem> _allPending = new();
+    private bool _accessDeniedShown;
 
     public ObservableCollection<DispenseListItem> PendingDispense { get; } = new();
 
@@ -28,6 +31,21 @@ public partial class PrescriptionDispensingViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            _allPending.Clear();
+            PendingDispense.Clear();
+            HasPending = false;
+            PendingCountText = "Nurse access only";
+            EmptyMessage = "Prescription dispensing is available to Nurses only.";
+            if (!_accessDeniedShown)
+            {
+                _accessDeniedShown = true;
+                await Shell.Current.DisplayAlert("Access denied", EmptyMessage, "OK");
+            }
+            return;
+        }
+
         var prescriptions = await Services.PrescriptionService.Instance.GetClinicGivenUndispensedAsync();
         _allPending = new List<DispenseListItem>();
 
@@ -39,6 +57,7 @@ public partial class PrescriptionDispensingViewModel : ObservableObject
                 PrescriptionId = prescription.Id,
                 PatientName = patient?.FullName ?? prescription.PatientEmail,
                 PatientEmail = prescription.PatientEmail,
+                PatientIdNumber = patient?.IdNumber ?? string.Empty,
                 MedicineName = prescription.MedicineName,
                 Dosage = prescription.Dosage,
                 Quantity = prescription.Quantity > 0 ? prescription.Quantity : 1,
@@ -75,11 +94,20 @@ public partial class PrescriptionDispensingViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task MarkDispensed(DispenseListItem item)
+    private async Task MarkDispensed(DispenseListItem? item)
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only Nurses can dispense clinic-given prescriptions.", "OK");
+            return;
+        }
+
+        if (item == null || item.PrescriptionId <= 0)
+            return;
+
         var confirmed = await Shell.Current.DisplayAlert(
             "Confirm dispensing",
-            $"Confirm that {item.Quantity} unit(s) of {item.MedicineName} were given to {item.PatientName}? Inventory will be updated.",
+            $"Confirm that {item.Quantity} unit(s) of {item.MedicineName} were given to {item.PatientName} ({item.PatientIdDisplay})? Inventory will be updated.",
             "Confirm",
             "Cancel");
 

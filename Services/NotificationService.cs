@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 using USJR_eCLINIC.Models;
 
 namespace USJR_eCLINIC.Services;
@@ -52,6 +52,28 @@ public class NotificationService
         return all.Count(n => !n.IsRead);
     }
 
+    public async Task<bool> MarkAsReadAsync(int notificationId, string recipientEmail)
+    {
+        await EnsureInitializedAsync();
+        var notification = await _db.Table<Notification>()
+            .Where(item => item.Id == notificationId)
+            .FirstOrDefaultAsync();
+
+        if (notification == null ||
+            notification.IsDeleted ||
+            !notification.RecipientEmail.Equals(recipientEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!notification.IsRead)
+        {
+            notification.IsRead = true;
+            await _db.UpdateAsync(notification);
+        }
+
+        return true;
+    }
     public async Task MarkAllAsReadAsync(string recipientEmail)
     {
         var all = await GetForUserAsync(recipientEmail);
@@ -95,3 +117,4 @@ public class NotificationService
     }
 
 }
+

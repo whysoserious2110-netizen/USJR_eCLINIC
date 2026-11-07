@@ -19,34 +19,16 @@
     <ScrollView>
         <VerticalStackLayout Padding="25,10,25,30" Spacing="0">
 
-            <!-- Header -->
-            <Grid
-    ColumnDefinitions="48,*"
-    BackgroundColor="#2C9057"
-    Padding="12,14"
-    Margin="0,0,0,20">
-
-                <Button
-        Grid.Column="0"
-        Text="&#8592;"
-        FontSize="22"
-        TextColor="#2C9057"
-        BackgroundColor="#FFD000"
-        CornerRadius="10"
-        WidthRequest="40"
-        HeightRequest="40"
-        Padding="0"
-        Command="{Binding GoBackCommand}"
-        VerticalOptions="Center" />
-
-                <Label
-        Grid.Column="1"
-        Text="Create Account (1/2)"
-        FontSize="18"
-        FontAttributes="Bold"
-        TextColor="#FFD000"
-        Margin="10,0,0,0"
-        VerticalOptions="Center" />
+            <!-- Green and yellow page header -->
+            <Grid RowDefinitions="Auto,5" Margin="-25,0,-25,20">
+                <Grid Grid.Row="0" ColumnDefinitions="48,*" BackgroundColor="#176B38" Padding="25,14">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="10" WidthRequest="40" HeightRequest="40"
+                            Padding="0" Command="{Binding GoBackCommand}" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Create Account (1/2)" FontSize="18" FontAttributes="Bold"
+                           TextColor="#F4C400" Margin="10,0,0,0" VerticalOptions="Center" />
+                </Grid>
+                <BoxView Grid.Row="1" Color="#F4C400" />
             </Grid>
 
             <!-- Role pills -->
@@ -94,43 +76,34 @@
                            TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Non-Teaching'}"/>
                 </Frame>
 
-                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='R.E.A.D.S. Scholar'}"
-                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="R.E.A.D.S. Scholar"/>
-                    </Frame.GestureRecognizers>
-                    <Label Text="R.E.A.D.S. Scholar"
-                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='R.E.A.D.S. Scholar'}"/>
-                </Frame>
-
             </FlexLayout>
 
             <!-- Dynamic ID field -->
             <Label Text="{Binding IdLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry Placeholder="e.g., 2022-10492" Text="{Binding IdNumber}" VerticalOptions="Center"/>
+                <Entry ClassId="NoAndroidUnderline" Placeholder="e.g., 2022-10492" Text="{Binding IdNumber}" VerticalOptions="Center"/>
             </Frame>
 
             <!-- Program / Department -->
             <Label Text="Program / Department" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry Placeholder="e.g., BS Information Technology" Text="{Binding ProgramOrDepartment}" VerticalOptions="Center"/>
+                <Entry ClassId="NoAndroidUnderline" Placeholder="e.g., BS Information Technology" Text="{Binding ProgramOrDepartment}" VerticalOptions="Center"/>
             </Frame>
 
             <!-- Full Name -->
             <Label Text="Full Name (Last, First, M.I.)" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry Placeholder="Dela Cruz, Juan A." Text="{Binding FullName}" VerticalOptions="Center"/>
+                <Entry ClassId="NoAndroidUnderline" Placeholder="Dela Cruz, Juan A." Text="{Binding FullName}" VerticalOptions="Center"/>
             </Frame>
 
             <!-- Email -->
             <Label Text="Email Address" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry Placeholder="juan.delacruz@usjr.edu.ph" Text="{Binding Email}" Keyboard="Email" VerticalOptions="Center"/>
+                <Entry ClassId="NoAndroidUnderline" Placeholder="juan.delacruz@usjr.edu.ph" Text="{Binding Email}" Keyboard="Email" VerticalOptions="Center"/>
             </Frame>
 
 
@@ -228,7 +201,7 @@
            Padding="12,0"
            HeightRequest="48"
            HasShadow="False">
-                    <Entry
+                    <Entry ClassId="NoAndroidUnderline"
             Text="{Binding AllergyDetails}"
             Placeholder="e.g., mild, severe, reaction notes"
             VerticalOptions="Center" />
@@ -243,7 +216,7 @@
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Entry Grid.Column="0" Placeholder="Enter your password"
+                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Placeholder="Enter your password"
                            Text="{Binding Password}" IsPassword="{Binding IsPasswordHidden}"
                            VerticalOptions="Center"/>
                     <CheckBox Grid.Column="1"
@@ -262,7 +235,7 @@
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
                    Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,4">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Entry Grid.Column="0" Placeholder="Re-enter your password"
+                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Placeholder="Re-enter your password"
                            Text="{Binding ConfirmPassword}" IsPassword="{Binding IsConfirmPasswordHidden}"
                            VerticalOptions="Center"/>
                     <CheckBox Grid.Column="1"

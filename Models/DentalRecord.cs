@@ -8,6 +8,7 @@ public class DentalRecord
     public int Id { get; set; }
 
     public string PatientEmail { get; set; } = string.Empty;
+    public int AppointmentId { get; set; }
     public DateTime VisitDate { get; set; }
     public string ExamFindings { get; set; } = string.Empty;
     public string Diagnosis { get; set; } = string.Empty;

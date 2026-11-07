@@ -5,49 +5,55 @@
              xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
              x:Class="USJR_eCLINIC.Views.DentistProfilePage"
              x:DataType="vm:DentistProfileViewModel"
-             BackgroundColor="#F7F8FA">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
+        <VerticalStackLayout Padding="20,0,20,30" Spacing="20">
 
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Dentist Profile" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-                <Label Grid.Column="2" Text="Edit" FontSize="14" FontAttributes="Bold" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleEditCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
+            <Grid RowDefinitions="Auto,6" Margin="-20,0,-20,0">
+                <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                        StrokeShape="Rectangle" Padding="16,50,16,12">
+                    <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="10">
+                        <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                                TextColor="#087A3D" BackgroundColor="#F4C400"
+                                CornerRadius="9" WidthRequest="40" HeightRequest="40"
+                                Padding="0" Command="{Binding GoBackCommand}"/>
+                        <Label Grid.Column="1" Text="Dentist Profile" FontSize="17"
+                               FontAttributes="Bold" TextColor="#F4C400"
+                               Margin="2,0,0,0" VerticalOptions="Center"/>
+                        <Button Grid.Column="2" Text="Edit" FontSize="12" FontAttributes="Bold"
+                                TextColor="#087A3D" BackgroundColor="#F4C400"
+                                CornerRadius="9" Padding="12,0" HeightRequest="34"
+                                Command="{Binding ToggleEditCommand}" VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+                <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6"/>
             </Grid>
 
             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                 <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"
-                       BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
+                       BackgroundColor="#DCE5DD" HasShadow="False" IsClippedToBounds="True">
                     <Grid>
                         <Label Text="&#128100;" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
                         <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
                     </Grid>
                 </Frame>
 
-                <Label Text="Change photo" Margin="30,0,0,0" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E">
+                <Label Text="Change photo" Margin="30,0,0,0" FontSize="12" FontAttributes="Bold" TextColor="#087A3D">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ChangePhotoCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
 
                 <Label Text="{Binding FullName}" FontSize="18" FontAttributes="Bold" TextColor="#12212E" HorizontalOptions="Center"/>
-                <Frame BackgroundColor="#D5F5EF" Padding="10,3" CornerRadius="10" HasShadow="False">
-                    <Label Text="DENTIST" Margin="40,0,0,0" FontSize="11" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                <Frame BackgroundColor="#FFF4C7" Padding="10,3" CornerRadius="10" HasShadow="False">
+                    <Label Text="DENTIST" Margin="40,0,0,0" FontSize="11" FontAttributes="Bold" TextColor="#087A3D"/>
                 </Frame>
             </VerticalStackLayout>
 
             <!-- Professional Info -->
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+            <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="14">
                     <Label Text="Professional Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
 
@@ -80,7 +86,7 @@
             </Frame>
 
             <!-- Contact Info -->
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+            <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="14">
                     <Label Text="Contact Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
 
@@ -99,7 +105,7 @@
             <!-- Schedule -->
             <!-- Schedule -->
             <!-- Clinic Information -->
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
+            <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="14">
                     <Label Text="Clinic Information" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
 
@@ -121,8 +127,8 @@
 
                     <VerticalStackLayout Spacing="6">
                         <Label Text="Status" FontSize="11" TextColor="#9AA4AE"/>
-                        <Frame BackgroundColor="#D5F5EF" Padding="10,4" CornerRadius="10" HasShadow="False" HorizontalOptions="Start">
-                            <Label Text="{Binding EmploymentStatus}" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                        <Frame BackgroundColor="#FFF4C7" Padding="10,4" CornerRadius="10" HasShadow="False" HorizontalOptions="Start">
+                            <Label Text="{Binding EmploymentStatus}" FontSize="12" FontAttributes="Bold" TextColor="#087A3D"/>
                         </Frame>
                     </VerticalStackLayout>
 
@@ -132,7 +138,7 @@
             <Button Text="Save Changes"
                     Command="{Binding SaveCommand}"
                     IsVisible="{Binding IsEditing}"
-                    BackgroundColor="#0F9B8E"
+                    BackgroundColor="#087A3D"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="26"

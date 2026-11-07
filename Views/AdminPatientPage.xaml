@@ -7,17 +7,24 @@
              BackgroundColor="#F7F8FA">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
+        <VerticalStackLayout Padding="16,16,16,30" Spacing="20">
 
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Patient Information" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-            </Grid>
+            <VerticalStackLayout Spacing="0">
+                <Border BackgroundColor="#176B38" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12" Padding="12,10">
+                    <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" Text="&#8592;"
+                                FontSize="21" TextColor="#087A3D"
+                                BackgroundColor="#F4C400" CornerRadius="9"
+                                WidthRequest="38" HeightRequest="38" Padding="0"
+                                Command="{Binding GoBackCommand}" />
+                        <Label Grid.Column="1" Text="Patient Information"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="#F4C400" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+                <BoxView HeightRequest="5" Color="#F4C400" />
+            </VerticalStackLayout>
 
             <!-- Patient Information (administrative only) -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">

@@ -7,47 +7,33 @@
              x:DataType="vm:TodaysOverviewViewModel"
              BackgroundColor="#F5F7FA">
 
-    <Grid Padding="20,42,20,12"
+    <Grid Padding="14,16,14,12"
           RowDefinitions="Auto,Auto,Auto,*"
           RowSpacing="14">
 
-        <!-- Header -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-            <Label Grid.Column="0"
-                   Text="&#8592;"
-                   FontSize="24"
-                   TextColor="#0F9B8E"
-                   VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-
-            <VerticalStackLayout Grid.Column="1"
-                                 Spacing="3"
-                                 VerticalOptions="Center">
-                <Label Text="Today's Clinic"
-                       FontSize="21"
-                       FontAttributes="Bold"
-                       TextColor="#12212E" />
-                <Label Text="{Binding TodayDisplay}"
-                       FontSize="12"
-                       TextColor="#7B8794" />
-            </VerticalStackLayout>
-
-            <Button Grid.Column="2"
-                    Text="&#8635;"
-                    Command="{Binding RefreshDashboardCommand}"
-                    BackgroundColor="White"
-                    TextColor="#0F9B8E"
-                    FontSize="22"
-                    CornerRadius="12"
-                    WidthRequest="44"
-                    HeightRequest="44"
-                    Padding="0"
-                    VerticalOptions="Center" />
-        </Grid>
-
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border BackgroundColor="#176B38" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12" Padding="12,10">
+                <Grid ColumnDefinitions="42,*,44" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;"
+                            Command="{Binding GoBackCommand}"
+                            FontSize="21" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="9"
+                            WidthRequest="38" HeightRequest="38" Padding="0" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="Today's Clinic" FontSize="18"
+                               FontAttributes="Bold" TextColor="#F4C400" />
+                        <Label Text="{Binding TodayDisplay}" FontSize="11" TextColor="#E9F3EC" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2" Text="&#8635;"
+                            Command="{Binding RefreshDashboardCommand}"
+                            BackgroundColor="#F4C400" TextColor="#087A3D"
+                            FontSize="20" CornerRadius="10"
+                            WidthRequest="38" HeightRequest="38" Padding="0" />
+                </Grid>
+            </Border>
+            <BoxView HeightRequest="5" Color="#F4C400"/>
+        </VerticalStackLayout>
         <!-- Pending requests are for all dates, not only today. -->
         <Frame Grid.Row="1"
                BackgroundColor="#FFF8E9"
@@ -247,16 +233,7 @@
                                                TextColor="#2E6FDB" />
                                     </Frame>
 
-                                    <Button Text="Check In Patient"
-                                            IsVisible="{Binding CanCheckIn}"
-                                            Command="{Binding Source={x:Reference Root},
-                                                              Path=BindingContext.CheckInVisitCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="#0F9B8E"
-                                            TextColor="White"
-                                            FontAttributes="Bold"
-                                            CornerRadius="12"
-                                            HeightRequest="44" />
+
                                 </VerticalStackLayout>
                             </Frame>
                         </DataTemplate>

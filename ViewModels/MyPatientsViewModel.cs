@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -12,6 +12,8 @@ public partial class MyPatientItem : ObservableObject
     public string IdNumber { get; set; } = string.Empty;
     public string LastVisitDisplay { get; set; } = string.Empty;
     public string ProfileImagePath { get; set; } = string.Empty;
+    public string CourseYearDisplay { get; set; } = string.Empty;
+    public string Initials => string.Join(string.Empty, (FullName ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(part => part[..1].ToUpperInvariant()));
 }
 
 public partial class MyPatientsViewModel : ObservableObject

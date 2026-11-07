@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              x:Class="USJR_eCLINIC.Views.WelcomePage"
              x:DataType="vm:WelcomeViewModel"
-             BackgroundColor="#2C9057">
+             BackgroundColor="White">
 
     <Grid RowDefinitions="*, Auto" Padding="40,0">
 
@@ -36,7 +36,7 @@
             </Label>
             <Label Text="Your Health, Our Priority"
                    FontSize="15"
-                   TextColor="White"
+                   TextColor="Black"
                    HorizontalOptions="Center"/>
 
             <Button Text="Sign in"
@@ -56,7 +56,7 @@
                Text="UNIVERSITY OF SAN JOSE - RECOLETOS"
                FontSize="11"
                CharacterSpacing="1"
-               TextColor="LightGreen"
+               TextColor="DarkGreen"
                HorizontalOptions="Center"
                Margin="0,0,0,30"/>
 

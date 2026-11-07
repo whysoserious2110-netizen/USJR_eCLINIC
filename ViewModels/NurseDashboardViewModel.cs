@@ -22,7 +22,7 @@ public partial class NurseDashboardViewModel : ObservableObject
     public async Task RefreshAsync()
     {
         var user = Services.AuthService.Instance.CurrentUser;
-        if (user == null) return;
+        if (user?.Role != "Nurse") return;
 
         NurseName = user.FullName;
         SummaryDateText = DateTime.Today.ToString("dddd, MMMM d");

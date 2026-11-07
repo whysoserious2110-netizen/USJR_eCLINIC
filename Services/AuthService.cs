@@ -464,6 +464,17 @@ public class AuthService
             .ToList();
     }
 
+    public async Task<List<UserAccount>> GetAllDentistsAsync()
+    {
+        await EnsureInitializedAsync();
+
+        var all = await _db.Table<UserAccount>().ToListAsync();
+
+        return all
+            .Where(account => account.Role == "Dentist")
+            .ToList();
+    }
+
     public async Task<bool> UpdateProfileAsync(
         UserAccount updatedAccount)
     {

@@ -51,6 +51,12 @@ public partial class PatientDetailViewModel : ObservableObject
 
     private async Task LoadAsync()
     {
+        if (CanRecordVitals)
+        {
+            var checkedInAppointment = await Services.AppointmentService.Instance.GetCheckedInTodayAsync(_patientEmail);
+            CanRecordVitals = checkedInAppointment != null;
+        }
+
         var account = await Services.AuthService.Instance.GetAccountByEmailAsync(_patientEmail);
         if (account != null)
         {
@@ -135,7 +141,8 @@ public partial class PatientDetailViewModel : ObservableObject
             new Views.RecordVitalsPage(
                 appointment.Id,
                 _patientEmail,
-                PatientName));
+                PatientName,
+                PatientIdNumber));
     }
 
 

@@ -75,6 +75,13 @@
       "end": "17:00"
     },
     {
+      "serviceType": "Dental",
+      "subService": "Dental Follow-up",
+      "days": [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ],
+      "start": "08:00",
+      "end": "17:00"
+    },
+    {
       "serviceType": "Follow-up",
       "subService": "*",
       "days": [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ],

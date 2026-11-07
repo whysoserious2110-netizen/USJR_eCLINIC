@@ -10,7 +10,7 @@
         <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
 
             <Grid RowDefinitions="Auto,7" Margin="-20,-50,-20,0">
-    <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+    <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,50,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
             <Button Grid.Column="0" Text="&#8592;" FontSize="21"

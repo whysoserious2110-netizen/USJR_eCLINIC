@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -57,6 +57,27 @@ public partial class ReadsDashboardViewModel : ObservableObject
     private int readyCertificateCount;
 
     [ObservableProperty]
+    private bool hasReadyCertificates;
+
+    [ObservableProperty]
+    private string selectedAction = string.Empty;
+
+    public bool IsOverviewSelected => SelectedAction == "overview";
+    public bool IsCheckInSelected => SelectedAction == "checkin";
+    public bool IsPatientLookupSelected => SelectedAction == "patient-lookup";
+    public bool IsAnnouncementSelected => SelectedAction == "announcement";
+    public bool IsCertificatePickupSelected => SelectedAction == "certificate-pickup";
+
+    partial void OnSelectedActionChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsOverviewSelected));
+        OnPropertyChanged(nameof(IsCheckInSelected));
+        OnPropertyChanged(nameof(IsPatientLookupSelected));
+        OnPropertyChanged(nameof(IsAnnouncementSelected));
+        OnPropertyChanged(nameof(IsCertificatePickupSelected));
+    }
+
+    [ObservableProperty]
     private bool hasNextArrivals;
 
     [ObservableProperty]
@@ -65,6 +86,11 @@ public partial class ReadsDashboardViewModel : ObservableObject
     public ObservableCollection<ReadsNextArrivalItem>
         NextArrivals
     { get; } = new();
+
+    private void SelectAction(string action)
+    {
+        SelectedAction = action;
+    }
 
     public async Task RefreshAsync()
     {
@@ -81,13 +107,14 @@ public partial class ReadsDashboardViewModel : ObservableObject
         await LoadDashboardAppointmentsAsync();
         ReadyCertificateCount = await Services.AppointmentService.Instance
             .GetReadyCertificatePickupCountAsync();
+        HasReadyCertificates = ReadyCertificateCount > 0;
     }
 
     private async Task LoadAnnouncementAsync()
     {
         var announcement =
             await Services.AnnouncementService.Instance
-                .GetActiveForRoleAsync("All");
+                .GetActiveForRoleAsync("R.E.A.D.S. Scholar");
 
         if (announcement != null)
         {
@@ -241,58 +268,9 @@ public partial class ReadsDashboardViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task CheckInArrival(
-        ReadsNextArrivalItem? item)
-    {
-        if (item == null)
-            return;
-
-        var currentUser =
-            Services.AuthService.Instance.CurrentUser;
-
-        if (currentUser?.Role != "R.E.A.D.S. Scholar")
-        {
-            await Shell.Current.DisplayAlert(
-                "Access denied",
-                "Only R.E.A.D.S. Scholars can check in patients.",
-                "OK");
-
-            return;
-        }
-
-        var confirmed =
-            await Shell.Current.DisplayAlert(
-                "Confirm Patient Check-In",
-                $"Patient: {item.PatientName}\n" +
-                $"ID: {item.PatientIdNumber}\n" +
-                $"Time: {item.TimeDisplay}\n" +
-                $"Service: {item.ServiceType} - {item.SubService}",
-                "Check In",
-                "Cancel");
-
-        if (!confirmed)
-            return;
-
-        var checkedInAppointment =
-            await Services.AppointmentService.Instance
-                .CheckInAsync(item.AppointmentId);
-
-        await LoadDashboardAppointmentsAsync();
-
-        var queueNumber =
-            checkedInAppointment.QueueNumber?.ToString()
-            ?? "Not assigned";
-
-        await Shell.Current.DisplayAlert(
-            "Patient Checked In",
-            $"{item.PatientName} has been checked in.\n" +
-            $"Queue Number: {queueNumber}",
-            "OK");
-    }
-
-    [RelayCommand]
     private async Task GoToPatientSearch()
     {
+        SelectAction("patient-lookup");
         await Shell.Current.Navigation.PushAsync(
             new Views.AdminPatientsListPage());
     }
@@ -300,6 +278,7 @@ public partial class ReadsDashboardViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToPostAnnouncement()
     {
+        SelectAction("announcement");
         await Shell.Current.Navigation.PushAsync(
             new Views.PostAnnouncementPage());
     }
@@ -307,12 +286,14 @@ public partial class ReadsDashboardViewModel : ObservableObject
     [RelayCommand]
     private async Task GoToCertificatePickup()
     {
+        SelectAction("certificate-pickup");
         await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
     }
 
     [RelayCommand]
     private async Task GoToTodaysOverview()
     {
+        SelectAction("overview");
         await Shell.Current.Navigation.PushAsync(
             new Views.TodaysOverviewPage());
     }
@@ -325,15 +306,9 @@ public partial class ReadsDashboardViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GoToPatientRegistration()
-    {
-        await Shell.Current.Navigation.PushAsync(
-            new Views.RegisterPatientPage());
-    }
-
-    [RelayCommand]
     private async Task GoToCheckIn()
     {
+        SelectAction("checkin");
         await Shell.Current.Navigation.PushAsync(
             new Views.CheckInPage());
     }

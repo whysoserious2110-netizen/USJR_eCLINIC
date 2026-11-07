@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace USJR_eCLINIC.ViewModels;
 
@@ -9,6 +10,8 @@ public partial class NurseAppointmentItem : ObservableObject
     public int AppointmentId { get; set; }
     public string PatientEmail { get; set; } = string.Empty;
     public string PatientName { get; set; } = string.Empty;
+    public string PatientIdNumber { get; set; } = string.Empty;
+    public string PatientIdDisplay => string.IsNullOrWhiteSpace(PatientIdNumber) ? "ID unavailable" : $"ID: {PatientIdNumber}";
     public string TimeDisplay { get; set; } = string.Empty;
     public string ServiceType { get; set; } = string.Empty;
     public string SubService { get; set; } = string.Empty;
@@ -21,7 +24,7 @@ public partial class NurseAppointmentItem : ObservableObject
     public string ActionText => RawStatus switch
     {
         "CheckedIn" => "Record vitals",
-        "VitalsRecorded" => "View / update vitals",
+        "VitalsRecorded" => "Review / update vitals",
         _ => "Waiting for check-in"
     };
 }
@@ -62,6 +65,14 @@ public partial class NurseAppointmentsViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            TodaysAppointments.Clear();
+            HasAppointments = false;
+            EmptyMessage = "The triage queue is available to Nurses only.";
+            return;
+        }
+
         var allAppointments = await Services.AppointmentService.Instance.GetAllAppointmentsAsync();
         var appointments = allAppointments
             .Where(appointment =>
@@ -69,7 +80,7 @@ public partial class NurseAppointmentsViewModel : ObservableObject
                 (appointment.Status is "Confirmed" or "CheckedIn" or "VitalsRecorded" or "Completed") &&
                 (appointment.ServiceType == "Medical" || appointment.ServiceType == "Dental") &&
                 (_statusFilter == null || appointment.Status == _statusFilter))
-            .OrderBy(appointment => appointment.VisitTime)
+            .OrderBy(appointment => GetVisitTimeOfDay(appointment.VisitTime))
             .ToList();
 
         TodaysAppointments.Clear();
@@ -81,6 +92,7 @@ public partial class NurseAppointmentsViewModel : ObservableObject
                 AppointmentId = appointment.Id,
                 PatientEmail = appointment.PatientEmail,
                 PatientName = patient?.FullName ?? appointment.PatientEmail,
+                PatientIdNumber = patient?.IdNumber ?? string.Empty,
                 TimeDisplay = appointment.VisitTime,
                 ServiceType = appointment.ServiceType,
                 SubService = string.IsNullOrWhiteSpace(appointment.ReasonOrPurpose)
@@ -89,15 +101,17 @@ public partial class NurseAppointmentsViewModel : ObservableObject
                 RawStatus = appointment.Status,
                 Status = appointment.Status switch
                 {
-                    "CheckedIn" => "Checked In",
-                    "VitalsRecorded" => "Vitals Recorded",
+                    "Confirmed" => "Awaiting check-in",
+                    "CheckedIn" => "Awaiting nurse vitals",
+                    "VitalsRecorded" => "Ready for Doctor",
+                    "Completed" => "Visit completed",
                     _ => appointment.Status
                 },
                 StatusColor = appointment.Status switch
                 {
-                    "Confirmed" => Color.FromArgb("#0F9B8E"),
+                    "Confirmed" => Color.FromArgb("#D9A441"),
                     "CheckedIn" => Color.FromArgb("#2E6FDB"),
-                    "VitalsRecorded" => Color.FromArgb("#7B61C8"),
+                    "VitalsRecorded" => Color.FromArgb("#087A3D"),
                     "Completed" => Color.FromArgb("#4A90D9"),
                     _ => Color.FromArgb("#D9A441")
                 }
@@ -106,6 +120,11 @@ public partial class NurseAppointmentsViewModel : ObservableObject
 
         HasAppointments = TodaysAppointments.Count > 0;
     }
+
+    private static TimeSpan GetVisitTimeOfDay(string value)
+        => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+            ? parsed.TimeOfDay
+            : TimeSpan.MaxValue;
 
     [RelayCommand]
     private async Task OpenAppointment(NurseAppointmentItem? item)
@@ -128,7 +147,7 @@ public partial class NurseAppointmentsViewModel : ObservableObject
         }
 
         await Shell.Current.Navigation.PushAsync(
-            new Views.RecordVitalsPage(item.AppointmentId, item.PatientEmail, item.PatientName));
+            new Views.RecordVitalsPage(item.AppointmentId, item.PatientEmail, item.PatientName, item.PatientIdNumber));
     }
 
     [RelayCommand]

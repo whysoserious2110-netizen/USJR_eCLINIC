@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -16,7 +16,16 @@ public partial class AdminPatientsListViewModel : ObservableObject
     [ObservableProperty]
     private bool hasPatients;
 
+    [ObservableProperty]
+    private bool canRegisterPatients;
+
     public bool HasSearched => !string.IsNullOrWhiteSpace(SearchText);
+
+    public AdminPatientsListViewModel()
+    {
+        CanRegisterPatients =
+            Services.AuthService.Instance.CurrentUser?.Role == "R.E.A.D.S. Scholar";
+    }
 
     public async Task RefreshAsync()
     {
@@ -61,6 +70,20 @@ public partial class AdminPatientsListViewModel : ObservableObject
         HasPatients = Patients.Count > 0;
     }
 
+    [RelayCommand]
+    private async Task RegisterPatient()
+    {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only R.E.A.D.S. Scholars can register clinic patients.",
+                "OK");
+            return;
+        }
+
+        await Shell.Current.Navigation.PushAsync(new Views.RegisterPatientPage());
+    }
     [RelayCommand]
     private async Task OpenPatient(PatientListItem patient)
         => await Shell.Current.Navigation.PushAsync(new Views.AdminPatientPage(patient.Email));

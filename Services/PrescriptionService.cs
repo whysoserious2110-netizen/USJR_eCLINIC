@@ -77,6 +77,9 @@ public class PrescriptionService
 
     public async Task<DispenseResult> MarkDispensedAsync(int prescriptionId)
     {
+        if (AuthService.Instance.CurrentUser?.Role != "Nurse")
+            return new(false, "Only a Nurse can dispense clinic-given prescriptions.");
+
         await EnsureInitializedAsync();
         await MedicineStockService.Instance.GetAllAsync();
 

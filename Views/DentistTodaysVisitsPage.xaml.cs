@@ -6,10 +6,10 @@ public partial class DentistTodaysVisitsPage : ContentPage
 {
     private readonly DentistTodaysVisitsViewModel _viewModel;
 
-    public DentistTodaysVisitsPage()
+    public DentistTodaysVisitsPage(string? statusFilter = null)
     {
         InitializeComponent();
-        _viewModel = new DentistTodaysVisitsViewModel();
+        _viewModel = new DentistTodaysVisitsViewModel(statusFilter);
         BindingContext = _viewModel;
     }
 

@@ -7,28 +7,25 @@
              BackgroundColor="#F5F7F9">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,42,20,24" Spacing="18">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                <Button Grid.Column="0"
-                        Text="‹"
-                        Command="{Binding GoBackCommand}"
-                        FontSize="28"
-                        TextColor="#078F83"
-                        BackgroundColor="Transparent"
-                        Padding="4,0"
-                        HeightRequest="44"
-                        WidthRequest="40" />
-                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                    <Label Text="Post Announcement"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           TextColor="#172B3A" />
-                    <Label Text="Clinic update"
-                           FontSize="13"
-                           TextColor="#687887" />
-                </VerticalStackLayout>
+        <VerticalStackLayout Padding="16,16,16,24" Spacing="18">
+                        <Grid RowDefinitions="Auto,5" RowSpacing="0">
+                <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                        StrokeShape="Rectangle" Padding="12,10">
+                    <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" Text="&#8592;"
+                                FontSize="21" TextColor="#087A3D"
+                                BackgroundColor="#F4C400" CornerRadius="9"
+                                WidthRequest="38" HeightRequest="38" Padding="0"
+                                Command="{Binding GoBackCommand}" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Post Announcement" FontSize="18"
+                                   FontAttributes="Bold" TextColor="#F4C400" />
+                            <Label Text="Clinic update" FontSize="11" TextColor="#E9F3EC" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+                <BoxView Grid.Row="1" Color="#F4C400" />
             </Grid>
-
             <Border BackgroundColor="#E8F6F4"
                     Stroke="#BFE8E3"
                     StrokeThickness="1"
@@ -82,7 +79,7 @@
 
             <Button Text="Post announcement"
                     Command="{Binding PostCommand}"
-                    BackgroundColor="#079B8E"
+                    BackgroundColor="#087A3D"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="14"

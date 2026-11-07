@@ -10,7 +10,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,50,20,30" Spacing="20">
 
-            <Border Margin="-20,0" BackgroundColor="#2C9057" StrokeThickness="0" Padding="20,8">
+            <Border Margin="-20,0" BackgroundColor="#176B38" StrokeThickness="0" Padding="20,8">
                 <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="8">
                     <Button Grid.Column="0" Text="&#8592;" FontSize="21"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
@@ -28,6 +28,7 @@
                             VerticalOptions="Center" />
                 </Grid>
             </Border>
+            <BoxView HeightRequest="5" Color="#F4C400" Margin="-20,-20,-20,0" />
 
             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                 <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"

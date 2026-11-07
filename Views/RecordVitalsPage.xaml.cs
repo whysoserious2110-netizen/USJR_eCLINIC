@@ -7,13 +7,22 @@ public partial class RecordVitalsPage : ContentPage
     public RecordVitalsPage(
         int appointmentId,
         string patientEmail,
-        string patientName)
+        string patientName,
+        string patientIdNumber = "")
     {
         InitializeComponent();
 
         BindingContext = new RecordVitalsViewModel(
             appointmentId,
             patientEmail,
-            patientName);
+            patientName,
+            patientIdNumber);
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is RecordVitalsViewModel viewModel)
+            await viewModel.InitializeAsync();
     }
 }

@@ -6,10 +6,10 @@ public partial class DentistAppointmentsPage : ContentPage
 {
     private readonly DentistAppointmentsViewModel _viewModel;
 
-    public DentistAppointmentsPage()
+    public DentistAppointmentsPage(bool followUpsOnly = false)
     {
         InitializeComponent();
-        _viewModel = new DentistAppointmentsViewModel();
+        _viewModel = new DentistAppointmentsViewModel(followUpsOnly);
         BindingContext = _viewModel;
     }
 

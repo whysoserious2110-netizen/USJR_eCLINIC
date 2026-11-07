@@ -6,26 +6,32 @@
              x:DataType="vm:RecordVitalsViewModel"
              BackgroundColor="#F7F8FA">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="16">
-
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Vital Signs &amp; Nursing Notes" FontSize="18" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
-            </Grid>
+    <Grid RowDefinitions="Auto,6,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" BackgroundColor="#176B38" Padding="18,42,18,15">
+            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="28"
+                    TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
+                    HeightRequest="40" WidthRequest="40" CornerRadius="10" />
+            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                <Label Text="Vital Signs &amp; Nursing Notes" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Nurse triage · checked-in visit" FontSize="12" TextColor="White" />
+            </VerticalStackLayout>
+        </Grid>
+        <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6" />
+        <ScrollView Grid.Row="2">
+        <VerticalStackLayout Padding="16,16,16,30" Spacing="16">
 
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
-                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientIdentityText}" FontSize="12" TextColor="#0F766E"/>
+                </VerticalStackLayout>
             </Frame>
 
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Record Vital Signs" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Label Text="Blood pressure, heart rate, and temperature are required. Enter other measurements when available."
+                           FontSize="11" TextColor="#6B7684"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
                         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
@@ -71,9 +77,9 @@
                         <Editor Placeholder="Additional nursing observations..." Text="{Binding NursingNotes}" HeightRequest="70"/>
                     </VerticalStackLayout>
 
-                    <Button Text="Save Record"
+                    <Button Text="Save Vitals &amp; Mark Ready for Doctor"
                             Command="{Binding SaveVitalsCommand}"
-                            BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                            BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold"
                             CornerRadius="20" HeightRequest="48"/>
                 </VerticalStackLayout>
             </Frame>
@@ -110,5 +116,6 @@
             </CollectionView>
 
         </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </Grid>
 </ContentPage>

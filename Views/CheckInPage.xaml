@@ -7,26 +7,35 @@
              BackgroundColor="#F7F8FA">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,50,20,30" Spacing="18">
+        <VerticalStackLayout Padding="16,16,16,30" Spacing="18">
 
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#0F9B8E" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="1" Text="Patient Check-In" FontSize="20" FontAttributes="Bold"
-                       TextColor="#12212E" Margin="10,0,0,0" VerticalOptions="Center"/>
+                        <Grid RowDefinitions="Auto,5" RowSpacing="0">
+                <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                        StrokeShape="Rectangle" Padding="12,10">
+                    <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                        <Button Grid.Column="0" Text="&#8592;"
+                                FontSize="21" TextColor="#087A3D"
+                                BackgroundColor="#F4C400" CornerRadius="9"
+                                WidthRequest="38" HeightRequest="38" Padding="0"
+                                Command="{Binding GoBackCommand}" />
+                        <Label Grid.Column="1" Text="Patient Check-In"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="#F4C400" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+                <BoxView Grid.Row="1" Color="#F4C400" />
             </Grid>
-
             <!-- Scan/search input -->
             <VerticalStackLayout Spacing="8">
-                <Label Text="Scan QR or Enter ID Number" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Enter Student / Employee ID" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
-                    <Entry Placeholder="e.g., 2024-12345" Text="{Binding ScannedId}"/>
+                    <Entry Placeholder="Enter or scan Student / Employee ID"
+                       Text="{Binding ScannedId}"
+                       ReturnType="Go"
+                       ReturnCommand="{Binding SearchPatientCommand}"/>
                 </Frame>
-                <Button Text="Search" Command="{Binding SearchPatientCommand}"
-                        BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                <Button Text="Find Appointment" Command="{Binding SearchPatientCommand}"
+                        BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold"
                         CornerRadius="20" HeightRequest="46"/>
             </VerticalStackLayout>
 
@@ -63,7 +72,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Label Text="PATIENT FOUND &#10003;" FontAttributes="Bold" FontSize="13" TextColor="#0F9B8E"/>
                     <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="17" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientIdNumber, StringFormat='Student ID: {0}'}" FontSize="13" TextColor="#6B7684"/>
+                    <Label Text="{Binding PatientIdDisplay}" FontSize="13" TextColor="#6B7684"/>
 
                     <BoxView HeightRequest="1" BackgroundColor="#EEF1F3" Margin="0,4,0,4"/>
 
@@ -90,13 +99,20 @@
                         </VerticalStackLayout>
                     </Grid>
 
+                    <Label Text="{Binding ArrivalGuidance}"
+                           IsVisible="{Binding IsLateArrival}"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#A87518"
+                           BackgroundColor="#FFF6DC"
+                           Padding="10,8"/>
                     <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="10,4" HasShadow="False" HorizontalOptions="Start">
-                        <Label Text="&#10003; Approved" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                        <Label Text="&#10003; Confirmed appointment" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
                     </Frame>
 
                     <Button Text="CHECK IN PATIENT"
                             Command="{Binding ConfirmCheckInCommand}"
-                            BackgroundColor="#0F9B8E" TextColor="White" FontAttributes="Bold"
+                            BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold"
                             CornerRadius="20" HeightRequest="50" Margin="0,6,0,0"/>
                 </VerticalStackLayout>
             </Frame>
@@ -106,7 +122,7 @@
                 <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                     <Label Text="&#10003; CHECK-IN SUCCESSFUL" FontAttributes="Bold" FontSize="16" TextColor="#0F9B8E" HorizontalOptions="Center"/>
                     <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E" HorizontalOptions="Center"/>
-                    <Label Text="{Binding PatientIdNumber, StringFormat='Student ID: {0}'}" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientIdDisplay}" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
                     <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="15" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" Margin="0,6,0,0"/>
                     <Label Text="{Binding AppointmentService, StringFormat='Appointment: {0}'}" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
                     <Label Text="Status: WAITING" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>

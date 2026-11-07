@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -8,7 +8,7 @@ public partial class RegisterPatientViewModel : ObservableObject
 {
     public ObservableCollection<string> Roles { get; } = new()
     {
-        "Student", "Faculty", "Admin Personnel", "Non-Teaching", "R.E.A.D.S. Scholar"
+        "Student", "Faculty", "Admin Personnel", "Non-Teaching"
     };
 
     [ObservableProperty] private string selectedRole = "Student";
@@ -21,6 +21,15 @@ public partial class RegisterPatientViewModel : ObservableObject
     [RelayCommand]
     private async Task Register()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert(
+                "Access denied",
+                "Only R.E.A.D.S. Scholars can register clinic patients.",
+                "OK");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(IdNumber) || string.IsNullOrWhiteSpace(Email))
         {
             await Shell.Current.DisplayAlert("Missing info", "Please fill in Full Name, ID Number, and Email.", "OK");

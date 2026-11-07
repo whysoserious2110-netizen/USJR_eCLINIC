@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -38,10 +38,15 @@ public partial class AppointmentListItem : ObservableObject
     public string Status { get; set; } = string.Empty;
     public Color StatusColor { get; set; } = Colors.Gray;
     public bool CanCancel { get; set; }
-    public bool HasElapsedNotice => Status == "Expired" || Status == "Missed";
-    public string ElapsedNotice => Status == "Expired"
-        ? "This request expired because its scheduled time passed before it was approved. Submit a new request for another available time."
-        : "The scheduled appointment time passed before check-in. This visit is marked missed and cannot be checked in.";
+    public bool HasElapsedNotice =>
+        Status is "Expired" or "Missed" or "Declined";
+
+    public string ElapsedNotice => Status switch
+    {
+        "Expired" => "This request expired because its scheduled time passed before it was approved. Submit a new request for another available time.",
+        "Declined" => "The request was declined. Check Notifications for the reason and submit another request if needed.",
+        _ => "The clinic day ended before check-in. This visit is marked missed and cannot be checked in."
+    };
 }
 
 public partial class AppointmentsViewModel : ObservableObject
@@ -101,6 +106,7 @@ public partial class AppointmentsViewModel : ObservableObject
                 "Confirmed" => Color.FromArgb("#0F9B8E"),
                 "Completed" => Color.FromArgb("#4A90D9"),
                 "Cancelled" => Color.FromArgb("#E05B5B"),
+                "Declined" => Color.FromArgb("#B3443D"),
                 "Missed" => Color.FromArgb("#C2410C"),
                 "Expired" => Color.FromArgb("#7C8794"),
                 _ => Color.FromArgb("#D9A441")
@@ -139,18 +145,12 @@ public partial class AppointmentsViewModel : ObservableObject
         IEnumerable<AppointmentListItem> filtered = SelectedTab switch
         {
             "Upcoming" => _allAppointments
-                .Where(a => a.VisitDateTime > now &&
-                            a.Status != "Cancelled" &&
-                            a.Status != "Completed" &&
-                            a.Status != "Expired" &&
-                            a.Status != "Missed")
+                .Where(a => a.VisitDate.Date >= now.Date &&
+                            a.Status is not ("Cancelled" or "Completed" or "Declined" or "Expired" or "Missed"))
                 .OrderBy(a => a.VisitDateTime),
             "Past" => _allAppointments
-                .Where(a => a.VisitDateTime <= now ||
-                            a.Status == "Completed" ||
-                            a.Status == "Cancelled" ||
-                            a.Status == "Expired" ||
-                            a.Status == "Missed")
+                .Where(a => a.VisitDate.Date < now.Date ||
+                            a.Status is "Completed" or "Cancelled" or "Declined" or "Expired" or "Missed")
                 .OrderByDescending(a => a.VisitDateTime),
             _ => _allAppointments.OrderByDescending(a => a.VisitDateTime)
         };

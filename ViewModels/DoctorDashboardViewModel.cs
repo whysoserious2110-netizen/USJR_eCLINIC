@@ -45,6 +45,7 @@ public partial class DoctorDashboardViewModel : ObservableObject
     [ObservableProperty] private bool hasCertRequests;
     [ObservableProperty] private int unreadNotificationCount;
     [ObservableProperty] private bool hasUnreadNotifications;
+    [ObservableProperty] private string selectedQuickAction = string.Empty;
 
     public async Task RefreshAsync()
     {
@@ -129,11 +130,17 @@ public partial class DoctorDashboardViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoToTodaysVisits()
-        => await Shell.Current.Navigation.PushAsync(new Views.TodaysVisitsPage());
+    {
+        SelectedQuickAction = "Today";
+        await Shell.Current.Navigation.PushAsync(new Views.TodaysVisitsPage());
+    }
 
     [RelayCommand]
     private async Task GoToCertificates()
-        => await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
+    {
+        SelectedQuickAction = "Certificates";
+        await Shell.Current.Navigation.PushAsync(new Views.CertificatesPage());
+    }
 
     [RelayCommand]
     private async Task GoToNotifications()
@@ -141,11 +148,17 @@ public partial class DoctorDashboardViewModel : ObservableObject
 
     [RelayCommand]
     private async Task GoToPatientRecords()
-        => await Shell.Current.Navigation.PushAsync(new Views.MyPatientsPage());
+    {
+        SelectedQuickAction = "PatientRecords";
+        await Shell.Current.Navigation.PushAsync(new Views.MyPatientsPage());
+    }
 
     [RelayCommand]
     private async Task GoToWriteRx()
-        => await Shell.Current.Navigation.PushAsync(new Views.WriteRxPage());
+    {
+        SelectedQuickAction = "Prescription";
+        await Shell.Current.Navigation.PushAsync(new Views.WriteRxPage());
+    }
 
     [RelayCommand]
     private async Task OpenIssueCertificate(CertRequestItem item)

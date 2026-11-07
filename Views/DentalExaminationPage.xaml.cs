@@ -4,9 +4,18 @@ namespace USJR_eCLINIC.Views;
 
 public partial class DentalExaminationPage : ContentPage
 {
-    public DentalExaminationPage(int appointmentId, string patientEmail, string patientName, string patientRole, string prefillFindings)
+    private readonly DentalExaminationViewModel _viewModel;
+
+    public DentalExaminationPage(int appointmentId, string patientEmail, string patientName, string patientRole, string appointmentContext)
     {
         InitializeComponent();
-        BindingContext = new DentalExaminationViewModel(appointmentId, patientEmail, patientName, patientRole, prefillFindings);
+        _viewModel = new DentalExaminationViewModel(appointmentId, patientEmail, patientName, patientRole, appointmentContext);
+        BindingContext = _viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.InitializeAsync();
     }
 }

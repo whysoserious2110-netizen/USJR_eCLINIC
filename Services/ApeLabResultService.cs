@@ -35,6 +35,25 @@ public class ApeLabResultService
 
     public async Task AddAsync(ApeLabResult result)
     {
+        var nurse = AuthService.Instance.CurrentUser;
+        if (nurse?.Role != "Nurse")
+            throw new UnauthorizedAccessException("Only a Nurse can encode APE laboratory results.");
+
+        if (string.IsNullOrWhiteSpace(result.PatientEmail) ||
+            !new[] { result.Cbc, result.Urinalysis, result.ChestXray, result.Ecg, result.DrugTest }
+                .Any(value => !string.IsNullOrWhiteSpace(value)))
+        {
+            throw new ArgumentException("Select a patient and enter at least one verified test result.");
+        }
+
+        var patient = await AuthService.Instance.GetAccountByEmailAsync(result.PatientEmail);
+        if (patient == null || patient.Role is not ("Faculty" or "Admin Personnel" or "Non-Teaching"))
+            throw new ArgumentException("APE results can only be encoded for eligible Faculty, Admin Personnel, or Non-Teaching accounts.");
+
+        result.PatientEmail = patient.Email;
+        result.EncodedBy = nurse.FullName;
+        result.DateEncoded = DateTime.Now;
+
         await EnsureInitializedAsync();
         await _db.InsertAsync(result);
     }

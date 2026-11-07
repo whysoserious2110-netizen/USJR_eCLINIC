@@ -8,9 +8,9 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#F7F8F6">
 
-    <Grid RowDefinitions="Auto,*" BackgroundColor="#F7F8F6">
+    <Grid RowDefinitions="Auto,Auto,*" BackgroundColor="#F7F8F6">
         <Grid Grid.Row="0" RowDefinitions="Auto,7">
-            <Border Grid.Row="0" BackgroundColor="#2C9057" StrokeThickness="0"
+            <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                     StrokeShape="Rectangle" Padding="18,50,18,14">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                     <Button Grid.Column="0" Text="&#8592;" FontSize="21"
@@ -25,18 +25,44 @@
             <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
         </Grid>
 
-        <Grid Grid.Row="1" RowDefinitions="Auto,*" Padding="16,14,16,12" RowSpacing="10">
-            <Label Grid.Row="0" Text="Tap a notification to read the full message. Swipe left to delete it."
-                   FontSize="11" TextColor="#68756D" IsVisible="{Binding HasNotifications}" />
+        <Border Grid.Row="1" BackgroundColor="#F4C400" StrokeThickness="0"
+                StrokeShape="RoundRectangle 0" Padding="5,4">
+            <Grid ColumnDefinitions="*,*">
+                <VerticalStackLayout Grid.Column="0" Spacing="4" Padding="4,5"
+                                     HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectFilterCommand}" CommandParameter="All"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="All" FontSize="12" FontAttributes="Bold"
+                           TextColor="#087A3D" HorizontalOptions="Center"/>
+                    <BoxView HeightRequest="2" WidthRequest="42" Color="#087A3D"
+                             IsVisible="{Binding IsAllSelected}"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4" Padding="4,5"
+                                     HorizontalOptions="Center">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectFilterCommand}" CommandParameter="Unread"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Label Text="{Binding UnreadFilterLabel}" FontSize="12" FontAttributes="Bold"
+                           TextColor="#087A3D" HorizontalOptions="Center"/>
+                    <BoxView HeightRequest="2" WidthRequest="62" Color="#087A3D"
+                             IsVisible="{Binding IsUnreadSelected}"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" Padding="16,12,16,10" RowSpacing="8">
+            <Label Grid.Row="0" Text="Tap a notification to read its details. Swipe left to delete it."
+                   FontSize="10" TextColor="#68756D" IsVisible="{Binding HasNotifications}" />
 
             <VerticalStackLayout Grid.Row="1"
                                  IsVisible="{Binding HasNotifications, Converter={StaticResource BoolInverter}}"
                                  VerticalOptions="Center" Spacing="9">
-                <Label Text="&#128276;" FontSize="40" HorizontalOptions="Center" TextColor="#9AA4AE" />
-                <Label Text="No notifications yet" FontSize="15" FontAttributes="Bold"
+                <Label Text="&#128276;" FontSize="38" HorizontalOptions="Center" TextColor="#9AA4AE" />
+                <Label Text="No notifications in this view" FontSize="14" FontAttributes="Bold"
                        TextColor="#526057" HorizontalOptions="Center" />
-                <Label Text="Reminders and updates about your appointments will appear here."
-                       FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"
+                <Label Text="Appointment reminders and clinic updates will appear here."
+                       FontSize="11" TextColor="#9AA4AE" HorizontalOptions="Center"
                        HorizontalTextAlignment="Center" Margin="24,0" />
             </VerticalStackLayout>
 
@@ -52,29 +78,34 @@
                                                CommandParameter="{Binding .}" />
                                 </SwipeItems>
                             </SwipeView.RightItems>
-
                             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 14" Padding="14" Margin="0,0,0,10">
+                                    StrokeShape="RoundRectangle 12" Padding="11" Margin="0,0,0,8">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenNotificationCommand}"
                                         CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto"
-                                      ColumnSpacing="10" RowSpacing="4">
-                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Title}"
-                                           FontAttributes="Bold" FontSize="14" TextColor="#17221B" />
-                                    <Ellipse Grid.Row="0" Grid.Column="1" WidthRequest="9" HeightRequest="9"
-                                             Fill="#087A3D" VerticalOptions="Center"
-                                             IsVisible="{Binding IsRead, Converter={StaticResource BoolInverter}}" />
-                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Message}"
-                                           FontSize="12" TextColor="#526057" LineBreakMode="TailTruncation"
-                                           MaxLines="2" />
-                                    <Label Grid.Row="2" Grid.Column="0" Text="{Binding DateDisplay}"
-                                           FontSize="11" TextColor="#84918A" Margin="0,2,0,0" />
-                                    <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                                           Text="Read details  &#8250;" FontSize="11" FontAttributes="Bold"
-                                           TextColor="#087A3D" Margin="0,5,0,0" />
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto"
+                                      ColumnSpacing="8" RowSpacing="3">
+                                    <Border Grid.RowSpan="3" WidthRequest="30" HeightRequest="30"
+                                            BackgroundColor="#E5F7EF" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8">
+                                        <Label Text="&#128276;" FontSize="14" TextColor="#087A3D"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <Label Grid.Column="1" Text="{Binding Title}" FontAttributes="Bold"
+                                           FontSize="11" TextColor="#17221B" LineBreakMode="TailTruncation"/>
+                                    <Ellipse Grid.Column="2" WidthRequest="8" HeightRequest="8"
+                                             Fill="#E94F70" VerticalOptions="Center"
+                                             IsVisible="{Binding IsRead, Converter={StaticResource BoolInverter}}"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Message}"
+                                           FontSize="9" TextColor="#526057" LineBreakMode="TailTruncation"
+                                           MaxLines="2"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding DateDisplay}"
+                                           FontSize="8" TextColor="#84918A" Margin="0,1,0,0"/>
+                                    <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                                           Text="Read details  &#8250;" FontSize="9" FontAttributes="Bold"
+                                           TextColor="#087A3D" Margin="0,2,0,0"/>
                                 </Grid>
                             </Border>
                         </SwipeView>

@@ -22,6 +22,7 @@ public partial class MedicineStockItem : ObservableObject
 public partial class MedicineInventoryViewModel : ObservableObject
 {
     private List<MedicineStockItem> _allItems = new();
+    private bool _accessDeniedShown;
 
     public ObservableCollection<MedicineStockItem> Items { get; } = new();
     public ObservableCollection<string> FilterOptions { get; } = new() { "All items", "Low stock" };
@@ -47,6 +48,24 @@ public partial class MedicineInventoryViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            _allItems.Clear();
+            Items.Clear();
+            HasItems = false;
+            TotalItemCount = 0;
+            LowStockCount = 0;
+            HasLowStock = false;
+            StockSummaryText = "Nurse access only";
+            EmptyMessage = "Medicine inventory is available to Nurses only.";
+            if (!_accessDeniedShown)
+            {
+                _accessDeniedShown = true;
+                await Shell.Current.DisplayAlert("Access denied", EmptyMessage, "OK");
+            }
+            return;
+        }
+
         var stock = await Services.MedicineStockService.Instance.GetAllAsync();
 
         _allItems = stock.Select(item => new MedicineStockItem
@@ -102,6 +121,9 @@ public partial class MedicineInventoryViewModel : ObservableObject
     [RelayCommand]
     private void OpenAddStock(MedicineStockItem item)
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+            return;
+
         SelectedItem = item;
         AmountToAdd = string.Empty;
         IsAddingStock = true;
@@ -110,6 +132,12 @@ public partial class MedicineInventoryViewModel : ObservableObject
     [RelayCommand]
     private async Task ConfirmAddStock()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only Nurses can update medicine stock.", "OK");
+            return;
+        }
+
         if (SelectedItem == null || !int.TryParse(AmountToAdd, out var amount) || amount <= 0)
         {
             await Shell.Current.DisplayAlert(
@@ -139,6 +167,9 @@ public partial class MedicineInventoryViewModel : ObservableObject
     [RelayCommand]
     private void OpenAddNew()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+            return;
+
         NewMedicineName = string.Empty;
         NewQuantity = string.Empty;
         NewUnit = string.Empty;
@@ -149,6 +180,12 @@ public partial class MedicineInventoryViewModel : ObservableObject
     [RelayCommand]
     private async Task ConfirmAddNew()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only Nurses can add medicines to inventory.", "OK");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(NewMedicineName) ||
             !int.TryParse(NewQuantity, out var quantity) || quantity < 0 ||
             !int.TryParse(NewLowStockThreshold, out var threshold) || threshold < 0)

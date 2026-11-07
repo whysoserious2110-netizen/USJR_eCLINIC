@@ -209,7 +209,7 @@
                   ContentTemplate="{DataTemplate views:DentistTodaysVisitsPage}" 
                   Route="DentistTodaysVisitsPage" />
     
-    <ShellContent Title="Dentist My Patients" 
+    <ShellContent Title="Treated Patients" 
                   ContentTemplate="{DataTemplate views:DentistMyPatientsPage}" 
                   Route="DentistMyPatientsPage" />
     

@@ -185,17 +185,13 @@ public class AppointmentService
                 "Appointment Requested",
                 $"Your {appointment.ServiceType} appointment ({appointment.SubService}) on {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime} has been submitted and is Pending.");
 
-            if (appointment.ServiceType == "Medical")
-            {
-                var doctors = await AuthService.Instance.GetAllDoctorsAsync();
-                foreach (var doctor in doctors)
-                {
-                    await NotificationService.Instance.AddAsync(
-                        doctor.Email,
-                        "New Appointment Request",
-                        $"A new Medical appointment ({appointment.SubService}) was booked for {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime}.");
-                }
-            }
+            var clinicalType = appointment.ServiceType == "Cert Request"
+                ? appointment.SubService.StartsWith("Dental", StringComparison.OrdinalIgnoreCase) ? "Dental" : "Medical"
+                : appointment.ServiceType;
+            await NotifyAssignedClinicalStaffAsync(
+                appointment,
+                $"New {clinicalType} Appointment Request",
+                $"A new {clinicalType.ToLowerInvariant()} appointment ({appointment.SubService}) was requested for {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime}.");
         }
         catch
         {
@@ -207,6 +203,55 @@ public class AppointmentService
         return notificationsSaved
             ? new(true, "Your appointment request has been submitted. Status: Pending.")
             : new(true, "Your appointment request was saved, but a notification could not be created.");
+    }
+
+    private static string? GetClinicalType(Appointment appointment)
+    {
+        if (appointment.ServiceType is "Medical" or "Dental")
+            return appointment.ServiceType;
+
+        if (appointment.ServiceType == "Cert Request")
+        {
+            if (appointment.SubService == "Medical Certificate")
+                return "Medical";
+            if (appointment.SubService == "Dental Certificate")
+                return "Dental";
+        }
+
+        return null;
+    }
+
+    public async Task NotifyAssignedClinicalStaffAsync(
+        Appointment appointment,
+        string title,
+        string message)
+    {
+        try
+        {
+            var clinic = GetClinicalType(appointment);
+            var staff = clinic switch
+            {
+                "Medical" => await AuthService.Instance.GetAllDoctorsAsync(),
+                "Dental" => await AuthService.Instance.GetAllDentistsAsync(),
+                _ => new List<UserAccount>()
+            };
+
+            foreach (var member in staff)
+            {
+                try
+                {
+                    await NotificationService.Instance.AddAsync(member.Email, title, message);
+                }
+                catch
+                {
+                    // Notification failures must not undo a saved appointment or clinical record.
+                }
+            }
+        }
+        catch
+        {
+            // Notification failures must not undo a saved appointment or clinical record.
+        }
     }
 
     private static string NormalizeTime(string value)
@@ -372,6 +417,15 @@ public class AppointmentService
             "Appointment Cancelled",
             $"Your {cancelledAppointment.ServiceType} appointment ({cancelledAppointment.SubService}) on {cancelledAppointment.VisitDate:MMM dd, yyyy} has been cancelled.");
 
+        var cancelledClinic = GetClinicalType(cancelledAppointment);
+        if (cancelledClinic != null)
+        {
+            await NotifyAssignedClinicalStaffAsync(
+                cancelledAppointment,
+                $"{cancelledClinic} Appointment Cancelled",
+                $"{cancelledAppointment.PatientEmail}'s {cancelledClinic.ToLowerInvariant()} appointment ({cancelledAppointment.SubService}) on {cancelledAppointment.VisitDate:MMM dd, yyyy} was cancelled.");
+        }
+
         return true;
     }
 
@@ -494,11 +548,63 @@ public class AppointmentService
             "Appointment Approved",
             $"Your {approvedAppointment.ServiceType} appointment on {approvedAppointment.VisitDate:MMM dd, yyyy} at {approvedAppointment.VisitTime} has been approved.");
 
+        var approvalClinic = GetClinicalType(approvedAppointment);
+        if (approvalClinic != null)
+        {
+            await NotifyAssignedClinicalStaffAsync(
+                approvedAppointment,
+                $"{approvalClinic} Appointment Confirmed",
+                $"{approvedAppointment.PatientEmail}'s {approvalClinic.ToLowerInvariant()} appointment ({approvedAppointment.SubService}) was confirmed for {approvedAppointment.VisitDate:MMM dd, yyyy} at {approvedAppointment.VisitTime}.");
+        }
+
         return true;
     }
 
+    public async Task<bool> DeclinePendingAsync(int appointmentId, string reason)
+    {
+        if (AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar" ||
+            string.IsNullOrWhiteSpace(reason))
+        {
+            return false;
+        }
+
+        await EnsureInitializedAsync();
+        await ExpireElapsedAppointmentsAsync();
+
+        Appointment? declinedAppointment = null;
+        await _db.RunInTransactionAsync(connection =>
+        {
+            var appointment = connection.Find<Appointment>(appointmentId);
+            if (appointment == null ||
+                appointment.Status != "Pending" ||
+                GetVisitDateTime(appointment) <= DateTime.Now)
+            {
+                return;
+            }
+
+            appointment.Status = "Declined";
+            if (appointment.ServiceType == "Cert Request")
+                appointment.CertificateStatus = "Declined";
+
+            connection.Update(appointment);
+            declinedAppointment = appointment;
+        });
+
+        if (declinedAppointment == null)
+            return false;
+
+        await NotificationService.Instance.AddAsync(
+            declinedAppointment.PatientEmail,
+            "Appointment Request Declined",
+            $"Your {declinedAppointment.ServiceType} request for {declinedAppointment.VisitDate:MMM dd, yyyy} at {declinedAppointment.VisitTime} was declined. Reason: {reason.Trim()}");
+
+        return true;
+    }
     public async Task<Appointment?> GetApprovedAppointmentTodayAsync(string patientEmail)
     {
+        if (AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+            return null;
+
         await EnsureInitializedAsync();
         await ExpireElapsedAppointmentsAsync();
 
@@ -512,7 +618,6 @@ public class AppointmentService
             a.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase) &&
             a.Status == "Confirmed");
     }
-
     public async Task<Appointment?> GetCheckedInTodayAsync(string patientEmail)
     {
         await EnsureInitializedAsync();
@@ -524,13 +629,30 @@ public class AppointmentService
 
         return all.FirstOrDefault(a =>
             a.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase) &&
-            a.CheckInTime.HasValue);
+            a.CheckInTime.HasValue &&
+            (a.Status is "CheckedIn" or "VitalsRecorded"));
     }
 
     public async Task<Appointment?> CheckInAsync(int appointmentId)
     {
+        if (AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+            return null;
+
         await EnsureInitializedAsync();
         await ExpireElapsedAppointmentsAsync();
+
+        var appointmentForSchedule = await _db.FindAsync<Appointment>(appointmentId);
+        if (appointmentForSchedule == null ||
+            appointmentForSchedule.VisitDate.Date != DateTime.Today)
+        {
+            return null;
+        }
+
+        var clinicClosing = await ClinicScheduleService.Instance
+            .GetClinicClosingDateTimeAsync(
+                appointmentForSchedule.VisitDate,
+                appointmentForSchedule.ServiceType,
+                appointmentForSchedule.SubService);
 
         Appointment? checkedInAppointment = null;
         await _db.RunInTransactionAsync(connection =>
@@ -543,7 +665,9 @@ public class AppointmentService
                 return;
             }
 
-            if (GetVisitDateTime(appointment) <= DateTime.Now)
+            var now = DateTime.Now;
+            var checkInCutoff = clinicClosing ?? GetVisitDateTime(appointment);
+            if (now >= checkInCutoff)
             {
                 appointment.Status = "Missed";
                 if (appointment.ServiceType == "Cert Request")
@@ -567,15 +691,26 @@ public class AppointmentService
             if (appointment.ServiceType == "Cert Request")
                 appointment.CertificateStatus = "Visit In Progress";
 
-            appointment.CheckInTime = DateTime.Now;
+            appointment.CheckInTime = now;
             appointment.QueueNumber = nextQueueNumber;
             connection.Update(appointment);
             checkedInAppointment = appointment;
         });
 
+        if (checkedInAppointment != null)
+        {
+            var clinic = GetClinicalType(checkedInAppointment);
+            if (clinic != null)
+            {
+                await NotifyAssignedClinicalStaffAsync(
+                    checkedInAppointment,
+                    $"{clinic} Patient Checked In",
+                    $"{checkedInAppointment.PatientEmail} checked in for a {clinic.ToLowerInvariant()} appointment at {checkedInAppointment.VisitTime}.");
+            }
+        }
+
         return checkedInAppointment;
     }
-
     public async Task<int> GetTodayTotalCountAsync()
     {
         await EnsureInitializedAsync();
@@ -613,10 +748,29 @@ public class AppointmentService
             .Where(a => a.Status == "Pending" || a.Status == "Confirmed")
             .ToListAsync();
 
-        var elapsed = active.Where(a => GetVisitDateTime(a) <= now);
-
-        foreach (var appointment in elapsed)
+        foreach (var appointment in active)
         {
+            var shouldExpirePending =
+                appointment.Status == "Pending" &&
+                GetVisitDateTime(appointment) <= now;
+
+            var clinicClosing = appointment.VisitDate.Date == now.Date &&
+                                appointment.Status == "Confirmed"
+                ? await ClinicScheduleService.Instance.GetClinicClosingDateTimeAsync(
+                    appointment.VisitDate,
+                    appointment.ServiceType,
+                    appointment.SubService)
+                : null;
+
+            var shouldMarkConfirmedMissed =
+                appointment.Status == "Confirmed" &&
+                (appointment.VisitDate.Date < now.Date ||
+                 (appointment.VisitDate.Date == now.Date &&
+                  now >= (clinicClosing ?? GetVisitDateTime(appointment))));
+
+            if (!shouldExpirePending && !shouldMarkConfirmedMissed)
+                continue;
+
             var wasPending = appointment.Status == "Pending";
             appointment.Status = wasPending ? "Expired" : "Missed";
 
@@ -626,7 +780,6 @@ public class AppointmentService
             await _db.UpdateAsync(appointment);
         }
     }
-
     public async Task<int> GetUnseenCountAsync(string patientEmail)
     {
         var all = await GetAllForPatientAsync(patientEmail);
@@ -654,11 +807,11 @@ public class AppointmentService
     public async Task<List<Appointment>> GetAllAppointmentsAsync()
     {
         await EnsureInitializedAsync();
+        await ExpireElapsedAppointmentsAsync();
         return (await _db.Table<Appointment>().ToListAsync())
             .OrderByDescending(a => a.VisitDate)
             .ToList();
     }
-
     public async Task MarkAllSeenAsync(string patientEmail)
     {
         await EnsureInitializedAsync();
@@ -742,6 +895,13 @@ public class AppointmentService
 
     public async Task<bool> MarkVitalsRecordedAsync(int appointmentId)
     {
+        if (AuthService.Instance.CurrentUser?.Role != "Nurse")
+            return false;
+
+        var savedVitals = await VitalSignsService.Instance.GetForAppointmentAsync(appointmentId);
+        if (savedVitals == null)
+            return false;
+
         await EnsureInitializedAsync();
 
         var recorded = false;
@@ -749,6 +909,7 @@ public class AppointmentService
         {
             var appointment = connection.Find<Appointment>(appointmentId);
             if (appointment == null ||
+                appointment.VisitDate.Date != DateTime.Today ||
                 (appointment.Status != "CheckedIn" && appointment.Status != "VitalsRecorded"))
             {
                 return;

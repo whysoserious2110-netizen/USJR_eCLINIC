@@ -10,25 +10,30 @@
 
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="20,42,20,24" Spacing="18">
-                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
-                    <Frame WidthRequest="54" HeightRequest="54" BackgroundColor="#E8F6F4"
-                           CornerRadius="27" Padding="0" HasShadow="False" IsClippedToBounds="True">
-                        <Grid>
-                            <Label Text="&#128100;" FontSize="24" TextColor="#078F83"
-                                   HorizontalOptions="Center" VerticalOptions="Center" />
-                            <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
-                                   Aspect="AspectFill" />
+            <VerticalStackLayout Padding="0,0,0,20" Spacing="14">
+                <Grid RowDefinitions="Auto,6" Margin="0,0,0,0">
+                    <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0" Padding="20,36,20,15">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                            <Frame WidthRequest="58" HeightRequest="58" BackgroundColor="#E8F6F4"
+                                   BorderColor="#F4C400" CornerRadius="29" Padding="0" HasShadow="False" IsClippedToBounds="True">
+                                <Grid>
+                                    <Label Text="&#128100;" FontSize="24" TextColor="#087A3D"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
+                                           Aspect="AspectFill" />
+                                </Grid>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                <Label Text="Welcome back" FontSize="13" TextColor="#E5F4E9" />
+                                <Label Text="{Binding NurseName}" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="NURSE" FontSize="10" FontAttributes="Bold" TextColor="#F4C400" />
+                            </VerticalStackLayout>
                         </Grid>
-                    </Frame>
-                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                        <Label Text="Welcome back" FontSize="13" TextColor="#72808D" />
-                        <Label Text="{Binding NurseName}" FontSize="20" FontAttributes="Bold" TextColor="#172B3A" />
-                        <Label Text="NURSE" FontSize="10" FontAttributes="Bold" TextColor="#078F83" />
-                    </VerticalStackLayout>
+                    </Border>
+                    <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6" />
                 </Grid>
 
-                <Border IsVisible="{Binding HasAnnouncement}" BackgroundColor="#FFF7E2"
+                <Border IsVisible="{Binding HasAnnouncement}" Margin="16,0" BackgroundColor="#FFF7E2"
                         Stroke="#F2D995" StrokeThickness="1" Padding="14"
                         StrokeShape="RoundRectangle 14">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
@@ -39,109 +44,119 @@
                 </Border>
 
                 <!-- One hierarchical, clickable Today's Clinic Summary panel -->
-                <Border BackgroundColor="#123E50" Stroke="#123E50" StrokeThickness="1"
-                        Padding="16" StrokeShape="RoundRectangle 18">
+                <Border BackgroundColor="#087A3D" Stroke="#087A3D" StrokeThickness="1"
+                        Padding="11,10" Margin="16,0" StrokeShape="RoundRectangle 16">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
                     </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="12">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                            <VerticalStackLayout Spacing="2">
-                                <Label Text="Today's Clinic Summary" FontSize="16"
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                            <VerticalStackLayout Spacing="1">
+                                <Label Text="Today's Clinic Summary" FontSize="14"
                                        FontAttributes="Bold" TextColor="White" />
-                                <Label Text="{Binding SummaryDateText}" FontSize="11" TextColor="#B8D9E2" />
+                                <Label Text="{Binding SummaryDateText}" FontSize="10" TextColor="#E5F4E9" />
                             </VerticalStackLayout>
-                            <Label Grid.Column="1" Text="OPEN QUEUE  ›" FontSize="10"
-                                   FontAttributes="Bold" TextColor="#8FE0D3" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="OPEN QUEUE" FontSize="9" FontAttributes="Bold" TextColor="#F4C400" />
+                                <Label Text="›" FontSize="16" FontAttributes="Bold" TextColor="#F4C400" />
+                            </HorizontalStackLayout>
                         </Grid>
 
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                            <Label Text="{Binding TodayPatientCount}" FontSize="38"
-                                   FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                                <Label Text="VISITS SCHEDULED" FontSize="10" FontAttributes="Bold"
-                                       TextColor="#B8D9E2" />
-                                <Label Text="Today's appointments" FontSize="12" TextColor="#E1EEF1" />
+                        <Grid ColumnDefinitions="1.1*,2,*,2,*,2,*" ColumnSpacing="5">
+                            <VerticalStackLayout Grid.Column="0" Spacing="0" VerticalOptions="Center">
+                                <Label Text="{Binding TodayPatientCount}" FontSize="24"
+                                       FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Today's visits" FontSize="9" TextColor="#E5F4E9" />
                             </VerticalStackLayout>
-                        </Grid>
-
-                        <BoxView HeightRequest="1" BackgroundColor="#3D6573" />
-
-                        <Grid ColumnDefinitions="*,Auto,*,Auto,*,Auto" ColumnSpacing="8">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                <Label Text="{Binding AwaitingVitalsCount}" FontSize="18"
-                                       FontAttributes="Bold" TextColor="#FFD27A" />
-                                <Label Text="Awaiting vitals" FontSize="9" TextColor="#D4E2E6" />
+                            <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="32" BackgroundColor="#55A274" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="2" Spacing="0" VerticalOptions="Center">
+                                <Label Text="{Binding AwaitingVitalsCount}" FontSize="15"
+                                       FontAttributes="Bold" TextColor="#F4C400" />
+                                <Label Text="Awaiting vitals" FontSize="8" TextColor="#E5F4E9" />
                             </VerticalStackLayout>
-                            <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="#3D6573" />
-                            <VerticalStackLayout Grid.Column="2" Spacing="2">
-                                <Label Text="{Binding VitalsRecordedCount}" FontSize="18"
-                                       FontAttributes="Bold" TextColor="#C8B9FF" />
-                                <Label Text="Vitals recorded" FontSize="9" TextColor="#D4E2E6" />
+                            <BoxView Grid.Column="3" WidthRequest="1" HeightRequest="32" BackgroundColor="#55A274" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="4" Spacing="0" VerticalOptions="Center">
+                                <Label Text="{Binding VitalsRecordedCount}" FontSize="15"
+                                       FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Vitals recorded" FontSize="8" TextColor="#E5F4E9" />
                             </VerticalStackLayout>
-                            <BoxView Grid.Column="3" WidthRequest="1" BackgroundColor="#3D6573" />
-                            <VerticalStackLayout Grid.Column="4" Spacing="2">
-                                <Label Text="{Binding CompletedTodayCount}" FontSize="18"
-                                       FontAttributes="Bold" TextColor="#8FE0D3" />
-                                <Label Text="Completed" FontSize="9" TextColor="#D4E2E6" />
+                            <BoxView Grid.Column="5" WidthRequest="1" HeightRequest="32" BackgroundColor="#55A274" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="6" Spacing="0" VerticalOptions="Center">
+                                <Label Text="{Binding CompletedTodayCount}" FontSize="15"
+                                       FontAttributes="Bold" TextColor="#F4C400" />
+                                <Label Text="Completed" FontSize="8" TextColor="#E5F4E9" />
                             </VerticalStackLayout>
-                            <Label Grid.Column="5" Text="›" FontSize="22" TextColor="#8FE0D3"
-                                   VerticalOptions="Center" HorizontalOptions="End" />
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
 
-                <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
-                    <Label Text="Nurse Station" FontSize="17" FontAttributes="Bold" TextColor="#172B3A" />
+                <Grid ColumnDefinitions="*,Auto" Margin="18,2,18,0">
+                    <Label Text="Nurse Workbench" FontSize="17" FontAttributes="Bold" TextColor="#172B3A" />
                     <Label Grid.Column="1" Text="CLINIC TOOLS" FontSize="10" FontAttributes="Bold"
                            TextColor="#91A0AC" VerticalOptions="Center" />
                 </Grid>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
-                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#E1E7EC"
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12" Margin="16,0">
+                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#D9E8DD"
                             StrokeThickness="1" Padding="14" StrokeShape="RoundRectangle 16">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToPatientRecordCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="&#128203;" FontSize="22" TextColor="#3776C8" />
-                            <Label Text="Patient Records" FontSize="14" FontAttributes="Bold" TextColor="#172B3A" />
-                            <Label Text="Saved consultation history" FontSize="11" TextColor="#72808D" />
+                            <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#FFF4C7"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 11">
+                                <Label Text="&#128203;" FontSize="21" TextColor="#087A3D"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Label Text="Patient Records" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="Patients with saved consultations" FontSize="11" TextColor="#72808D" />
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#E1E7EC"
+                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#D9E8DD"
                             StrokeThickness="1" Padding="14" StrokeShape="RoundRectangle 16">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToInventoryCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="&#128138;" FontSize="22" TextColor="#078F83" />
-                            <Label Text="Medicine Inventory" FontSize="14" FontAttributes="Bold" TextColor="#172B3A" />
-                            <Label Text="{Binding LowStockCount, StringFormat='{0} items need restocking'}"
+                            <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#FFF4C7"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 11">
+                                <Label Text="&#128138;" FontSize="21" TextColor="#087A3D"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Label Text="Medicine Inventory" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="{Binding LowStockCount, StringFormat='{0} low-stock items'}"
                                    FontSize="11" TextColor="#B64D4D" />
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#E1E7EC"
+                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#D9E8DD"
                             StrokeThickness="1" Padding="14" StrokeShape="RoundRectangle 16">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToDispensingCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="&#128137;" FontSize="22" TextColor="#D19622" />
-                            <Label Text="Dispensing" FontSize="14" FontAttributes="Bold" TextColor="#172B3A" />
-                            <Label Text="{Binding PendingDispenseCount, StringFormat='{0} awaiting dispensing'}"
+                            <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#FFF4C7"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 11">
+                                <Label Text="&#128137;" FontSize="21" TextColor="#087A3D"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Label Text="Dispensing" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="{Binding PendingDispenseCount, StringFormat='{0} pending clinic doses'}"
                                    FontSize="11" TextColor="#A97816" />
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#E1E7EC"
+                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#D9E8DD"
                             StrokeThickness="1" Padding="14" StrokeShape="RoundRectangle 16">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToApeEncodingCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="&#129514;" FontSize="22" TextColor="#BD6680" />
-                            <Label Text="APE Lab Encoding" FontSize="14" FontAttributes="Bold" TextColor="#172B3A" />
-                            <Label Text="Enter verified test results" FontSize="11" TextColor="#72808D" />
+                            <Border WidthRequest="38" HeightRequest="38" BackgroundColor="#FFF4C7"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 11">
+                                <Label Text="&#129514;" FontSize="21" TextColor="#087A3D"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Label Text="APE Lab Encoding" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="Eligible staff · verified reports only" FontSize="11" TextColor="#72808D" />
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
@@ -152,8 +167,8 @@
                 Padding="4,8" StrokeShape="RoundRectangle 0">
             <Grid ColumnDefinitions="*,*,*,*">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#8962;" FontSize="18" TextColor="#078F83" HorizontalOptions="Center" />
-                    <Label Text="Home" FontSize="11" TextColor="#078F83" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="&#8962;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="11" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>

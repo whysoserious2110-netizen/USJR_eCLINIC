@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -81,6 +81,42 @@ public sealed class ClinicScheduleService
         return options;
     }
 
+    public async Task<DateTime?> GetClinicClosingDateTimeAsync(
+        DateTime date,
+        string serviceType,
+        string subService)
+    {
+        var configuration = await GetConfigurationAsync();
+        var dateKey = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        if (configuration.Holidays.Contains(dateKey, StringComparer.Ordinal))
+            return date.Date;
+
+        var matchingRules = configuration.Rules
+            .Where(rule =>
+                string.Equals(rule.ServiceType, serviceType, StringComparison.OrdinalIgnoreCase) &&
+                (string.Equals(rule.SubService, subService, StringComparison.OrdinalIgnoreCase) ||
+                 rule.SubService == "*") &&
+                rule.Days.Contains(date.DayOfWeek))
+            .ToList();
+        var exactRules = matchingRules
+            .Where(rule => string.Equals(rule.SubService, subService, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var applicableRules = exactRules.Count > 0
+            ? exactRules
+            : matchingRules.Where(rule => rule.SubService == "*").ToList();
+        var closingTimes = applicableRules
+            .Select(rule => TimeSpan.TryParseExact(
+                rule.End,
+                @"hh\:mm",
+                CultureInfo.InvariantCulture,
+                out var end) ? (TimeSpan?)end : null)
+            .Where(time => time.HasValue)
+            .Select(time => time!.Value)
+            .ToList();
+        return closingTimes.Count == 0
+            ? null
+            : date.Date.Add(closingTimes.Max());
+    }
     public async Task<string?> ValidateSlotAsync(
         DateTime date,
         string serviceType,

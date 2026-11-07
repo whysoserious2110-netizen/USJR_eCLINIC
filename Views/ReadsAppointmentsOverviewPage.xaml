@@ -12,35 +12,29 @@
         <conv:TabTextColorConverter x:Key="TabTextColor" />
     </ContentPage.Resources>
 
-    <Grid Padding="20,42,20,12"
+    <Grid Padding="14,16,14,12"
           RowDefinitions="Auto,Auto,Auto,*"
           RowSpacing="14">
 
-        <!-- Page title -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12">
-            <Label Grid.Column="0"
-                   Text="&#8592;"
-                   FontSize="24"
-                   TextColor="#0F9B8E"
-                   VerticalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-
-            <VerticalStackLayout Grid.Column="1"
-                                 Spacing="3"
-                                 VerticalOptions="Center">
-                <Label Text="All Appointments"
-                       FontSize="21"
-                       FontAttributes="Bold"
-                       TextColor="#12212E" />
-                <Label Text="Clinic-wide overview across all service types"
-                       FontSize="12"
-                       TextColor="#7B8794" />
-            </VerticalStackLayout>
-        </Grid>
-
+        <VerticalStackLayout Grid.Row="0" Spacing="0">
+            <Border BackgroundColor="#176B38" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12" Padding="12,10">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;"
+                            FontSize="21" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="9"
+                            WidthRequest="38" HeightRequest="38" Padding="0"
+                            Command="{Binding GoBackCommand}" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="All Appointments" FontSize="19"
+                               FontAttributes="Bold" TextColor="#F4C400" />
+                        <Label Text="Clinic-wide overview across all service types"
+                               FontSize="11" TextColor="#E9F3EC" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+            <BoxView HeightRequest="5" Color="#F4C400"/>
+        </VerticalStackLayout>
         <!-- Appointment filters -->
         <Frame Grid.Row="1"
                BackgroundColor="White"
@@ -65,7 +59,7 @@
                              WidthRequest="30"
                              HorizontalOptions="Center"
                              IsVisible="{Binding IsAllTab}"
-                             Color="#0F9B8E" />
+                             Color="#F4C400" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="1"
@@ -84,7 +78,7 @@
                              WidthRequest="60"
                              HorizontalOptions="Center"
                              IsVisible="{Binding IsUpcomingTab}"
-                             Color="#0F9B8E" />
+                             Color="#F4C400" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="2"
@@ -103,7 +97,7 @@
                              WidthRequest="30"
                              HorizontalOptions="Center"
                              IsVisible="{Binding IsPastTab}"
-                             Color="#0F9B8E" />
+                             Color="#F4C400" />
                 </VerticalStackLayout>
             </Grid>
         </Frame>
@@ -215,17 +209,34 @@
                                            FontSize="10"
                                            FontAttributes="Bold"
                                            TextColor="#A87518" />
-                                    <Button Text="Approve Request"
-                                            IsVisible="{Binding CanApprove}"
-                                            Command="{Binding Source={x:Reference Root},
-                                                              Path=BindingContext.ApproveAppointmentCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="#0F9B8E"
-                                            TextColor="White"
-                                            FontAttributes="Bold"
-                                            CornerRadius="12"
-                                            HeightRequest="46"
-                                            Padding="16,0" />
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Button Grid.Column="0"
+                                                Text="Decline"
+                                                IsVisible="{Binding CanDecline}"
+                                                Command="{Binding Source={x:Reference Root},
+                                                                  Path=BindingContext.DeclineAppointmentCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="White"
+                                                BorderColor="#D86A63"
+                                                BorderWidth="1"
+                                                TextColor="#B3443D"
+                                                FontAttributes="Bold"
+                                                CornerRadius="12"
+                                                HeightRequest="46"
+                                                Padding="10,0" />
+                                        <Button Grid.Column="1"
+                                                Text="Approve Request"
+                                                IsVisible="{Binding CanApprove}"
+                                                Command="{Binding Source={x:Reference Root},
+                                                                  Path=BindingContext.ApproveAppointmentCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="#087A3D"
+                                                TextColor="White"
+                                                FontAttributes="Bold"
+                                                CornerRadius="12"
+                                                HeightRequest="46"
+                                                Padding="10,0" />
+                                    </Grid>
                                 </VerticalStackLayout>
 
                             </VerticalStackLayout>

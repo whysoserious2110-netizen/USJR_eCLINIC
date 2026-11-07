@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -26,6 +26,8 @@ public partial class PatientsListViewModel : ObservableObject
     [ObservableProperty] private string listTitle = "Patients";
     [ObservableProperty] private string listDescription = "Registered clinic patients";
     [ObservableProperty] private string emptyMessage = "No patients found. Try another name or ID.";
+    [ObservableProperty] private string listSectionTitle = "Clinical history";
+    [ObservableProperty] private string emptyTitle = "No records yet";
     [ObservableProperty] private string resultCountText = "0 patients";
 
     public PatientsListViewModel(string? serviceTypeFilter = null, bool consultedOnly = false)
@@ -37,11 +39,17 @@ public partial class PatientsListViewModel : ObservableObject
         {
             ListTitle = "Patient Records";
             ListDescription = "Patients with a saved medical or dental consultation";
-            EmptyMessage = "No consultation records yet. Patients appear here after a medical or dental record is saved.";
+            ListSectionTitle = "Consultations";
+            EmptyTitle = "No consultation records yet";
+            EmptyMessage = "Patients appear here after a medical or dental consultation is saved.";
         }
         else if (!string.IsNullOrWhiteSpace(_serviceTypeFilter))
         {
+            ListTitle = $"{serviceTypeFilter} Patient Search";
             ListDescription = $"Patients with {serviceTypeFilter.ToLowerInvariant()} appointments";
+            ListSectionTitle = $"{serviceTypeFilter} appointment patients";
+            EmptyTitle = $"No {serviceTypeFilter.ToLowerInvariant()} bookings yet";
+            EmptyMessage = $"Patients will appear here once they have a {serviceTypeFilter.ToLowerInvariant()} appointment.";
         }
     }
 
@@ -103,11 +111,24 @@ public partial class PatientsListViewModel : ObservableObject
         ResultCountText = Patients.Count == 1 ? "1 patient" : $"{Patients.Count} patients";
         if (Patients.Count == 0)
         {
-            EmptyMessage = _allPatients.Count == 0 && _consultedOnly
-                ? "No consultation records yet. Patients appear here after a medical or dental record is saved."
-                : _allPatients.Count == 0
+            if (_consultedOnly)
+            {
+                EmptyMessage = _allPatients.Count == 0
+                    ? "No consultation records yet. Patients appear here after a medical or dental consultation is saved."
+                    : "No consultation records match your search.";
+            }
+            else if (!string.IsNullOrWhiteSpace(_serviceTypeFilter))
+            {
+                EmptyMessage = _allPatients.Count == 0
+                    ? $"No patients have a {_serviceTypeFilter.ToLowerInvariant()} appointment yet."
+                    : $"No patients with {_serviceTypeFilter.ToLowerInvariant()} appointments match your search.";
+            }
+            else
+            {
+                EmptyMessage = _allPatients.Count == 0
                     ? "No patients found."
                     : "No patient records match your search.";
+            }
         }
     }
 

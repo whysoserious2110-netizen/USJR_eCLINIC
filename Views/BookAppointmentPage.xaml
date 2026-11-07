@@ -25,7 +25,7 @@
                 <!-- Green title bar with the yellow brand accent. -->
                 <Grid RowDefinitions="Auto,8" Margin="0,-50,0,16">
                     <Border Grid.Row="0"
-                            BackgroundColor="#2C9057"
+                            BackgroundColor="#176B38"
                             StrokeThickness="0"
                             StrokeShape="Rectangle"
                             Padding="20,50,20,16">
@@ -160,6 +160,15 @@
 
                     <!-- Follow-up -->
                     <VerticalStackLayout IsVisible="{Binding IsFollowUp}" Spacing="7">
+                        <Label Text="Follow-up for" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
+                        <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
+                               Padding="12,0" HeightRequest="50" HasShadow="False">
+                            <Picker ItemsSource="{Binding FollowUpClinicTypes}"
+                                    SelectedItem="{Binding SelectedFollowUpClinicType}"
+                                    Title="Choose Medical or Dental" TextColor="#24342B"
+                                    TitleColor="#526057" BackgroundColor="Transparent"
+                                    VerticalOptions="Center" />
+                        </Frame>
                         <Label Text="Follow-Up Reason" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
                         <Frame BackgroundColor="#F4C400" BorderColor="#087A3D" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">

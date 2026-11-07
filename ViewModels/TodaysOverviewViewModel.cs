@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -29,7 +29,7 @@ public partial class TodaysOverviewVisitItem : ObservableObject
         ? $"Queue #{QueueNumber.Value}"
         : string.Empty;
 
-    public bool CanCheckIn => Status == "Confirmed";
+
 }
 
 public partial class TodaysOverviewViewModel : ObservableObject
@@ -136,58 +136,6 @@ public partial class TodaysOverviewViewModel : ObservableObject
     {
         await Shell.Current.Navigation.PushAsync(
             new Views.ReadsAppointmentsOverviewPage());
-    }
-
-    [RelayCommand]
-    private async Task CheckInVisit(TodaysOverviewVisitItem? item)
-    {
-        if (item == null || !item.CanCheckIn)
-            return;
-
-        var currentUser = Services.AuthService.Instance.CurrentUser;
-        if (currentUser?.Role != "R.E.A.D.S. Scholar")
-        {
-            await Shell.Current.DisplayAlert(
-                "Access denied",
-                "Only R.E.A.D.S. Scholars can check in patients.",
-                "OK");
-            return;
-        }
-
-        bool confirmed = await Shell.Current.DisplayAlert(
-            "Confirm Patient Check-In",
-            $"Patient: {item.PatientName}\n" +
-            $"ID: {item.PatientIdNumber}\n" +
-            $"Time: {item.TimeDisplay}\n" +
-            $"Service: {item.ServiceType} - {item.SubService}",
-            "Check In",
-            "Cancel");
-
-        if (!confirmed)
-            return;
-
-        var checkedInAppointment = await Services.AppointmentService.Instance
-            .CheckInAsync(item.AppointmentId);
-
-        await RefreshAsync();
-
-        if (checkedInAppointment == null)
-        {
-            await Shell.Current.DisplayAlert(
-                "Check-In Unavailable",
-                "This appointment is no longer eligible for check-in. Today's overview has been refreshed.",
-                "OK");
-            return;
-        }
-
-        string queueNumber = checkedInAppointment.QueueNumber?.ToString()
-            ?? "Not assigned";
-
-        await Shell.Current.DisplayAlert(
-            "Patient Checked In",
-            $"{item.PatientName} has been checked in.\n" +
-            $"Queue Number: {queueNumber}",
-            "OK");
     }
 
     [RelayCommand]

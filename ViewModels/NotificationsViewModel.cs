@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -10,62 +10,110 @@ public partial class NotificationListItem : ObservableObject
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string DateDisplay { get; set; } = string.Empty;
-    public bool IsRead { get; set; }
+    [ObservableProperty] private bool isRead;
 }
 
 public partial class NotificationsViewModel : ObservableObject
 {
+    private readonly List<NotificationListItem> _allNotifications = new();
     public ObservableCollection<NotificationListItem> Notifications { get; } = new();
 
-    [ObservableProperty]
-    private bool hasNotifications;
+    [ObservableProperty] private bool hasNotifications;
+    [ObservableProperty] private string selectedFilter = "All";
+    [ObservableProperty] private int unreadNotificationCount;
+
+    public bool IsAllSelected => SelectedFilter == "All";
+    public bool IsUnreadSelected => SelectedFilter == "Unread";
+    public string UnreadFilterLabel => UnreadNotificationCount == 0 ? "Unread" : $"Unread ({UnreadNotificationCount})";
 
     public async Task RefreshAsync()
     {
         var user = Services.AuthService.Instance.CurrentUser;
-        if (user == null) return;
+        if (user == null)
+            return;
 
         var items = await Services.NotificationService.Instance.GetForUserAsync(user.Email);
-
-        Notifications.Clear();
-        foreach (var n in items)
+        _allNotifications.Clear();
+        foreach (var notification in items)
         {
-            Notifications.Add(new NotificationListItem
+            _allNotifications.Add(new NotificationListItem
             {
-                Id = n.Id,
-                Title = n.Title,
-                Message = n.Message,
-                DateDisplay = n.DateCreated.ToString("MMM dd, yyyy · h:mm tt"),
-                IsRead = n.IsRead
+                Id = notification.Id,
+                Title = notification.Title,
+                Message = notification.Message,
+                DateDisplay = notification.DateCreated.ToString("MMM dd, yyyy · h:mm tt"),
+                IsRead = notification.IsRead
             });
         }
 
-        HasNotifications = Notifications.Count > 0;
+        UnreadNotificationCount = _allNotifications.Count(item => !item.IsRead);
+        OnPropertyChanged(nameof(UnreadFilterLabel));
+        ApplyFilter();
+    }
 
-        await Services.NotificationService.Instance.MarkAllAsReadAsync(user.Email);
+    private void ApplyFilter()
+    {
+        IEnumerable<NotificationListItem> source = SelectedFilter == "Unread"
+            ? _allNotifications.Where(item => !item.IsRead)
+            : _allNotifications;
+
+        Notifications.Clear();
+        foreach (var notification in source)
+            Notifications.Add(notification);
+
+        HasNotifications = Notifications.Count > 0;
+    }
+
+    [RelayCommand]
+    private void SelectFilter(string filter)
+    {
+        SelectedFilter = filter == "Unread" ? "Unread" : "All";
+        OnPropertyChanged(nameof(IsAllSelected));
+        OnPropertyChanged(nameof(IsUnreadSelected));
+        ApplyFilter();
     }
 
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 
-
     [RelayCommand]
     private async Task OpenNotification(NotificationListItem item)
     {
-        await Shell.Current.Navigation.PushAsync(new Views.NotificationDetailPage(item.Title, item.Message, item.DateDisplay));
-    }
+        if (item == null)
+            return;
 
+        var user = Services.AuthService.Instance.CurrentUser;
+        if (user != null && !item.IsRead)
+        {
+            var markedRead = await Services.NotificationService.Instance.MarkAsReadAsync(item.Id, user.Email);
+            if (markedRead)
+            {
+                item.IsRead = true;
+                UnreadNotificationCount = Math.Max(0, UnreadNotificationCount - 1);
+                OnPropertyChanged(nameof(UnreadFilterLabel));
+                ApplyFilter();
+            }
+        }
+
+        await Shell.Current.Navigation.PushAsync(
+            new Views.NotificationDetailPage(item.Title, item.Message, item.DateDisplay));
+    }
 
     [RelayCommand]
     private async Task DeleteNotification(NotificationListItem item)
     {
-        bool confirm = await Shell.Current.DisplayAlert("Delete Notification?", "This will move the notification to trash. It will be permanently deleted after 30 days.", "Delete", "Cancel");
-        if (!confirm) return;
+        if (item == null)
+            return;
+
+        bool confirm = await Shell.Current.DisplayAlert(
+            "Delete Notification?",
+            "This will move the notification to trash. It will be permanently deleted after 30 days.",
+            "Delete",
+            "Cancel");
+        if (!confirm)
+            return;
 
         await Services.NotificationService.Instance.SoftDeleteAsync(item.Id);
-
-        var user = Services.AuthService.Instance.CurrentUser;
-        if (user != null)
-            await RefreshAsync();
+        await RefreshAsync();
     }
 }

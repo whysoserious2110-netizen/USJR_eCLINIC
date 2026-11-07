@@ -16,6 +16,7 @@ public class ApePatientOption
 public partial class ApeLabEncodingViewModel : ObservableObject
 {
     private bool _patientsLoaded;
+    private bool _accessDeniedShown;
 
     public ObservableCollection<ApePatientOption> Patients { get; } = new();
     public ObservableCollection<ApePatientOption> FilteredPatients { get; } = new();
@@ -47,6 +48,19 @@ public partial class ApeLabEncodingViewModel : ObservableObject
 
     public async Task LoadPatientsAsync()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            HasPatients = false;
+            HasNoPatients = true;
+            PatientLoadMessage = "APE result encoding is available to Nurses only.";
+            if (!_accessDeniedShown)
+            {
+                _accessDeniedShown = true;
+                await Shell.Current.DisplayAlert("Access denied", PatientLoadMessage, "OK");
+            }
+            return;
+        }
+
         if (_patientsLoaded || IsLoadingPatients) return;
 
         try
@@ -140,16 +154,42 @@ public partial class ApeLabEncodingViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveResult()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Nurse")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only Nurses can encode APE laboratory results.", "OK");
+            return;
+        }
+
         if (SelectedPatient == null)
         {
-            await Shell.Current.DisplayAlert("Select a patient", "Choose the patient for these APE results.", "OK");
+            await Shell.Current.DisplayAlert("Select a patient", "Search by registered ID and select the matching eligible staff record.", "OK");
+            return;
+        }
+
+        if (SelectedPatient.Role is not ("Faculty" or "Admin Personnel" or "Non-Teaching"))
+        {
+            await Shell.Current.DisplayAlert("Patient not eligible", "APE lab encoding is currently available for Faculty, Admin Personnel, and Non-Teaching accounts.", "OK");
+            return;
+        }
+
+        if (new[] { Cbc, Urinalysis, ChestXray, Ecg, DrugTest }.All(string.IsNullOrWhiteSpace))
+        {
+            await Shell.Current.DisplayAlert("No test results entered", "Enter at least one result from a verified laboratory report before saving.", "OK");
+            return;
+        }
+
+        var account = await Services.AuthService.Instance.GetAccountByEmailAsync(SelectedPatient.Email);
+        if (account == null || account.Role != SelectedPatient.Role)
+        {
+            await Shell.Current.DisplayAlert("Patient record changed", "The selected account could not be verified. Search for the patient again.", "OK");
+            SelectedPatient = null;
             return;
         }
 
         var nurse = Services.AuthService.Instance.CurrentUser;
         var result = new Models.ApeLabResult
         {
-            PatientEmail = SelectedPatient.Email,
+            PatientEmail = account.Email,
             Cbc = Cbc.Trim(),
             Urinalysis = Urinalysis.Trim(),
             ChestXray = ChestXray.Trim(),
@@ -160,13 +200,35 @@ public partial class ApeLabEncodingViewModel : ObservableObject
             DateEncoded = DateTime.Now
         };
 
-        await Services.ApeLabResultService.Instance.AddAsync(result);
-        await Services.NotificationService.Instance.AddAsync(
-            SelectedPatient.Email,
-            "APE Lab Results Available",
-            "Your Annual Physical Examination lab results have been encoded and are ready for review.");
+        try
+        {
+            await Services.ApeLabResultService.Instance.AddAsync(result);
+        }
+        catch
+        {
+            await Shell.Current.DisplayAlert("Could not save results", "The APE lab result was not saved. Check the patient and result fields, then try again.", "OK");
+            return;
+        }
 
-        await Shell.Current.DisplayAlert("Results saved", "APE laboratory results have been recorded.", "OK");
+        var notificationSaved = true;
+        try
+        {
+            await Services.NotificationService.Instance.AddAsync(
+                account.Email,
+                "APE Lab Results Available",
+                "Your Annual Physical Examination lab results have been encoded and are ready for review.");
+        }
+        catch
+        {
+            notificationSaved = false;
+        }
+
+        await Shell.Current.DisplayAlert(
+            "Results saved",
+            notificationSaved
+                ? "Verified APE laboratory results were recorded for the selected patient."
+                : "Results were saved, but the patient notification could not be recorded.",
+            "OK");
         await Shell.Current.Navigation.PopAsync();
     }
 
