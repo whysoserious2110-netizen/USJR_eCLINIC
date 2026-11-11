@@ -26,13 +26,8 @@
                    Grid.RowSpan="3"
                    Source="usjrschoolbuilding.jpg"
                    Aspect="AspectFill"
-                   Opacity="1"
+                   Opacity="0.68"
                    InputTransparent="True" />
-            <BoxView Grid.Row="0"
-                     Grid.RowSpan="3"
-                     Color="White"
-                     Opacity="0.12"
-                     InputTransparent="True" />
 
             <!-- Keep the header flush to the top; center the compact card below it. -->
             <Grid Grid.Row="0" HeightRequest="150">
@@ -72,7 +67,7 @@
                    InputTransparent="True" />
 
             <Grid Grid.Row="1" Padding="0,4,0,6">
-              <Border Margin="14,20,14,8"
+              <Border Margin="22,20,22,8"
                       Padding="18,15,18,16"
                       VerticalOptions="Center"
                       BackgroundColor="#FFFEFC"
