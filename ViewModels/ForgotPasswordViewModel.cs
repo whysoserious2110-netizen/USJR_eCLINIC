@@ -26,12 +26,6 @@ public partial class ForgotPasswordViewModel : ObservableObject
     private string recoveryText = string.Empty;
 
     [ObservableProperty]
-    private string demoCode = string.Empty;
-
-    [ObservableProperty]
-    private bool hasDemoCode;
-
-    [ObservableProperty]
     private string statusMessage = string.Empty;
 
     [ObservableProperty]
@@ -72,28 +66,12 @@ public partial class ForgotPasswordViewModel : ObservableObject
                 StudentId.Trim()
                     .ToUpperInvariant();
 
-            var result =
-                await Services.PasswordResetService.Instance
-                    .StartResetAsync(StudentId);
-
-            if (!result.AccountFound)
-            {
-                ShowStatus(
-                    "No local account was found for that ID. " +
-                    "Check the ID and try again.");
-
-                return;
-            }
-
-            DemoCode = result.DemoCode;
-
-            HasDemoCode =
-                !string.IsNullOrWhiteSpace(
-                    DemoCode);
+            await Services.PasswordResetService.Instance
+                .StartResetAsync(StudentId);
 
             RecoveryText =
-                $"Use the demo verification code for " +
-                $"{result.RecoveryDisplay}.";
+                "If this ID is registered, a verification code has been sent " +
+                "to its email address. The code expires in 10 minutes.";
 
             VerificationCode =
                 string.Empty;
@@ -103,8 +81,8 @@ public partial class ForgotPasswordViewModel : ObservableObject
         catch
         {
             ShowStatus(
-                "The local password-reset request " +
-                "could not be completed.");
+                "The reset service is unavailable. Start the local email API " +
+                "and try again.");
         }
         finally
         {
@@ -126,7 +104,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
             !code.All(char.IsDigit))
         {
             ShowStatus(
-                "Enter the six-digit demo code.");
+                "Enter the six-digit code from your email.");
 
             return;
         }
@@ -170,7 +148,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
         catch
         {
             ShowStatus(
-                "The demo code could not be verified.");
+                "The code could not be verified. Check it and try again.");
         }
         finally
         {
@@ -186,12 +164,6 @@ public partial class ForgotPasswordViewModel : ObservableObject
 
         VerificationCode =
             string.Empty;
-
-        DemoCode =
-            string.Empty;
-
-        HasDemoCode =
-            false;
 
         ClearStatus();
 
@@ -282,12 +254,6 @@ public partial class ForgotPasswordViewModel : ObservableObject
             RecoveryText =
                 string.Empty;
 
-            DemoCode =
-                string.Empty;
-
-            HasDemoCode =
-                false;
-
             _resetToken =
                 string.Empty;
 
@@ -318,12 +284,6 @@ public partial class ForgotPasswordViewModel : ObservableObject
 
         RecoveryText =
             string.Empty;
-
-        DemoCode =
-            string.Empty;
-
-        HasDemoCode =
-            false;
 
         _resetToken =
             string.Empty;

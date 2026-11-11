@@ -5,15 +5,6 @@ using USJR_eCLINIC.Models;
 
 namespace USJR_eCLINIC.Services;
 
-public sealed class PasswordResetStartResult
-{
-    public bool AccountFound { get; init; }
-
-    public string DemoCode { get; init; } = string.Empty;
-
-    public string RecoveryDisplay { get; init; } = string.Empty;
-}
-
 public sealed class PasswordResetVerificationResult
 {
     public bool Success { get; init; }
@@ -72,24 +63,20 @@ public class PasswordResetService
         }
     }
 
-    public async Task<PasswordResetStartResult>
+    public async Task<bool>
         StartResetAsync(string studentId)
     {
         await EnsureInitializedAsync();
+
+        if (!await PasswordResetEmailApiService.Instance.CheckHealthAsync())
+            throw new InvalidOperationException("Local email service is unavailable.");
 
         var account =
             await AuthService.Instance
                 .GetAccountByIdNumberAsync(studentId);
 
         if (account == null)
-        {
-            // The UI should still show a generic message
-            // so it does not reveal registered accounts.
-            return new PasswordResetStartResult
-            {
-                AccountFound = false
-            };
-        }
+            return false;
 
         var existingRequests =
             await _db.Table<PasswordResetRequest>()
@@ -132,17 +119,17 @@ public class PasswordResetService
 
         await _db.InsertAsync(request);
 
-        return new PasswordResetStartResult
+        try
         {
-            AccountFound = true,
-
-            // Prototype only. A production version sends
-            // this through the university email service.
-            DemoCode = code,
-
-            RecoveryDisplay =
-                MaskEmail(account.Email)
-        };
+            await PasswordResetEmailApiService.Instance
+                .SendCodeAsync(account.Email, code);
+            return true;
+        }
+        catch
+        {
+            await _db.DeleteAsync(request);
+            return false;
+        }
     }
 
     public async Task<PasswordResetVerificationResult>
@@ -426,29 +413,6 @@ public class PasswordResetService
                password.Any(
                    character =>
                        !char.IsLetterOrDigit(character));
-    }
-
-    private static string MaskEmail(
-        string email)
-    {
-        if (string.IsNullOrWhiteSpace(email) ||
-            !email.Contains('@'))
-        {
-            return "registered recovery method";
-        }
-
-        var parts = email.Split('@');
-
-        var name = parts[0];
-        var domain = parts[1];
-
-        var visibleName =
-            name.Length <= 1
-                ? "*"
-                : $"{name[0]}{new string('*',
-                    Math.Max(2, name.Length - 1))}";
-
-        return $"{visibleName}@{domain}";
     }
 
     private static PasswordResetVerificationResult
