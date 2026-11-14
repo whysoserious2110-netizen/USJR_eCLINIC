@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.AdminDashboardPage" x:Name="Root"
+             x:DataType="vm:AdminDashboardViewModel"
+             Title="Clinic Administration" BackgroundColor="#F7F8F6"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConv"/>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto,5,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" BackgroundColor="#176B38" Padding="18,13">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Clinic Administration" FontSize="19" FontAttributes="Bold" TextColor="#F4C400"/>
+                <Label Text="{Binding AdminName}" FontSize="13" TextColor="White"/>
+            </VerticalStackLayout>
+            <Button Grid.Column="1" Text="Sign out" Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent" TextColor="#F4C400"/>
+        </Grid>
+        <BoxView Grid.Row="1" Color="#F4C400"/>
+        <RefreshView Grid.Row="2" Command="{Binding LoadCommand}">
+            <CollectionView ItemsSource="{Binding PendingStaffIdAccounts}" SelectionMode="None" EmptyView="No pending staff ID reviews.">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,18,16,8" Spacing="5">
+                        <Label Text="Employee ID account review" FontSize="21" FontAttributes="Bold" TextColor="#17212B"/>
+                        <Label Text="{Binding PendingCountText}" FontSize="14" TextColor="#667085"/>
+                        <Label Text="Compare each submitted Faculty or Non-Teaching Employee ID photo with an authorized USJ-R record or physical ID before approving."
+                               FontSize="13" TextColor="#667085"/>
+                        <Button Text="Change administrator password" Command="{Binding ChangePasswordCommand}"
+                                BackgroundColor="White" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
+                                CornerRadius="10" HeightRequest="42"/>
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:StaffIdReviewItem">
+                        <Border Margin="14,6" Padding="14" BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14">
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding FullName}" FontSize="17" FontAttributes="Bold" TextColor="#17212B"/>
+                                <Label Text="{Binding Role}" FontSize="13" FontAttributes="Bold" TextColor="#087A3D"/>
+                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="14" TextColor="#344054"/>
+                                <Label Text="{Binding Email}" FontSize="13" TextColor="#667085"/>
+                                <Label Text="{Binding ProgramOrDepartment}" FontSize="13" TextColor="#667085"/>
+                                <Image Source="{Binding FacultyIdImagePath, Converter={StaticResource ImagePathConv}}" HeightRequest="210" Aspect="AspectFit"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <Button Text="Reject" Command="{Binding Source={x:Reference Root}, Path=BindingContext.RejectCommand}"
+                                            CommandParameter="{Binding .}" BackgroundColor="#FDE8E7" TextColor="#B42318" CornerRadius="10"/>
+                                    <Button Grid.Column="1" Text="Approve" Command="{Binding Source={x:Reference Root}, Path=BindingContext.ApproveCommand}"
+                                            CommandParameter="{Binding .}" BackgroundColor="#087A3D" TextColor="White" CornerRadius="10"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

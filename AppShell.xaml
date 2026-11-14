@@ -10,11 +10,6 @@
     Shell.NavBarIsVisible="False">
 
     <ShellContent
-        Title="Welcome"
-        ContentTemplate="{DataTemplate views:WelcomePage}"
-        Route="WelcomePage" />
-
-    <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
@@ -221,6 +216,10 @@
                   ContentTemplate="{DataTemplate views:DentistProfilePage}" 
                   Route="DentistProfilePage" />
 
+    <ShellContent Title="Clinic Administration"
+                  ContentTemplate="{DataTemplate views:AdminDashboardPage}"
+                  Route="AdminDashboardPage" />
+
     <ShellContent Title="All Appointments"  
                   ContentTemplate="{DataTemplate views:ReadsAppointmentsOverviewPage}" 
                   Route="ReadsAppointmentsOverviewPage" />
@@ -232,4 +231,4 @@
 
 
 
-</Shell>        
+</Shell>

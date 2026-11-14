@@ -16,7 +16,6 @@ public class AuthService
     {
         "Student",
         "Faculty",
-        "Admin Personnel",
         "Non-Teaching"
     };
 
@@ -71,6 +70,21 @@ public class AuthService
                         "ALTER TABLE UserAccount ADD COLUMN AllergyDetailsJson TEXT NOT NULL DEFAULT ''");
                 }
             });
+            await _db.RunInTransactionAsync(connection =>
+            {
+                var columns = connection.GetTableInfo("UserAccount");
+                if (!columns.Any(column => column.Name.Equals("EmailVerified", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE UserAccount ADD COLUMN EmailVerified INTEGER NOT NULL DEFAULT 1");
+                if (!columns.Any(column => column.Name.Equals("AccountStatus", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE UserAccount ADD COLUMN AccountStatus TEXT NOT NULL DEFAULT 'Active'");
+                if (!columns.Any(column => column.Name.Equals("FacultyIdImagePath", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE UserAccount ADD COLUMN FacultyIdImagePath TEXT NOT NULL DEFAULT ''");
+
+                // Previously self-registered Faculty accounts have not yet had
+                // their employee ID checked by an authorized reviewer.
+                connection.Execute("UPDATE UserAccount SET AccountStatus='PendingStaffIdReview' WHERE Role IN ('Faculty','Non-Teaching') AND (FacultyIdImagePath IS NULL OR FacultyIdImagePath='') AND AccountStatus='Active'");
+                connection.Execute("UPDATE UserAccount SET AccountStatus='PendingStaffIdReview' WHERE Role IN ('Faculty','Non-Teaching') AND AccountStatus='PendingFacultyReview'");
+            });
             await SeedTestAccountsAsync();
 
             _initialized = true;
@@ -87,6 +101,30 @@ public class AuthService
         await SeedNurseAsync();
         await SeedDentistAsync();
         await SeedReadsAsync();
+        await SeedAdminAsync();
+    }
+
+    private async Task SeedAdminAsync()
+    {
+        var existing = await _db.Table<UserAccount>()
+            .Where(a => a.Email == "clinicadmin@usjr.edu.ph")
+            .FirstOrDefaultAsync();
+        if (existing != null)
+            return;
+
+        await _db.InsertAsync(new UserAccount
+        {
+            FullName = "Clinic Administrator",
+            Email = "clinicadmin@usjr.edu.ph",
+            Password = PasswordSecurityService.HashPassword("ClinicAdmin123!"),
+            Role = "Admin Personnel",
+            IdNumber = "ADM-0001",
+            ProgramOrDepartment = "USJ-R Clinic Administration",
+            Position = "Clinic Account Reviewer",
+            EmploymentStatus = "Active",
+            EmailVerified = true,
+            AccountStatus = "Active"
+        });
     }
 
     private async Task SeedDoctorAsync()
@@ -315,8 +353,16 @@ public class AuthService
     {
         await EnsureInitializedAsync();
 
+        if (!CentralPatientRoles.Contains(account.Role, StringComparer.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Only Student, Faculty, and Non-Teaching accounts may self-register.");
+
+        if ((account.Role.Equals("Faculty", StringComparison.OrdinalIgnoreCase) ||
+             account.Role.Equals("Non-Teaching", StringComparison.OrdinalIgnoreCase)) &&
+            (account.IdNumber.Length != 5 || account.IdNumber.Any(character => !char.IsDigit(character))))
+            throw new InvalidOperationException("Faculty and Non-Teaching employee IDs must contain exactly five digits.");
+
         account.Email =
-            account.Email.Trim();
+            account.Email.Trim().ToLowerInvariant();
 
         account.IdNumber =
             account.IdNumber.Trim();
@@ -330,6 +376,9 @@ public class AuthService
                     .HashPassword(
                         account.Password);
         }
+
+        account.EmailVerified = false;
+        account.AccountStatus = "PendingEmailVerification";
 
         await _db.InsertAsync(account);
     }
@@ -434,6 +483,67 @@ public class AuthService
         return updated > 0;
     }
 
+    public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
+    {
+        await EnsureInitializedAsync();
+        var account = await GetAccountByDatabaseIdAsync(userId);
+        if (account == null)
+            return false;
+
+        var valid = PasswordSecurityService.IsHashedPassword(account.Password)
+            ? PasswordSecurityService.VerifyPassword(currentPassword, account.Password)
+            : string.Equals(account.Password, currentPassword, StringComparison.Ordinal);
+        if (!valid)
+            return false;
+
+        account.Password = PasswordSecurityService.HashPassword(newPassword);
+        var updated = await _db.UpdateAsync(account);
+        if (CurrentUser?.Id == userId)
+            CurrentUser = account;
+        return updated > 0;
+    }
+
+    public async Task<List<UserAccount>> GetPendingStaffIdAccountsAsync()
+    {
+        await EnsureInitializedAsync();
+        if (!string.Equals(CurrentUser?.Role, "Admin Personnel", StringComparison.OrdinalIgnoreCase))
+            return new List<UserAccount>();
+
+        var accounts = await _db.Table<UserAccount>().ToListAsync();
+        return accounts.Where(a => (a.Role == "Faculty" || a.Role == "Non-Teaching") &&
+                a.EmailVerified && a.AccountStatus == "PendingStaffIdReview")
+            .OrderBy(a => a.FullName).ToList();
+    }
+
+    public async Task<bool> ReviewStaffIdAccountAsync(int accountId, bool approve)
+    {
+        await EnsureInitializedAsync();
+        if (!string.Equals(CurrentUser?.Role, "Admin Personnel", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var account = await GetAccountByDatabaseIdAsync(accountId);
+        if (account == null || (account.Role != "Faculty" && account.Role != "Non-Teaching") ||
+            !account.EmailVerified || account.AccountStatus != "PendingStaffIdReview")
+            return false;
+
+        if (approve && (string.IsNullOrWhiteSpace(account.FacultyIdImagePath) || !File.Exists(account.FacultyIdImagePath)))
+            return false;
+
+        account.AccountStatus = approve ? "Active" : "StaffIdReviewRejected";
+        return await _db.UpdateAsync(account) > 0;
+    }
+
+    public async Task<bool> UpdatePendingStaffIdImageAsync(int accountId, string imagePath)
+    {
+        await EnsureInitializedAsync();
+        var account = await GetAccountByDatabaseIdAsync(accountId);
+        if (account == null || (account.Role != "Faculty" && account.Role != "Non-Teaching") ||
+            !account.EmailVerified || account.AccountStatus != "PendingStaffIdReview" || string.IsNullOrWhiteSpace(imagePath))
+            return false;
+        account.FacultyIdImagePath = imagePath;
+        return await _db.UpdateAsync(account) > 0;
+    }
+
     public async Task<List<UserAccount>>
         GetAllPatientsAsync()
     {
@@ -480,11 +590,18 @@ public class AuthService
     {
         await EnsureInitializedAsync();
 
-        // Preserve structured allergies when older profile editors update the account.
-        if (CurrentUser?.Id == updatedAccount.Id &&
-            string.IsNullOrWhiteSpace(updatedAccount.AllergyDetailsJson))
+        // Profile editors update only user-facing fields. Preserve verification
+        // and reviewer data so a profile save cannot reset account status.
+        var existingAccount = await _db.Table<UserAccount>()
+            .Where(account => account.Id == updatedAccount.Id)
+            .FirstOrDefaultAsync();
+        if (existingAccount != null)
         {
-            updatedAccount.AllergyDetailsJson = CurrentUser.AllergyDetailsJson;
+            updatedAccount.EmailVerified = existingAccount.EmailVerified;
+            updatedAccount.AccountStatus = existingAccount.AccountStatus;
+            updatedAccount.FacultyIdImagePath = existingAccount.FacultyIdImagePath;
+            if (string.IsNullOrWhiteSpace(updatedAccount.AllergyDetailsJson))
+                updatedAccount.AllergyDetailsJson = existingAccount.AllergyDetailsJson;
         }
         var result =
             await _db.UpdateAsync(
@@ -561,7 +678,7 @@ public class AuthService
                     a.Id == userId)
                 .FirstOrDefaultAsync();
 
-        if (account == null)
+        if (account == null || !account.EmailVerified || account.AccountStatus != "Active")
             return false;
 
         CurrentUser =

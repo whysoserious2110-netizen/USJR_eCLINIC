@@ -21,6 +21,8 @@ public sealed class PasswordResetOperationResult
     public string Message { get; init; } = string.Empty;
 }
 
+public sealed record PasswordResetStartResult(bool Success, int RequestId = 0);
+
 public class PasswordResetService
 {
     public static PasswordResetService Instance { get; } =
@@ -55,6 +57,16 @@ public class PasswordResetService
             await _db.CreateTableAsync<
                 PasswordResetRequest>();
 
+            // Add the email binding to existing local SQLite databases.
+            var columns = await _db.GetTableInfoAsync(nameof(PasswordResetRequest));
+            if (!columns.Any(column => column.Name.Equals(
+                    nameof(PasswordResetRequest.RequestedEmail),
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                await _db.ExecuteAsync(
+                    "ALTER TABLE PasswordResetRequest ADD COLUMN RequestedEmail TEXT NOT NULL DEFAULT ''");
+            }
+
             _initialized = true;
         }
         finally
@@ -63,8 +75,8 @@ public class PasswordResetService
         }
     }
 
-    public async Task<bool>
-        StartResetAsync(string studentId)
+    public async Task<PasswordResetStartResult>
+        StartResetAsync(string email)
     {
         await EnsureInitializedAsync();
 
@@ -73,20 +85,15 @@ public class PasswordResetService
 
         var account =
             await AuthService.Instance
-                .GetAccountByIdNumberAsync(studentId);
+                .GetAccountByEmailAsync(email.Trim().ToLowerInvariant());
 
         if (account == null)
-            return false;
+            return new(false);
 
         var existingRequests =
             await _db.Table<PasswordResetRequest>()
                 .Where(r => r.UserId == account.Id)
                 .ToListAsync();
-
-        foreach (var existing in existingRequests)
-        {
-            await _db.DeleteAsync(existing);
-        }
 
         var code =
             RandomNumberGenerator
@@ -96,9 +103,11 @@ public class PasswordResetService
         var salt =
             RandomNumberGenerator.GetBytes(16);
 
+        var now = DateTime.UtcNow;
         var request = new PasswordResetRequest
         {
             UserId = account.Id,
+            RequestedEmail = NormalizeEmail(account.Email),
 
             CodeSalt =
                 Convert.ToBase64String(salt),
@@ -106,64 +115,71 @@ public class PasswordResetService
             CodeHash =
                 HashVerificationCode(code, salt),
 
-            CreatedAtUtc =
-                DateTime.UtcNow,
+            CreatedAtUtc = now,
 
-            ExpiresAtUtc =
-                DateTime.UtcNow.AddMinutes(10),
+            ExpiresAtUtc = now.AddMinutes(10),
 
             FailedAttempts = 0,
             IsVerified = false,
             IsUsed = false
         };
 
+        // Save the hashed request first. If this write fails, do not send a
+        // code that the app cannot verify. Keep the previous request until
+        // delivery succeeds so a failed resend does not invalidate it.
         await _db.InsertAsync(request);
 
         try
         {
             await PasswordResetEmailApiService.Instance
                 .SendCodeAsync(account.Email, code);
-            return true;
         }
         catch
         {
+            // Delivery failed; remove only the new request and leave any
+            // previously delivered code available until it expires.
             await _db.DeleteAsync(request);
-            return false;
+            return new(false);
         }
+
+        // The replacement was delivered, so invalidate older reset requests.
+        foreach (var existing in existingRequests)
+            await _db.DeleteAsync(existing);
+
+        return new(true, request.Id);
     }
 
     public async Task<PasswordResetVerificationResult>
         VerifyCodeAsync(
-            string studentId,
+            int requestId,
             string enteredCode)
     {
         await EnsureInitializedAsync();
 
-        var account =
-            await AuthService.Instance
-                .GetAccountByIdNumberAsync(studentId);
-
-        if (account == null)
-        {
-            return FailedVerification(
-                "The verification code is invalid or expired.");
-        }
-
-        var requests =
-            await _db.Table<PasswordResetRequest>()
-                .Where(r =>
-                    r.UserId == account.Id &&
-                    !r.IsUsed)
-                .ToListAsync();
-
-        var request = requests
-            .OrderByDescending(r => r.CreatedAtUtc)
-            .FirstOrDefault();
+        var request = requestId > 0
+            ? await _db.Table<PasswordResetRequest>()
+                .Where(r => r.Id == requestId && !r.IsUsed)
+                .FirstOrDefaultAsync()
+            : null;
 
         if (request == null)
         {
             return FailedVerification(
-                "The verification code is invalid or expired.");
+                "No active reset request was found. Go back, enter the email linked to this account, and request a fresh code.");
+        }
+
+        var account = await AuthService.Instance.GetAccountByDatabaseIdAsync(request.UserId);
+        if (account == null || !string.Equals(
+                NormalizeEmail(account.Email),
+                NormalizeEmail(request.RequestedEmail),
+                StringComparison.Ordinal))
+        {
+            request.IsUsed = true;
+            request.CodeHash = string.Empty;
+            request.CodeSalt = string.Empty;
+            await _db.UpdateAsync(request);
+            return FailedVerification(
+                "No active reset request was found. Go back, enter the email linked to this account, and request a fresh code.");
         }
 
         if (request.ExpiresAtUtc <= DateTime.UtcNow)
@@ -367,6 +383,9 @@ public class PasswordResetService
 
         return Convert.ToBase64String(hash);
     }
+
+    private static string NormalizeEmail(string? email) =>
+        (email ?? string.Empty).Trim().ToUpperInvariant();
 
     private static string HashResetToken(
         string token)

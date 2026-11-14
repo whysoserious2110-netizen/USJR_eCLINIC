@@ -71,7 +71,7 @@ public partial class ApeLabEncodingViewModel : ObservableObject
 
             var patients = await Services.AuthService.Instance.GetAllPatientsAsync();
             var eligible = patients.Where(patient =>
-                    patient.Role is "Faculty" or "Admin Personnel" or "Non-Teaching")
+                    patient.Role is "Faculty" or "Non-Teaching")
                 .OrderBy(patient => patient.FullName, StringComparer.OrdinalIgnoreCase);
 
             Patients.Clear();
@@ -90,7 +90,7 @@ public partial class ApeLabEncodingViewModel : ObservableObject
             HasNoPatients = !HasPatients;
             PatientLoadMessage = HasPatients
                 ? string.Empty
-                : "No eligible Faculty, Admin Personnel, or Non-Teaching patient accounts were found.";
+                : "No eligible Faculty or Non-Teaching patient accounts were found.";
             UpdatePatientSearchResults();
             _patientsLoaded = true;
         }
@@ -166,9 +166,9 @@ public partial class ApeLabEncodingViewModel : ObservableObject
             return;
         }
 
-        if (SelectedPatient.Role is not ("Faculty" or "Admin Personnel" or "Non-Teaching"))
+        if (SelectedPatient.Role is not ("Faculty" or "Non-Teaching"))
         {
-            await Shell.Current.DisplayAlert("Patient not eligible", "APE lab encoding is currently available for Faculty, Admin Personnel, and Non-Teaching accounts.", "OK");
+            await Shell.Current.DisplayAlert("Patient not eligible", "APE lab encoding is currently available for Faculty and Non-Teaching accounts.", "OK");
             return;
         }
 

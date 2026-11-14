@@ -40,6 +40,12 @@ public sealed class PasswordResetEmailApiService
     }
 
     public async Task SendCodeAsync(string email, string code)
+        => await SendCodeToEndpointAsync(email, code, "/api/password-reset/send");
+
+    public async Task SendRegistrationVerificationCodeAsync(string email, string code)
+        => await SendCodeToEndpointAsync(email, code, "/api/email-verification/send");
+
+    private static async Task SendCodeToEndpointAsync(string email, string code, string endpoint)
     {
 #if ANDROID
         var baseAddress = new Uri("http://10.0.2.2:5254");
@@ -48,7 +54,7 @@ public sealed class PasswordResetEmailApiService
 #endif
 
         using var response = await Client.PostAsJsonAsync(
-            new Uri(baseAddress, "/api/password-reset/send"),
+            new Uri(baseAddress, endpoint),
             new SendPasswordResetEmailRequest(email, code));
 
         if (!response.IsSuccessStatusCode)

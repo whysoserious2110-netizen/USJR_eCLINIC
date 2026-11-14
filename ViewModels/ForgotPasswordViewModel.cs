@@ -6,12 +6,13 @@ namespace USJR_eCLINIC.ViewModels;
 public partial class ForgotPasswordViewModel : ObservableObject
 {
     private string _resetToken = string.Empty;
+    private int _activeResetRequestId;
 
     [ObservableProperty]
     private int currentStep = 1;
 
     [ObservableProperty]
-    private string studentId = string.Empty;
+    private string email = string.Empty;
 
     [ObservableProperty]
     private string verificationCode = string.Empty;
@@ -34,13 +35,13 @@ public partial class ForgotPasswordViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    public bool IsStudentIdStep => CurrentStep == 1;
+    public bool IsEmailStep => CurrentStep == 1;
     public bool IsVerificationStep => CurrentStep == 2;
     public bool IsNewPasswordStep => CurrentStep == 3;
 
     partial void OnCurrentStepChanged(int value)
     {
-        OnPropertyChanged(nameof(IsStudentIdStep));
+        OnPropertyChanged(nameof(IsEmailStep));
         OnPropertyChanged(nameof(IsVerificationStep));
         OnPropertyChanged(nameof(IsNewPasswordStep));
     }
@@ -51,9 +52,9 @@ public partial class ForgotPasswordViewModel : ObservableObject
         if (IsBusy)
             return;
 
-        if (string.IsNullOrWhiteSpace(StudentId))
+        if (string.IsNullOrWhiteSpace(Email))
         {
-            ShowStatus("Enter your Student or Employee ID.");
+            ShowStatus("Enter the email address registered to your account.");
             return;
         }
 
@@ -62,19 +63,25 @@ public partial class ForgotPasswordViewModel : ObservableObject
             IsBusy = true;
             ClearStatus();
 
-            StudentId =
-                StudentId.Trim()
-                    .ToUpperInvariant();
+            Email = Email.Trim().ToLowerInvariant();
 
-            await Services.PasswordResetService.Instance
-                .StartResetAsync(StudentId);
+            var sendResult = await Services.PasswordResetService.Instance
+                .StartResetAsync(Email);
 
             RecoveryText =
-                "If this ID is registered, a verification code has been sent " +
-                "to its email address. The code expires in 10 minutes.";
+                "If this email address is registered, a verification code has been sent. " +
+                "The code expires in 10 minutes.";
 
-            VerificationCode =
-                string.Empty;
+            if (sendResult.Success)
+            {
+                _activeResetRequestId = sendResult.RequestId;
+                VerificationCode = string.Empty;
+            }
+            else
+            {
+                ShowStatus(
+                    "We couldn't confirm delivery. The email service may be temporarily unavailable or may have reached its limit of five requests per 10 minutes. If you received a recent code, try it; otherwise wait up to 10 minutes before retrying.");
+            }
 
             CurrentStep = 2;
         }
@@ -117,7 +124,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
             var result =
                 await Services.PasswordResetService.Instance
                     .VerifyCodeAsync(
-                        StudentId,
+                        _activeResetRequestId,
                         code);
 
             if (!result.Success ||
@@ -161,11 +168,6 @@ public partial class ForgotPasswordViewModel : ObservableObject
     {
         if (IsBusy)
             return;
-
-        VerificationCode =
-            string.Empty;
-
-        ClearStatus();
 
         await SendCode();
     }
@@ -239,8 +241,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
                 "Sign in using your new password.",
                 "Continue");
 
-            StudentId =
-                string.Empty;
+            Email = string.Empty;
 
             VerificationCode =
                 string.Empty;
@@ -256,6 +257,8 @@ public partial class ForgotPasswordViewModel : ObservableObject
 
             _resetToken =
                 string.Empty;
+
+            _activeResetRequestId = 0;
 
             CurrentStep = 1;
 
@@ -275,7 +278,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ChangeStudentId()
+    private void ChangeEmail()
     {
         CurrentStep = 1;
 
@@ -287,6 +290,8 @@ public partial class ForgotPasswordViewModel : ObservableObject
 
         _resetToken =
             string.Empty;
+
+        _activeResetRequestId = 0;
 
         ClearStatus();
     }
@@ -314,7 +319,7 @@ public partial class ForgotPasswordViewModel : ObservableObject
 
         if (CurrentStep == 2)
         {
-            ChangeStudentId();
+            ChangeEmail();
             return;
         }
 

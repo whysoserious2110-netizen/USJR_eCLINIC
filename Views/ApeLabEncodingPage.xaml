@@ -23,7 +23,7 @@
 
             <Border BackgroundColor="#F1ECFA" Stroke="#E2DAF4" StrokeThickness="1"
                     Padding="13" StrokeShape="RoundRectangle 14">
-                <Label Text="For Faculty, Admin Personnel, and Non-Teaching patients. Select the correct patient before entering results."
+                <Label Text="For Faculty and Non-Teaching patients. Select the correct patient before entering results."
                        FontSize="12" TextColor="#5E5279" />
             </Border>
 

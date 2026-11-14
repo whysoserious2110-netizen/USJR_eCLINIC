@@ -8,7 +8,7 @@ public partial class RegisterPatientViewModel : ObservableObject
 {
     public ObservableCollection<string> Roles { get; } = new()
     {
-        "Student", "Faculty", "Admin Personnel", "Non-Teaching"
+        "Student", "Faculty", "Non-Teaching"
     };
 
     [ObservableProperty] private string selectedRole = "Student";

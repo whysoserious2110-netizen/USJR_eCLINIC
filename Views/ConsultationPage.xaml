@@ -26,7 +26,7 @@
 </Grid>
 
             <Label Text="Review the recorded vital signs, document findings, then complete the visit. You may add a prescription for this same patient before saving." FontSize="12" TextColor="#647067"/>
-            <!-- Patient info -->
+
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
                 <VerticalStackLayout Spacing="2">
                     <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>

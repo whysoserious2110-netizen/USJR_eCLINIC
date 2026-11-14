@@ -182,14 +182,9 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        bool confirm = await Shell.Current.DisplayAlert("Log Out", "Are you sure you want to log out?", "Log Out", "Cancel");
-        if (!confirm) return;
-
-        await Services.SecureSessionService.Instance
-    .ClearSessionAsync();
-
+        // Keep the saved session when Remember Me was selected so the account
+        // can be recognized on the login page for one-tap sign-in.
         Services.AuthService.Instance.Logout();
-
         await Shell.Current.Navigation.PopToRootAsync();
     }
 

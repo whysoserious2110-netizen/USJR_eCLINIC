@@ -70,12 +70,12 @@ public partial class ApeLabResultsViewModel : ObservableObject
                 return;
             }
 
-            var isEligible = user.Role is "Faculty" or "Admin Personnel" or "Non-Teaching";
+            var isEligible = user.Role is "Faculty" or "Non-Teaching";
             if (!isEligible)
             {
                 await Shell.Current.DisplayAlert(
                     "Not available",
-                    "APE lab results are available only to Faculty, Admin Personnel, and Non-Teaching Personnel.",
+                    "APE lab results are available only to Faculty and Non-Teaching Personnel.",
                     "OK");
                 await Shell.Current.Navigation.PopAsync();
                 return;

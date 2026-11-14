@@ -9,6 +9,9 @@ public class PasswordResetRequest
 
     public int UserId { get; set; }
 
+    // The OTP is valid only for the address that received the reset email.
+    public string RequestedEmail { get; set; } = string.Empty;
+
     public string CodeHash { get; set; } = string.Empty;
 
     public string CodeSalt { get; set; } = string.Empty;

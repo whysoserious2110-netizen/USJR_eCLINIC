@@ -20,8 +20,7 @@
 
     <Grid>
         <Grid RowDefinitions="150,*,115">
-            <!-- Explicitly span the full login composition so the campus photo
-                 stays behind the header, card area, and lower curve. -->
+
             <Image Grid.Row="0"
                    Grid.RowSpan="3"
                    Source="usjrschoolbuilding.jpg"
@@ -29,7 +28,7 @@
                    Opacity="0.68"
                    InputTransparent="True" />
 
-            <!-- Keep the header flush to the top; center the compact card below it. -->
+
             <Grid Grid.Row="0" HeightRequest="150">
                 <Image Source="login_header.svg" Aspect="Fill" />
 
@@ -143,6 +142,7 @@
                                    TextColor="#24342B"
                                    FontSize="14"
                                    VerticalOptions="Center"
+                                   IsReadOnly="{Binding HasRememberedAccount}"
                                    ReturnType="Next" />
                         </Grid>
                     </Border>
@@ -151,9 +151,11 @@
                            FontSize="12"
                            FontAttributes="Bold"
                            TextColor="#24352B"
+                           IsVisible="{Binding IsPasswordEntryVisible}"
                            Margin="0,0,0,4" />
 
                     <Border BackgroundColor="White"
+                            IsVisible="{Binding IsPasswordEntryVisible}"
                             Stroke="#9BBBA6"
                             StrokeThickness="1.2"
                             StrokeShape="RoundRectangle 14"
@@ -198,11 +200,12 @@
                                                Spacing="3"
                                                VerticalOptions="Center">
                             <CheckBox IsChecked="{Binding RememberMe}"
+                                      IsEnabled="{Binding IsRememberMeEnabled}"
                                       Color="#087A3D"
                                       HeightRequest="23"
                                       WidthRequest="23"
                                       VerticalOptions="Center" />
-                            <Label Text="Remember me"
+                            <Label Text="{Binding RememberMeLabel}"
                                    FontSize="12"
                                    TextColor="#59665E"
                                    VerticalOptions="Center" />
@@ -210,6 +213,7 @@
 
                         <Label Grid.Column="1"
                                Text="Forgot Password?"
+                               IsVisible="{Binding IsPasswordEntryVisible}"
                                FontSize="12"
                                FontAttributes="Bold"
                                TextColor="#087A3D"
@@ -236,6 +240,18 @@
                                        IsRunning="{Binding IsLoggingIn}"
                                        Color="#087A3D"
                                        Margin="0,4,0,0" />
+
+                    <Label Text="Use another account"
+                           IsVisible="{Binding HasRememberedAccount}"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="#087A3D"
+                           HorizontalOptions="Center"
+                           Padding="8,4">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding UseAnotherAccountCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
 
                     <Grid ColumnDefinitions="*,Auto,*"
                           ColumnSpacing="12"

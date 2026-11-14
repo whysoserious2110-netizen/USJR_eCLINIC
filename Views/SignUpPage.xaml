@@ -5,272 +5,129 @@
              xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
              x:Class="USJR_eCLINIC.Views.SignUpPage"
              x:DataType="vm:SignUpViewModel"
-             BackgroundColor="#F7F8FA">
-
+             Title="Create Account"
+             BackgroundColor="#F7F8F6">
     <ContentPage.Resources>
         <conv:RoleSelectedConverter x:Key="RoleBgConverter"/>
         <conv:RoleSelectedTextColorConverter x:Key="RoleTextConverter"/>
-
-        <conv:ChipBgConverter x:Key="AllergyChipBg" />
-        <conv:ChipBorderConverter x:Key="AllergyChipBorder" />
-        <conv:ChipTextConverter x:Key="AllergyChipText" />
+        <conv:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
     </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Padding="25,10,25,30" Spacing="0">
-
-            <!-- Green and yellow page header -->
-            <Grid RowDefinitions="Auto,5" Margin="-25,0,-25,20">
-                <Grid Grid.Row="0" ColumnDefinitions="48,*" BackgroundColor="#176B38" Padding="25,14">
+        <VerticalStackLayout Padding="22,12,22,30" Spacing="0">
+            <Grid RowDefinitions="Auto,5" Margin="-22,-12,-22,18">
+                <Grid Grid.Row="0" ColumnDefinitions="48,*" BackgroundColor="#176B38" Padding="22,13">
                     <Button Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="10" WidthRequest="40" HeightRequest="40"
-                            Padding="0" Command="{Binding GoBackCommand}" VerticalOptions="Center" />
-                    <Label Grid.Column="1" Text="Create Account (1/2)" FontSize="18" FontAttributes="Bold"
-                           TextColor="#F4C400" Margin="10,0,0,0" VerticalOptions="Center" />
+                            Padding="0" Command="{Binding GoBackCommand}" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="Create Account" FontSize="18" FontAttributes="Bold"
+                           TextColor="#F4C400" Margin="10,0,0,0" VerticalOptions="Center"/>
                 </Grid>
-                <BoxView Grid.Row="1" Color="#F4C400" />
+                <BoxView Grid.Row="1" Color="#F4C400"/>
             </Grid>
 
-            <!-- Role pills -->
-            <Label Text="Select your University Role"
-                   FontSize="13"
-                   FontAttributes="Bold"
-                   TextColor="Black"
-                   Margin="0,0,0,10"/>
-
-            <FlexLayout Wrap="Wrap" JustifyContent="Start" Margin="0,0,0,20">
-
+            <Label Text="Choose your university role" FontSize="14" FontAttributes="Bold"
+                   TextColor="#17212B" Margin="0,0,0,8"/>
+            <FlexLayout Wrap="Wrap" Margin="0,0,0,15">
                 <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Student'}"
-                       BorderColor="#176519" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Student"/>
-                    </Frame.GestureRecognizers>
-                    <Label Text="Student" FontAttributes="Bold"
-                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Student'}"/>
+                       BorderColor="#DCE5DD" CornerRadius="18" Padding="15,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers><TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Student"/></Frame.GestureRecognizers>
+                    <Label Text="Student" TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Student'}"/>
                 </Frame>
-
                 <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Faculty'}"
-                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Faculty"/>
-                    </Frame.GestureRecognizers>
-                    <Label Text="Faculty"
-                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Faculty'}"/>
+                       BorderColor="#DCE5DD" CornerRadius="18" Padding="15,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers><TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Faculty"/></Frame.GestureRecognizers>
+                    <Label Text="Faculty" TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Faculty'}"/>
                 </Frame>
-
-                <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Admin Personnel'}"
-                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Admin Personnel"/>
-                    </Frame.GestureRecognizers>
-                    <Label Text="Admin Personnel"
-                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Admin Personnel'}"/>
-                </Frame>
-
                 <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Non-Teaching'}"
-                       BorderColor="#E2E6EA" CornerRadius="20" Padding="16,8" Margin="0,0,8,8" HasShadow="False">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Non-Teaching"/>
-                    </Frame.GestureRecognizers>
-                    <Label Text="Non-Teaching"
-                           TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Non-Teaching'}"/>
+                       BorderColor="#DCE5DD" CornerRadius="18" Padding="15,8" Margin="0,0,8,8" HasShadow="False">
+                    <Frame.GestureRecognizers><TapGestureRecognizer Command="{Binding SelectRoleCommand}" CommandParameter="Non-Teaching"/></Frame.GestureRecognizers>
+                    <Label Text="Non-Teaching" TextColor="{Binding SelectedRole, Converter={StaticResource RoleTextConverter}, ConverterParameter='Non-Teaching'}"/>
                 </Frame>
-
             </FlexLayout>
 
-            <!-- Dynamic ID field -->
-            <Label Text="{Binding IdLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry ClassId="NoAndroidUnderline" Placeholder="e.g., 2022-10492" Text="{Binding IdNumber}" VerticalOptions="Center"/>
-            </Frame>
+            <Label Text="{Binding IdLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
+                <Entry ClassId="NoAndroidUnderline" Text="{Binding IdNumber}" Placeholder="{Binding IdPlaceholder}" Keyboard="{Binding IdKeyboard}" MaxLength="{Binding IdMaxLength}" VerticalOptions="Center"/>
+            </Border>
+            <Label IsVisible="{Binding RequiresEmployeeIdReview}" Text="{Binding IdHelperText}" FontSize="12" TextColor="#667085" Margin="0,-8,0,12"/>
 
-            <!-- Program / Department -->
-            <Label Text="Program / Department" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry ClassId="NoAndroidUnderline" Placeholder="e.g., BS Information Technology" Text="{Binding ProgramOrDepartment}" VerticalOptions="Center"/>
-            </Frame>
-
-            <!-- Full Name -->
-            <Label Text="Full Name (Last, First, M.I.)" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry ClassId="NoAndroidUnderline" Placeholder="Dela Cruz, Juan A." Text="{Binding FullName}" VerticalOptions="Center"/>
-            </Frame>
-
-            <!-- Email -->
-            <Label Text="Email Address" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
-                <Entry ClassId="NoAndroidUnderline" Placeholder="juan.delacruz@usjr.edu.ph" Text="{Binding Email}" Keyboard="Email" VerticalOptions="Center"/>
-            </Frame>
-
-
-            <!-- Allergies: optional -->
-            <VerticalStackLayout Spacing="8" Margin="0,0,0,18">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label
-            Text="Allergies"
-            FontSize="13"
-            FontAttributes="Bold"
-            TextColor="#173323" />
-
-                    <Label
-            Grid.Column="1"
-            Text="Optional"
-            FontSize="12"
-            TextColor="#536273"
-            VerticalOptions="Center" />
-                </Grid>
-
-                <FlexLayout Wrap="Wrap" JustifyContent="Start">
-
-                    <Frame BackgroundColor="{Binding HasNoKnownAllergies, Converter={StaticResource AllergyChipBg}}"
-               BorderColor="{Binding HasNoKnownAllergies, Converter={StaticResource AllergyChipBorder}}"
-               CornerRadius="9" Padding="11,7" Margin="0,0,7,7" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleAllergyCommand}"
-                                      CommandParameter="No known allergies" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="No known allergies"
-                   FontSize="12"
-                   TextColor="{Binding HasNoKnownAllergies, Converter={StaticResource AllergyChipText}}" />
-                    </Frame>
-
-                    <Frame BackgroundColor="{Binding HasPenicillinAllergy, Converter={StaticResource AllergyChipBg}}"
-               BorderColor="{Binding HasPenicillinAllergy, Converter={StaticResource AllergyChipBorder}}"
-               CornerRadius="9" Padding="11,7" Margin="0,0,7,7" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleAllergyCommand}"
-                                      CommandParameter="Penicillin" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="Penicillin"
-                   FontSize="12"
-                   TextColor="{Binding HasPenicillinAllergy, Converter={StaticResource AllergyChipText}}" />
-                    </Frame>
-
-                    <Frame BackgroundColor="{Binding HasShellfishAllergy, Converter={StaticResource AllergyChipBg}}"
-               BorderColor="{Binding HasShellfishAllergy, Converter={StaticResource AllergyChipBorder}}"
-               CornerRadius="9" Padding="11,7" Margin="0,0,7,7" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleAllergyCommand}"
-                                      CommandParameter="Shellfish" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="Shellfish"
-                   FontSize="12"
-                   TextColor="{Binding HasShellfishAllergy, Converter={StaticResource AllergyChipText}}" />
-                    </Frame>
-
-                    <Frame BackgroundColor="{Binding HasNutAllergy, Converter={StaticResource AllergyChipBg}}"
-               BorderColor="{Binding HasNutAllergy, Converter={StaticResource AllergyChipBorder}}"
-               CornerRadius="9" Padding="11,7" Margin="0,0,7,7" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleAllergyCommand}"
-                                      CommandParameter="Nuts" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="Nuts"
-                   FontSize="12"
-                   TextColor="{Binding HasNutAllergy, Converter={StaticResource AllergyChipText}}" />
-                    </Frame>
-
-                    <Frame BackgroundColor="{Binding HasOtherAllergy, Converter={StaticResource AllergyChipBg}}"
-               BorderColor="{Binding HasOtherAllergy, Converter={StaticResource AllergyChipBorder}}"
-               CornerRadius="9" Padding="11,7" Margin="0,0,7,7" HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleAllergyCommand}"
-                                      CommandParameter="Other" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="Other"
-                   FontSize="12"
-                   TextColor="{Binding HasOtherAllergy, Converter={StaticResource AllergyChipText}}" />
-                    </Frame>
-
-                </FlexLayout>
-
-                <Label
-        Text="Allergy details"
-        FontSize="13"
-        FontAttributes="Bold"
-        TextColor="#173323"
-        Margin="0,3,0,0" />
-
-                <Frame BackgroundColor="White"
-           BorderColor="#DCE5DD"
-           CornerRadius="12"
-           Padding="12,0"
-           HeightRequest="48"
-           HasShadow="False">
-                    <Entry ClassId="NoAndroidUnderline"
-            Text="{Binding AllergyDetails}"
-            Placeholder="e.g., mild, severe, reaction notes"
-            VerticalOptions="Center" />
-                </Frame>
+            <VerticalStackLayout IsVisible="{Binding RequiresEmployeeIdReview}" Spacing="6" Margin="0,0,0,14">
+                <Label Text="Employee ID photo (required for review)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Button Text="{Binding EmployeeIdPhotoButtonText}" Command="{Binding ChooseEmployeeIdImageCommand}"
+                        BackgroundColor="White" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
+                        CornerRadius="11" HeightRequest="46"/>
+                <Label Text="No photo selected" IsVisible="{Binding IsEmployeeIdPhotoMissing}" FontSize="12" TextColor="#667085"/>
+                <HorizontalStackLayout IsVisible="{Binding HasEmployeeIdPhoto}" Spacing="10">
+                    <Image Source="{Binding FacultyIdImagePath}" WidthRequest="44" HeightRequest="44" Aspect="AspectFill"/>
+                    <Label Text="{Binding EmployeeIdPhotoName}" FontSize="12" TextColor="#667085" VerticalOptions="Center" LineBreakMode="MiddleTruncation"/>
+                </HorizontalStackLayout>
+                <Label Text="An authorized clinic administrator will compare this photo with an official university ID before activating the account."
+                       FontSize="12" TextColor="#667085"/>
             </VerticalStackLayout>
 
+            <Label Text="{Binding ProgramDepartmentLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="10,0" HeightRequest="52" Margin="0,0,0,14">
+                <Picker Title="{Binding ProgramDepartmentPickerTitle}"
+                        ItemsSource="{Binding ProgramDepartmentOptions}"
+                        SelectedItem="{Binding SelectedProgramDepartment}"
+                        TextColor="#17212B"/>
+            </Border>
 
+            <VerticalStackLayout IsVisible="{Binding IsStudent}" Spacing="6" Margin="0,-8,0,14">
+                <Label Text="Year Level" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="10,0" HeightRequest="52">
+                    <Picker Title="Select your current year level"
+                            ItemsSource="{Binding YearLevelOptions}"
+                            SelectedItem="{Binding SelectedYearLevel}"
+                            TextColor="#17212B"/>
+                </Border>
+            </VerticalStackLayout>
 
+            <Border IsVisible="{Binding IsOtherProgramDepartment}" BackgroundColor="White" Stroke="#DCE5DD"
+                    StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,-8,0,14">
+                <Entry ClassId="NoAndroidUnderline" Text="{Binding OtherProgramDepartment}"
+                       Placeholder="Enter your course, school, or department"/>
+            </Border>
 
-            <!-- Password -->
-            <Label Text="Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,15">
+            <Label Text="Full Name" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
+                <Entry ClassId="NoAndroidUnderline" Text="{Binding FullName}" Placeholder="Last, First, M.I."/>
+            </Border>
+
+            <Label Text="USJ-R Email Address" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
+                <Entry ClassId="NoAndroidUnderline" Text="{Binding Email}" Placeholder="name@usjr.edu.ph" Keyboard="Email"/>
+            </Border>
+
+            <Label Text="Allergies (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
+                <Entry ClassId="NoAndroidUnderline" Text="{Binding Allergies}" Placeholder="Enter allergies (if any), or None"/>
+            </Border>
+
+            <Label Text="Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Placeholder="Enter your password"
-                           Text="{Binding Password}" IsPassword="{Binding IsPasswordHidden}"
-                           VerticalOptions="Center"/>
-                    <CheckBox Grid.Column="1"
-                              IsChecked="{Binding IsPasswordHidden, Converter={StaticResource InvertedBoolConverter}}"
-                              Color="#0F9B8E"
-                              VerticalOptions="Center">
-                        <CheckBox.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding TogglePasswordVisibilityCommand}"/>
-                        </CheckBox.GestureRecognizers>
-                    </CheckBox>
+                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Text="{Binding Password}" Placeholder="Create a password" IsPassword="{Binding IsPasswordHidden}"/>
+                    <Button Grid.Column="1" Text="{Binding PasswordVisibilityText}" Command="{Binding TogglePasswordVisibilityCommand}" BackgroundColor="Transparent" TextColor="#087A3D" Padding="6,0"/>
                 </Grid>
-            </Frame>
-
-            <!-- Confirm Password -->
-            <Label Text="Confirm Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,8"/>
-            <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12"
-                   Padding="14,0" HeightRequest="50" HasShadow="False" Margin="0,0,0,4">
+            </Border>
+            <Label Text="Confirm Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,5">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Placeholder="Re-enter your password"
-                           Text="{Binding ConfirmPassword}" IsPassword="{Binding IsConfirmPasswordHidden}"
-                           VerticalOptions="Center"/>
-                    <CheckBox Grid.Column="1"
-                              IsChecked="{Binding IsConfirmPasswordHidden, Converter={StaticResource InvertedBoolConverter}}"
-                              Color="#0F9B8E"
-                              VerticalOptions="Center">
-                        <CheckBox.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleConfirmPasswordVisibilityCommand}"/>
-                        </CheckBox.GestureRecognizers>
-                    </CheckBox>
+                    <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Text="{Binding ConfirmPassword}" Placeholder="Re-enter your password" IsPassword="{Binding IsConfirmPasswordHidden}"/>
+                    <Button Grid.Column="1" Text="{Binding ConfirmPasswordVisibilityText}" Command="{Binding ToggleConfirmPasswordVisibilityCommand}" BackgroundColor="Transparent" TextColor="#087A3D" Padding="6,0"/>
                 </Grid>
-            </Frame>
+            </Border>
+            <Label Text="{Binding PasswordMatchMessage}" TextColor="{Binding PasswordMatchColor}" FontSize="12" Margin="2,2,0,16"/>
 
-            <!-- Live password match feedback -->
-            <Label Text="{Binding PasswordMatchMessage}"
-                   TextColor="{Binding PasswordMatchColor}"
-                   FontSize="12"
-                   Margin="4,4,0,20"/>
-
-            <!-- Privacy policy -->
-            <HorizontalStackLayout Spacing="8" Margin="0,0,0,24">
-                <CheckBox IsChecked="{Binding AgreedToPrivacyPolicy}" Color="#0F9B8E"/>
-                <Label Text="I agree to the USJ-R Health Service Data Privacy Policy"
-                       FontSize="13" TextColor="#12212E" VerticalOptions="Center"/>
+            <HorizontalStackLayout Spacing="8" Margin="0,0,0,18">
+                <CheckBox IsChecked="{Binding AgreedToPrivacyPolicy}" Color="#087A3D"/>
+                <Label Text="I agree to the USJ-R Health Service Data Privacy Policy" FontSize="13" TextColor="#12212E" VerticalOptions="Center"/>
             </HorizontalStackLayout>
-
-            <!-- Create Account -->
-            <Button Text="Create Account"
-                    Command="{Binding RegisterCommand}"
-                    BackgroundColor="#176519"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="26"
-                    HeightRequest="54"/>
-
+            <Button Text="Continue to Email Verification" Command="{Binding RegisterCommand}" IsEnabled="{Binding IsRegistering, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold" CornerRadius="18" HeightRequest="54"/>
+            <ActivityIndicator IsVisible="{Binding IsRegistering}" IsRunning="{Binding IsRegistering}" Color="#087A3D" Margin="0,10,0,0"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

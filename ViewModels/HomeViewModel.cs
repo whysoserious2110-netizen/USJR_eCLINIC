@@ -138,7 +138,6 @@ public partial class HomeViewModel : ObservableObject
 
         CanViewApeResults =
             user.Role == "Faculty" ||
-            user.Role == "Admin Personnel" ||
             user.Role == "Non-Teaching";
 
         await LoadAnnouncementAsync(user.Role);
@@ -280,7 +279,6 @@ public partial class HomeViewModel : ObservableObject
 
         var isEligible =
             user?.Role == "Faculty" ||
-            user?.Role == "Admin Personnel" ||
             user?.Role == "Non-Teaching";
 
         if (!isEligible)
@@ -288,8 +286,7 @@ public partial class HomeViewModel : ObservableObject
             await Shell.Current.DisplayAlert(
                 "Not available",
                 "APE lab results are available only to " +
-                "Faculty, Admin Personnel, and " +
-                "Non-Teaching Personnel.",
+                "Faculty and Non-Teaching Personnel.",
                 "OK");
 
             return;

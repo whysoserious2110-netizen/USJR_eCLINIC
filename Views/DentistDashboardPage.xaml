@@ -6,16 +6,16 @@
              x:Class="USJR_eCLINIC.Views.DentistDashboardPage"
              x:Name="Root"
              x:DataType="vm:DentistDashboardViewModel"
-             BackgroundColor="#F7F8FA">
+             BackgroundColor="#F7F8F6">
 
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="16,0,16,16" Spacing="12">
+            <VerticalStackLayout Padding="18,0,18,16" Spacing="16">
 
                 <!-- Yellow Dentist identity header from the reference -->
                 <Border BackgroundColor="#F4C400" StrokeThickness="0"
                         StrokeShape="RoundRectangle 0" Padding="16,42,16,12"
-                        Margin="-16,0,-16,0">
+                        Margin="-18,0,-18,0">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                         <Border WidthRequest="42" HeightRequest="42" BackgroundColor="White"
                                 Stroke="#2C9057" StrokeThickness="2"
@@ -29,12 +29,12 @@
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                             <Label Text="Adelante, Josesian Dentist!" FontSize="13" TextColor="#087A3D"/>
-                            <Label Text="{Binding DentistName}" FontSize="20" FontAttributes="Bold"
+                            <Label Text="{Binding DentistName}" FontSize="18" FontAttributes="Bold"
                                    TextColor="#087A3D" LineBreakMode="TailTruncation"/>
-                            <Border BackgroundColor="#FDE6EC" StrokeThickness="0"
+                            <Border BackgroundColor="#E5F3EA" StrokeThickness="0"
                                     StrokeShape="RoundRectangle 7" Padding="6,2"
                                     HorizontalOptions="Start">
-                                <Label Text="DENTIST" FontSize="11" FontAttributes="Bold" TextColor="#D94B68"/>
+                                <Label Text="DENTIST" FontSize="11" FontAttributes="Bold" TextColor="#087A3D"/>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
@@ -51,8 +51,8 @@
                 </Border>
 
                 <!-- Compact, clickable gateway to the full clinic summary and visit stages -->
-                <Border BackgroundColor="White" Stroke="#EF6B82" StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12" Padding="11,10">
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="13">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToClinicSummaryCommand}"/>
                     </Border.GestureRecognizers>
@@ -60,15 +60,15 @@
                         <Label Text="Today's Dental Clinic Summary" FontSize="18"
                                FontAttributes="Bold" TextColor="#17221B" VerticalOptions="Center"/>
                         <Label Grid.Column="1" Text="&#8250;" FontSize="22" FontAttributes="Bold"
-                               TextColor="#E94F70" VerticalOptions="Center"/>
+                               TextColor="#087A3D" VerticalOptions="Center"/>
                     </Grid>
                 </Border>
 
-                <Label Text="Dental Quick Actions" FontSize="19" FontAttributes="Bold"
+                <Label Text="Dental Quick Actions" FontSize="18" FontAttributes="Bold"
                        TextColor="#17221B" Margin="0,2,0,0"/>
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
-                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#E6EAF0"
-                            StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="9">
+                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
+                            StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Today">
                                 <Setter Property="BackgroundColor" Value="#FFF3CD"/>
@@ -79,18 +79,18 @@
                             <TapGestureRecognizer Command="{Binding GoToTodaysVisitsCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#FDE8ED"
+                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128197;" FontSize="18" TextColor="#E94F70"
+                                <Label Text="&#128197;" FontSize="18" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Today's Visit" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="{Binding ActiveVisitCount, StringFormat='{0} Active Visits'}"
-                                   FontSize="12" TextColor="#D94B68"/>
+                                   FontSize="12" TextColor="#087A3D"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#E6EAF0"
-                            StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="9">
+                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
+                            StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="FollowUps">
                                 <Setter Property="BackgroundColor" Value="#FFF3CD"/>
@@ -101,9 +101,9 @@
                             <TapGestureRecognizer Command="{Binding GoToFollowUpPatientsCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#FDE8ED"
+                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128276;" FontSize="18" TextColor="#E94F70"
+                                <Label Text="&#128276;" FontSize="18" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Follow Up Patients" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
@@ -111,8 +111,8 @@
                                    FontSize="12" TextColor="#91A0AC"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#E6EAF0"
-                            StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="9">
+                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
+                            StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Patients">
                                 <Setter Property="BackgroundColor" Value="#FFF3CD"/>
@@ -123,17 +123,17 @@
                             <TapGestureRecognizer Command="{Binding GoToPatientsCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#FDE8ED"
+                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128269;" FontSize="18" TextColor="#E94F70"
+                                <Label Text="&#128269;" FontSize="18" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Patient Search" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="Dental appointment patients" FontSize="12" TextColor="#91A0AC"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#E6EAF0"
-                            StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="9">
+                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
+                            StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="13">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding SelectedQuickAction}" Value="Certificates">
                                 <Setter Property="BackgroundColor" Value="#FFF3CD"/>
@@ -144,9 +144,9 @@
                             <TapGestureRecognizer Command="{Binding GoToCertificatesCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
-                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#FDE8ED"
+                            <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128196;" FontSize="18" TextColor="#E94F70"
+                                <Label Text="&#128196;" FontSize="18" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <Label Text="Certificate Review" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
@@ -158,24 +158,24 @@
                 <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
                     <Label Text="Ready for Dental Examination" FontSize="18" FontAttributes="Bold"
                            TextColor="#17221B" VerticalOptions="Center"/>
-                    <Border Grid.Column="1" BackgroundColor="#FDE8ED" StrokeThickness="0"
+                    <Border Grid.Column="1" BackgroundColor="#E5F3EA" StrokeThickness="0"
                             StrokeShape="RoundRectangle 8" Padding="7,2">
                         <Label Text="{Binding ReadyForDentistCount}" FontSize="14"
-                               FontAttributes="Bold" TextColor="#D94B68"/>
+                               FontAttributes="Bold" TextColor="#087A3D"/>
                     </Border>
                 </Grid>
 
                 <Border IsVisible="{Binding HasQueueItems, Converter={StaticResource BoolInverter}}"
-                        BackgroundColor="White" Stroke="#E6EAF0" StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12" Padding="11">
+                        BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="13">
                     <Label Text="{Binding ReadyQueueEmptyMessage}" FontSize="14" TextColor="#647067"/>
                 </Border>
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding DentalQueue}" Spacing="7">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:DentalQueueItem">
-                            <Border BackgroundColor="White" Stroke="#EF6B82" StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 12" Padding="9">
+                            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14" Padding="13">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenExaminationCommand}"
@@ -184,17 +184,17 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto"
                                       ColumnSpacing="8" RowSpacing="2">
                                     <Border Grid.RowSpan="3" WidthRequest="42" HeightRequest="42"
-                                            BackgroundColor="#FDE8ED" StrokeThickness="0"
+                                            BackgroundColor="#E5F3EA" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 10">
                                         <Label Text="{Binding TimeDisplay}" FontSize="12" FontAttributes="Bold"
-                                               TextColor="#D94B68" HorizontalOptions="Center"
+                                               TextColor="#087A3D" HorizontalOptions="Center"
                                                VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
                                     <Label Grid.Column="1" Text="{Binding PatientDisplayName}" FontSize="15"
                                            FontAttributes="Bold" TextColor="#17221B"
                                            LineBreakMode="TailTruncation"/>
                                     <Label Grid.Column="2" Text="&#8250;" FontSize="18" FontAttributes="Bold"
-                                           TextColor="#E94F70" VerticalOptions="Center"/>
+                                           TextColor="#087A3D" VerticalOptions="Center"/>
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding ReasonDisplay}" FontSize="13" TextColor="#647067" MaxLines="1"
                                            LineBreakMode="TailTruncation"/>
                                     <Label Grid.Row="2" Grid.Column="1" Text="{Binding LocationDisplay}" FontSize="13" TextColor="#91A0AC" MaxLines="1"
@@ -212,8 +212,8 @@
                 Padding="4,7" StrokeShape="RoundRectangle 0">
             <Grid ColumnDefinitions="*,*,*,*">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#8962;" FontSize="18" TextColor="#00A99A" HorizontalOptions="Center"/>
-                    <Label Text="Home" FontSize="11" TextColor="#00A99A" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    <Label Text="&#8962;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center"/>
+                    <Label Text="Home" FontSize="11" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>

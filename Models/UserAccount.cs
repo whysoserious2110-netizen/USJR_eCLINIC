@@ -11,6 +11,11 @@ public class UserAccount
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    // Legacy rows are migrated as verified/active. New registrations explicitly
+    // start unverified and are activated only by EmailVerificationService.
+    public bool EmailVerified { get; set; } = true;
+    public string AccountStatus { get; set; } = "Active";
+    public string FacultyIdImagePath { get; set; } = string.Empty;
     public string IdNumber { get; set; } = string.Empty;
     public string ProgramOrDepartment { get; set; } = string.Empty;
     public string StudentProgramAndYear { get; set; } = string.Empty;

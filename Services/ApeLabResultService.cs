@@ -47,8 +47,8 @@ public class ApeLabResultService
         }
 
         var patient = await AuthService.Instance.GetAccountByEmailAsync(result.PatientEmail);
-        if (patient == null || patient.Role is not ("Faculty" or "Admin Personnel" or "Non-Teaching"))
-            throw new ArgumentException("APE results can only be encoded for eligible Faculty, Admin Personnel, or Non-Teaching accounts.");
+        if (patient == null || patient.Role is not ("Faculty" or "Non-Teaching"))
+            throw new ArgumentException("APE results can only be encoded for eligible Faculty or Non-Teaching accounts.");
 
         result.PatientEmail = patient.Email;
         result.EncodedBy = nurse.FullName;
