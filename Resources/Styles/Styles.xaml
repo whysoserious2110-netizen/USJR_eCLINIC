@@ -48,6 +48,18 @@
         </Setter>
     </Style>
 
+    <!-- Shared, clearly visible logout treatment used by every profile role. -->
+    <Style x:Key="LogoutButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="#FEE4E2" />
+        <Setter Property="TextColor" Value="#B42318" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="BorderColor" Value="#FDA29B" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="26" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="Margin" Value="0,20,0,0" />
+    </Style>
+
     <Style TargetType="CheckBox">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
