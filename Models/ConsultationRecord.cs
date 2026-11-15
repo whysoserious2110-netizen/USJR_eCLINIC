@@ -7,6 +7,8 @@ public class ConsultationRecord
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
+    public int AppointmentId { get; set; }
+    public int AttendingStaffId { get; set; }
     public string PatientEmail { get; set; } = string.Empty;
     public DateTime ConsultationDate { get; set; }
     public string ChiefComplaint { get; set; } = string.Empty;

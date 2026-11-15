@@ -21,6 +21,14 @@ public class MedicalRecordService
         {
             if (_initialized) return;
             await _db.CreateTableAsync<ConsultationRecord>();
+            await _db.RunInTransactionAsync(connection =>
+            {
+                var columns = connection.GetTableInfo("ConsultationRecord");
+                if (!columns.Any(column => column.Name.Equals("AppointmentId", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN AppointmentId INTEGER NOT NULL DEFAULT 0");
+                if (!columns.Any(column => column.Name.Equals("AttendingStaffId", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN AttendingStaffId INTEGER NOT NULL DEFAULT 0");
+            });
             _initialized = true;
         }
         finally
@@ -29,12 +37,13 @@ public class MedicalRecordService
         }
     }
 
-    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingStaffName)
+    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingStaffName, int staffId = 0)
     {
         await EnsureInitializedAsync();
         var all = await _db.Table<ConsultationRecord>().ToListAsync();
         return all
-            .Where(record => record.AttendingStaff.Equals(attendingStaffName, StringComparison.OrdinalIgnoreCase))
+            .Where(record => (staffId > 0 && record.AttendingStaffId == staffId) ||
+                             (record.AttendingStaffId == 0 && record.AttendingStaff.Equals(attendingStaffName, StringComparison.OrdinalIgnoreCase)))
             .Select(record => record.PatientEmail)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();

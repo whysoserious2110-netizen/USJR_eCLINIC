@@ -45,6 +45,7 @@ public class AppointmentService
                 return;
 
             await _db.CreateTableAsync<Appointment>();
+            await StaffScheduleService.Instance.EnsureInitializedAsync();
             await EnsureCertificateWorkflowColumnsAsync();
             _initialized = true;
         }
@@ -68,7 +69,8 @@ public class AppointmentService
             ["CertificateReviewedBy"] = "TEXT NOT NULL DEFAULT ''",
             ["CertificateReviewedAt"] = "DATETIME NULL",
             ["CertificateCollectedBy"] = "TEXT NOT NULL DEFAULT ''",
-            ["CertificateCollectedAt"] = "DATETIME NULL"
+            ["CertificateCollectedAt"] = "DATETIME NULL",
+            ["AssignedStaffId"] = "INTEGER NULL"
         };
 
         foreach (var column in requiredColumns)
@@ -135,6 +137,7 @@ public class AppointmentService
         appointment.VisitTime = selectedTime.ToString("h:mm tt", CultureInfo.CurrentCulture);
         appointment.Status = "Pending";
         appointment.VisitDate = appointment.VisitDate.Date;
+        appointment.AssignedStaffId = null;
 
         if (appointment.ServiceType == "Cert Request")
         {
@@ -147,28 +150,44 @@ public class AppointmentService
         string? conflictMessage = null;
         var dayStart = appointment.VisitDate.Date;
         var dayEnd = dayStart.AddDays(1);
+        var slotMinutes = await ClinicScheduleService.Instance.GetSlotIntervalMinutesAsync();
+        var visitStartsAt = appointment.VisitDate.Date.Add(selectedTime.TimeOfDay);
+        var visitEndsAt = visitStartsAt.AddMinutes(slotMinutes);
+        var clinicalType = GetClinicalType(appointment);
+        var requiredRole = GetClinicalStaffRole(clinicalType);
 
         await _db.RunInTransactionAsync(connection =>
         {
-            var sameServiceSlots = connection.Table<Appointment>()
-                .Where(a =>
-                    a.VisitDate >= dayStart &&
-                    a.VisitDate < dayEnd &&
-                    a.ServiceType == appointment.ServiceType &&
-                    a.SubService == appointment.SubService)
+            var sameDayAppointments = connection.Table<Appointment>()
+                .Where(existing => existing.VisitDate >= dayStart && existing.VisitDate < dayEnd)
                 .ToList();
+            var patientAlreadyBooked = sameDayAppointments.Any(existing =>
+                existing.PatientEmail.Equals(appointment.PatientEmail, StringComparison.OrdinalIgnoreCase) &&
+                SlotOccupyingStatuses.Contains(existing.Status) &&
+                GetVisitDateTime(existing) < visitEndsAt &&
+                GetVisitDateTime(existing).AddMinutes(slotMinutes) > visitStartsAt);
 
-            bool slotIsTaken = sameServiceSlots.Any(a =>
-                SlotOccupyingStatuses.Contains(a.Status) &&
-                string.Equals(
-                    NormalizeTime(a.VisitTime),
-                    NormalizeTime(appointment.VisitTime),
-                    StringComparison.Ordinal));
-
-            if (slotIsTaken)
+            if (patientAlreadyBooked)
             {
-                conflictMessage = "That appointment time has just been booked. Please choose another available time.";
+                conflictMessage = "You already have an appointment during that time. Please choose another available time.";
                 return;
+            }
+
+            if (requiredRole != null)
+            {
+                var availableStaffId = StaffScheduleService.FindAvailableStaffId(
+                    connection,
+                    requiredRole,
+                    visitStartsAt,
+                    visitEndsAt,
+                    slotMinutes);
+                if (!availableStaffId.HasValue)
+                {
+                    conflictMessage = $"No active {requiredRole.ToLowerInvariant()} is scheduled and available at that time. Choose another time or ask the Clinic Administrator to assign a shift.";
+                    return;
+                }
+
+                appointment.AssignedStaffId = availableStaffId.Value;
             }
 
             connection.Insert(appointment);
@@ -185,13 +204,13 @@ public class AppointmentService
                 "Appointment Requested",
                 $"Your {appointment.ServiceType} appointment ({appointment.SubService}) on {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime} has been submitted and is Pending.");
 
-            var clinicalType = appointment.ServiceType == "Cert Request"
+            var notificationClinicalType = appointment.ServiceType == "Cert Request"
                 ? appointment.SubService.StartsWith("Dental", StringComparison.OrdinalIgnoreCase) ? "Dental" : "Medical"
                 : appointment.ServiceType;
             await NotifyAssignedClinicalStaffAsync(
                 appointment,
-                $"New {clinicalType} Appointment Request",
-                $"A new {clinicalType.ToLowerInvariant()} appointment ({appointment.SubService}) was requested for {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime}.");
+                $"New {notificationClinicalType} Appointment Request",
+                $"A new {notificationClinicalType.ToLowerInvariant()} appointment ({appointment.SubService}) was requested for {appointment.VisitDate:MMM dd, yyyy} at {appointment.VisitTime}.");
         }
         catch
         {
@@ -221,6 +240,13 @@ public class AppointmentService
         return null;
     }
 
+    private static string? GetClinicalStaffRole(string? clinicalType) => clinicalType switch
+    {
+        "Medical" => "Doctor",
+        "Dental" => "Dentist",
+        _ => null
+    };
+
     public async Task NotifyAssignedClinicalStaffAsync(
         Appointment appointment,
         string title,
@@ -229,12 +255,24 @@ public class AppointmentService
         try
         {
             var clinic = GetClinicalType(appointment);
-            var staff = clinic switch
+            var staff = new List<UserAccount>();
+            if (appointment.AssignedStaffId.HasValue)
             {
-                "Medical" => await AuthService.Instance.GetAllDoctorsAsync(),
-                "Dental" => await AuthService.Instance.GetAllDentistsAsync(),
-                _ => new List<UserAccount>()
-            };
+                var assigned = await AuthService.Instance.GetAccountByDatabaseIdAsync(appointment.AssignedStaffId.Value);
+                if (assigned != null && AuthService.IsActiveClinicStaff(assigned))
+                    staff.Add(assigned);
+            }
+            else
+            {
+                // Keep older local appointments without an assigned employee visible to the
+                // appropriate clinical team until they are reassigned through approval.
+                staff = clinic switch
+                {
+                    "Medical" => await AuthService.Instance.GetAllDoctorsAsync(),
+                    "Dental" => await AuthService.Instance.GetAllDentistsAsync(),
+                    _ => new List<UserAccount>()
+                };
+            }
 
             foreach (var member in staff)
             {
@@ -254,13 +292,6 @@ public class AppointmentService
         }
     }
 
-    private static string NormalizeTime(string value)
-    {
-        return DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out var parsed)
-            ? parsed.ToString("HH:mm", CultureInfo.InvariantCulture)
-            : value.Trim();
-    }
-
     public async Task<List<Appointment>> GetCertificateRequestsForClinicalReviewAsync(string staffRole)
     {
         var requiredType = staffRole switch
@@ -273,12 +304,14 @@ public class AppointmentService
         if (string.IsNullOrEmpty(requiredType))
             return new List<Appointment>();
 
+        var currentStaff = AuthService.Instance.CurrentUser;
         var all = await GetAllCertRequestsAsync();
         return all
             .Where(appointment =>
                 appointment.SubService == requiredType &&
                 appointment.Status == "Completed" &&
-                appointment.CertificateStatus == "Awaiting Clinical Review")
+                appointment.CertificateStatus == "Awaiting Clinical Review" &&
+                (!appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == currentStaff?.Id))
             .OrderBy(GetVisitDateTime)
             .ToList();
     }
@@ -309,7 +342,8 @@ public class AppointmentService
                 appointment.ServiceType != "Cert Request" ||
                 appointment.SubService != allowedType ||
                 appointment.Status != "Completed" ||
-                appointment.CertificateStatus != "Awaiting Clinical Review")
+                appointment.CertificateStatus != "Awaiting Clinical Review" ||
+                (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != reviewer.Id))
             {
                 return;
             }
@@ -482,21 +516,39 @@ public class AppointmentService
     {
         await EnsureInitializedAsync();
 
-        var dayStart = date.Date;
-        var dayEnd = dayStart.AddDays(1);
-        var matches = await _db.Table<Appointment>()
-            .Where(a =>
-                a.VisitDate >= dayStart &&
-                a.VisitDate < dayEnd &&
-                a.ServiceType == serviceType &&
-                a.SubService == subService)
-            .ToListAsync();
+        var clinicalType = GetClinicalType(new Appointment
+        {
+            ServiceType = serviceType,
+            SubService = subService
+        });
+        var requiredRole = GetClinicalStaffRole(clinicalType);
+        if (requiredRole == null)
+            return new List<string>();
 
-        return matches
-            .Where(a => SlotOccupyingStatuses.Contains(a.Status))
-            .Select(a => a.VisitTime)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var availableOptions = await ClinicScheduleService.Instance
+            .GetAvailableTimeOptionsAsync(date, serviceType, subService);
+        var slotMinutes = await ClinicScheduleService.Instance.GetSlotIntervalMinutesAsync();
+        var unavailableTimes = new List<string>();
+
+        await _db.RunInTransactionAsync(connection =>
+        {
+            foreach (var option in availableOptions)
+            {
+                if (!DateTime.TryParse(option, CultureInfo.CurrentCulture, DateTimeStyles.None, out var parsed))
+                {
+                    unavailableTimes.Add(option);
+                    continue;
+                }
+
+                var startsAt = date.Date.Add(parsed.TimeOfDay);
+                var endsAt = startsAt.AddMinutes(slotMinutes);
+                if (!StaffScheduleService.FindAvailableStaffId(
+                        connection, requiredRole, startsAt, endsAt, slotMinutes).HasValue)
+                    unavailableTimes.Add(option);
+            }
+        });
+
+        return unavailableTimes;
     }
 
     public async Task<List<Appointment>> GetPendingApprovalsAsync()
@@ -516,6 +568,7 @@ public class AppointmentService
         await ExpireElapsedAppointmentsAsync();
 
         Appointment? approvedAppointment = null;
+        var slotMinutes = await ClinicScheduleService.Instance.GetSlotIntervalMinutesAsync();
         await _db.RunInTransactionAsync(connection =>
         {
             var appointment = connection.Find<Appointment>(appointmentId);
@@ -530,6 +583,23 @@ public class AppointmentService
 
                 connection.Update(appointment);
                 return;
+            }
+
+            var clinicalType = GetClinicalType(appointment);
+            var requiredRole = GetClinicalStaffRole(clinicalType);
+            if (requiredRole != null)
+            {
+                var startsAt = GetVisitDateTime(appointment);
+                var availableStaffId = StaffScheduleService.FindAvailableStaffId(
+                    connection,
+                    requiredRole,
+                    startsAt,
+                    startsAt.AddMinutes(slotMinutes),
+                    slotMinutes,
+                    appointment.Id);
+                if (!availableStaffId.HasValue)
+                    return;
+                appointment.AssignedStaffId = availableStaffId.Value;
             }
 
             appointment.Status = "Confirmed";
@@ -812,6 +882,38 @@ public class AppointmentService
             .OrderByDescending(a => a.VisitDate)
             .ToList();
     }
+
+    public async Task ReassignAppointmentsFromStaffAsync(int staffId)
+    {
+        await EnsureInitializedAsync();
+        var slotMinutes = await ClinicScheduleService.Instance.GetSlotIntervalMinutesAsync();
+        await _db.RunInTransactionAsync(connection =>
+        {
+            var assigned = connection.Table<Appointment>()
+                .ToList()
+                .Where(appointment => (!appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == staffId) &&
+                                      appointment.VisitDate.Date >= DateTime.Today &&
+                                      (appointment.Status is "Pending" or "Confirmed" or "CheckedIn" or "VitalsRecorded"))
+                .OrderBy(GetVisitDateTime)
+                .ToList();
+
+            foreach (var appointment in assigned)
+            {
+                var role = GetClinicalStaffRole(GetClinicalType(appointment));
+                if (role == null) continue;
+
+                var startsAt = GetVisitDateTime(appointment);
+                appointment.AssignedStaffId = StaffScheduleService.FindAvailableStaffId(
+                    connection,
+                    role,
+                    startsAt,
+                    startsAt.AddMinutes(slotMinutes),
+                    slotMinutes,
+                    appointment.Id);
+                connection.Update(appointment);
+            }
+        });
+    }
     public async Task MarkAllSeenAsync(string patientEmail)
     {
         await EnsureInitializedAsync();
@@ -848,7 +950,7 @@ public class AppointmentService
             .ToList();
     }
 
-    public async Task<bool> MarkCompletedAsync(int appointmentId)
+    public async Task<bool> MarkCompletedAsync(int appointmentId, int? actingStaffId = null)
     {
         await EnsureInitializedAsync();
 
@@ -857,7 +959,9 @@ public class AppointmentService
         {
             var appointment = connection.Find<Appointment>(appointmentId);
             if (appointment == null ||
-                appointment.Status is not ("CheckedIn" or "VitalsRecorded"))
+                appointment.Status is not ("CheckedIn" or "VitalsRecorded") ||
+                (actingStaffId.HasValue && appointment.AssignedStaffId.HasValue &&
+                 appointment.AssignedStaffId != actingStaffId))
             {
                 return;
             }

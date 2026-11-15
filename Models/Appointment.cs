@@ -13,6 +13,8 @@ public class Appointment
     public string ReasonOrPurpose { get; set; } = string.Empty;
     public DateTime VisitDate { get; set; }
     public string VisitTime { get; set; } = string.Empty;
+    [Indexed]
+    public int? AssignedStaffId { get; set; }
     public string Location { get; set; } = "Main Campus Clinic";
     public string Status { get; set; } = "Pending";
     public bool IsSeenByPatient { get; set; } = false;

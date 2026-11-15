@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.StaffEditorPage"
+             x:DataType="vm:StaffEditorViewModel"
+             Title="Clinic Employee"
+             BackgroundColor="#F7F8F6"
+             NavigationPage.HasNavigationBar="False">
+    <Grid RowDefinitions="Auto,5,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="#176B38" Padding="14,12" ColumnSpacing="12">
+            <Button Text="‹" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="25" Padding="0" />
+            <Label Grid.Column="1" Text="{Binding PageHeading}" FontSize="20" FontAttributes="Bold"
+                   TextColor="#F4C400" VerticalTextAlignment="Center" />
+        </Grid>
+        <BoxView Grid.Row="1" Color="#F4C400" />
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="18,16" Spacing="12">
+                <Label Text="Create and maintain individual clinic employee accounts." FontSize="14" TextColor="#667085" />
+                <Label Text="Full name" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding FullName}" Placeholder="Employee full name" BackgroundColor="White" />
+                <Label Text="Employee ID" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding IdNumber}" Placeholder="Employee ID" BackgroundColor="White" />
+                <Label Text="Email address" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding Email}" Placeholder="employee@usjr.edu.ph" Keyboard="Email" BackgroundColor="White" />
+                <Label Text="Clinic role" FontAttributes="Bold" TextColor="#344054" />
+                <Picker ItemsSource="{Binding StaffRoles}" SelectedItem="{Binding SelectedRole}" BackgroundColor="White" />
+                <Label Text="Department / clinic unit" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding Department}" Placeholder="Department or clinic unit" BackgroundColor="White" />
+                <Label Text="Position" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding Position}" Placeholder="Position" BackgroundColor="White" />
+                <Label Text="Specialization (if applicable)" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding Specialization}" Placeholder="Specialization" BackgroundColor="White" />
+                <Label Text="License number (if applicable)" FontAttributes="Bold" TextColor="#344054" />
+                <Entry Text="{Binding LicenseNumber}" Placeholder="Professional license number" BackgroundColor="White" />
+                <VerticalStackLayout IsVisible="{Binding IsCreatingStaff}" Spacing="8">
+                    <Label Text="Initial password" FontAttributes="Bold" TextColor="#344054" />
+                    <Entry Text="{Binding InitialPassword}" Placeholder="At least 8 characters" IsPassword="True" BackgroundColor="White" />
+                    <Label Text="This password is stored as a password hash. Give it to the employee securely." FontSize="12" TextColor="#667085" />
+                </VerticalStackLayout>
+                <Button Text="{Binding SaveButtonText}" Command="{Binding SaveCommand}"
+                        BackgroundColor="#087A3D" TextColor="White" CornerRadius="12" HeightRequest="52" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

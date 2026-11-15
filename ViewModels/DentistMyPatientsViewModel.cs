@@ -22,14 +22,16 @@ public partial class DentistMyPatientsViewModel : ObservableObject
         if (dentist == null)
             return;
 
-        var emails = await Services.DentalRecordService.Instance.GetDistinctPatientEmailsForStaffAsync(dentist.FullName);
+        var emails = await Services.DentalRecordService.Instance.GetDistinctPatientEmailsForStaffAsync(dentist.FullName, dentist.Id);
         _allPatients.Clear();
 
         foreach (var email in emails)
         {
             var account = await Services.AuthService.Instance.GetAccountByEmailAsync(email);
             var records = await Services.DentalRecordService.Instance.GetForPatientAsync(email);
-            var latestRecord = records.FirstOrDefault(record => string.Equals(record.AttendingDentist, dentist.FullName, StringComparison.OrdinalIgnoreCase));
+            var latestRecord = records.FirstOrDefault(record =>
+                record.AttendingDentistId == dentist.Id ||
+                (record.AttendingDentistId == 0 && string.Equals(record.AttendingDentist, dentist.FullName, StringComparison.OrdinalIgnoreCase)));
             if (account == null || latestRecord == null)
                 continue;
 
@@ -95,7 +97,9 @@ _allPatients.Add(new MyPatientItem
         var dentist = Services.AuthService.Instance.CurrentUser;
         var account = await Services.AuthService.Instance.GetAccountByEmailAsync(patient.Email);
         var records = await Services.DentalRecordService.Instance.GetForPatientAsync(patient.Email);
-        var latestRecord = records.FirstOrDefault(record => dentist != null && string.Equals(record.AttendingDentist, dentist.FullName, StringComparison.OrdinalIgnoreCase));
+        var latestRecord = records.FirstOrDefault(record => dentist != null &&
+            (record.AttendingDentistId == dentist.Id ||
+             (record.AttendingDentistId == 0 && string.Equals(record.AttendingDentist, dentist.FullName, StringComparison.OrdinalIgnoreCase))));
         if (latestRecord == null || account == null)
         {
             await Shell.Current.DisplayAlert("Dental record unavailable", "This patient does not have a saved dental record to open.", "OK");

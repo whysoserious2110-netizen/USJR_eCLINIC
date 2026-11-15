@@ -61,11 +61,15 @@ public partial class DoctorDashboardViewModel : ObservableObject
         HasAnnouncement = announcement != null;
         AnnouncementText = announcement?.Message ?? string.Empty;
 
-        var medicalAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical");
+        var medicalAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == user.Id)
+            .ToList();
         TodayVisitsCount = medicalAppointments.Count;
 
         // R.E.A.D.S. approves and checks in patients. Only checked-in visits enter the consultation queue.
-        var certificateAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request");
+        var certificateAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == user.Id)
+            .ToList();
         var readyAppointments = medicalAppointments
             .Where(IsReadyForConsultation)
             .Concat(certificateAppointments.Where(appointment =>

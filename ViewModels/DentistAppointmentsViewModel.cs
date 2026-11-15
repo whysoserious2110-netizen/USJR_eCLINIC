@@ -50,8 +50,15 @@ public partial class DentistAppointmentsViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
-        var dentalAppointments = await Services.AppointmentService.Instance.GetAllForServiceAsync("Dental");
-        var certificateAppointments = await Services.AppointmentService.Instance.GetAllForServiceAsync("Cert Request");
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (dentist?.Role != "Dentist")
+            return;
+        var dentalAppointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Dental"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
+        var certificateAppointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
         var appointments = dentalAppointments
             .Concat(certificateAppointments.Where(appointment => appointment.SubService == "Dental Certificate"))
             .OrderByDescending(appointment => Services.AppointmentService.GetVisitDateTime(appointment))

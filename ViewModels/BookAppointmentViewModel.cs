@@ -100,6 +100,9 @@ public partial class BookAppointmentViewModel : ObservableObject
 
     public ObservableCollection<string> AvailableTimeOptions { get; } = new();
 
+    [ObservableProperty] private bool hasNoAvailableTimeOptions;
+    [ObservableProperty] private string availabilityMessage = string.Empty;
+
     [ObservableProperty]
     private string? selectedTimeOption;
 
@@ -176,6 +179,8 @@ public partial class BookAppointmentViewModel : ObservableObject
         SelectedDate = null;
         SelectedTimeOption = null;
         AvailableTimeOptions.Clear();
+        HasNoAvailableTimeOptions = false;
+        AvailabilityMessage = string.Empty;
         OnPropertyChanged(nameof(HasSelectedDate));
         OnPropertyChanged(nameof(DateDisplayText));
 
@@ -227,6 +232,8 @@ public partial class BookAppointmentViewModel : ObservableObject
             SelectedDate = date.Date;
             SelectedTimeOption = null;
             AvailableTimeOptions.Clear();
+            HasNoAvailableTimeOptions = false;
+            AvailabilityMessage = string.Empty;
             OnPropertyChanged(nameof(HasSelectedDate));
             OnPropertyChanged(nameof(DateDisplayText));
 
@@ -248,6 +255,8 @@ public partial class BookAppointmentViewModel : ObservableObject
         SelectedDate = null;
         SelectedTimeOption = null;
         AvailableTimeOptions.Clear();
+        HasNoAvailableTimeOptions = false;
+        AvailabilityMessage = string.Empty;
         OnPropertyChanged(nameof(HasSelectedDate));
         OnPropertyChanged(nameof(DateDisplayText));
 
@@ -345,6 +354,8 @@ public partial class BookAppointmentViewModel : ObservableObject
 
         AvailableTimeOptions.Clear();
         SelectedTimeOption = null;
+        HasNoAvailableTimeOptions = false;
+        AvailabilityMessage = string.Empty;
 
         foreach (var option in timeOptions)
         {
@@ -353,6 +364,14 @@ public partial class BookAppointmentViewModel : ObservableObject
             {
                 AvailableTimeOptions.Add(option);
             }
+        }
+
+        HasNoAvailableTimeOptions = AvailableTimeOptions.Count == 0;
+        if (HasNoAvailableTimeOptions)
+        {
+            AvailabilityMessage = timeOptions.Count == 0
+                ? "No clinic time slots are configured for this service on the selected date."
+                : "No clinician has an available shift for the remaining times. Please choose another date or ask the Clinic Administrator to update staff schedules.";
         }
     }
 

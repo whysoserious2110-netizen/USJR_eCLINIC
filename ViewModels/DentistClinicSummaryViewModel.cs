@@ -28,8 +28,14 @@ public partial class DentistClinicSummaryViewModel : ObservableObject
     {
         DateDisplay = DateTime.Today.ToString("dddd, MMMM d, yyyy");
 
-        var dentalAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental");
-        var certificateAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request");
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (dentist?.Role != "Dentist") return;
+        var dentalAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
+        var certificateAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
         var todayDentalVisits = dentalAppointments
             .Concat(certificateAppointments.Where(appointment => appointment.SubService == "Dental Certificate"))
             .ToList();

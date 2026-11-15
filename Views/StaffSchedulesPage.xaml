@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:models="clr-namespace:USJR_eCLINIC.Models"
+             x:Class="USJR_eCLINIC.Views.StaffSchedulesPage"
+             x:Name="Root"
+             x:DataType="vm:StaffSchedulesViewModel"
+             Title="Staff Schedules" BackgroundColor="#F7F8F6"
+             NavigationPage.HasNavigationBar="False">
+    <Grid RowDefinitions="Auto,5,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12"
+              BackgroundColor="#087A3D" Padding="14,12">
+            <Button Text="←" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="22" Padding="0" />
+            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                <Label Text="Staff Schedules" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Today's active clinic team and duty hours" FontSize="13" TextColor="White" />
+            </VerticalStackLayout>
+        </Grid>
+        <BoxView Grid.Row="1" Color="#F4C400" />
+        <RefreshView Grid.Row="2" Command="{Binding LoadCommand}">
+            <CollectionView ItemsSource="{Binding StaffSchedules}" SelectionMode="None">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,16,16,8" Spacing="5">
+                        <Label Text="{Binding DateText}" FontSize="17" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="Select a staff member to manage their recurring schedule, dated shifts, or availability."
+                               FontSize="14" TextColor="#667085" />
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24" Spacing="6">
+                        <Label Text="No active clinic staff" FontSize="18" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="Create or activate clinic staff accounts in Staff Management."
+                               FontSize="14" TextColor="#667085" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ClinicStaffScheduleDisplay">
+                        <Border Margin="14,5" Padding="14" BackgroundColor="White" Stroke="#E1E8E2" StrokeShape="RoundRectangle 15">
+                            <Border.Shadow><Shadow Brush="#14000000" Offset="0,2" Radius="8" /></Border.Shadow>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="5">
+                                <VerticalStackLayout Spacing="3">
+                                    <Label Text="{Binding FullName}" FontSize="17" FontAttributes="Bold" TextColor="#1F2933" />
+                                    <Label Text="{Binding Role}" FontSize="14" TextColor="#087A3D" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Grid.RowSpan="2" Text="{Binding ScheduleText}" FontSize="13"
+                                       TextColor="#344054" VerticalOptions="Center" HorizontalTextAlignment="End" />
+                                <Button Grid.Row="1" Text="Manage Schedule" Command="{Binding Source={x:Reference Root}, Path=BindingContext.ManageScheduleCommand}"
+                                        CommandParameter="{Binding .}" BackgroundColor="#F4C400" TextColor="#087A3D"
+                                        FontAttributes="Bold" CornerRadius="10" HeightRequest="40" HorizontalOptions="Start" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

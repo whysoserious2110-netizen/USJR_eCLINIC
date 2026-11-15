@@ -99,6 +99,7 @@ public partial class ConsultationViewModel : ObservableObject
         var appointment = await Services.AppointmentService.Instance.GetByIdAsync(_appointmentId);
         if (appointment == null ||
             !appointment.PatientEmail.Equals(_patientEmail, StringComparison.OrdinalIgnoreCase) ||
+            (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != doctor.Id) ||
             appointment.Status is not ("CheckedIn" or "VitalsRecorded"))
         {
             await Shell.Current.DisplayAlert(
@@ -110,6 +111,8 @@ public partial class ConsultationViewModel : ObservableObject
 
         var record = new Models.ConsultationRecord
         {
+            AppointmentId = _appointmentId,
+            AttendingStaffId = doctor.Id,
             PatientEmail = _patientEmail,
             ConsultationDate = DateTime.Now,
             ChiefComplaint = ChiefComplaint.Trim(),
@@ -125,7 +128,7 @@ public partial class ConsultationViewModel : ObservableObject
 
         await Services.MedicalRecordService.Instance.AddAsync(record);
 
-        var completed = await Services.AppointmentService.Instance.MarkCompletedAsync(_appointmentId);
+        var completed = await Services.AppointmentService.Instance.MarkCompletedAsync(_appointmentId, doctor.Id);
         if (!completed)
         {
             await Shell.Current.DisplayAlert(

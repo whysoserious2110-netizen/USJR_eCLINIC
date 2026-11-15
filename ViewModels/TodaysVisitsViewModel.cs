@@ -26,7 +26,12 @@ public partial class TodaysVisitsViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
-        var appointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical");
+        var doctor = Services.AuthService.Instance.CurrentUser;
+        if (doctor?.Role != "Doctor")
+            return;
+        var appointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == doctor.Id)
+            .ToList();
         Visits.Clear();
 
         foreach (var appt in appointments)
@@ -89,7 +94,10 @@ public partial class TodaysVisitsViewModel : ObservableObject
         }
 
         var appointment = await Services.AppointmentService.Instance.GetByIdAsync(item.AppointmentId);
-        if (appointment == null || appointment.Status is not ("CheckedIn" or "VitalsRecorded"))
+        var doctor = Services.AuthService.Instance.CurrentUser;
+        if (appointment == null ||
+            (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != doctor?.Id) ||
+            appointment.Status is not ("CheckedIn" or "VitalsRecorded"))
         {
             await Shell.Current.DisplayAlert(
                 "Visit unavailable",

@@ -49,8 +49,15 @@ public partial class DentistTodaysVisitsViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
-        var dentalAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental");
-        var certificateAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request");
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (dentist?.Role != "Dentist")
+            return;
+        var dentalAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
+        var certificateAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .ToList();
         var appointments = dentalAppointments
             .Concat(certificateAppointments.Where(appointment => appointment.SubService == "Dental Certificate"))
             .Where(appointment => string.IsNullOrWhiteSpace(_statusFilter) || appointment.Status == _statusFilter)
@@ -118,8 +125,10 @@ public partial class DentistTodaysVisitsViewModel : ObservableObject
             return;
 
         var appointment = await Services.AppointmentService.Instance.GetByIdAsync(item.AppointmentId);
-        if (Services.AuthService.Instance.CurrentUser?.Role != "Dentist" ||
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (dentist?.Role != "Dentist" ||
             appointment == null ||
+            (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != dentist.Id) ||
             appointment.Status != "VitalsRecorded" ||
             appointment.VisitDate.Date != DateTime.Today)
         {
@@ -156,7 +165,10 @@ public partial class DentistTodaysVisitsViewModel : ObservableObject
         var records = await Services.DentalRecordService.Instance.GetForPatientAsync(item.PatientEmail);
         var record = records.FirstOrDefault(saved => saved.AppointmentId == item.AppointmentId);
 
-        if (appointment?.Status != "Completed" || patient == null || record == null)
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (appointment?.Status != "Completed" ||
+            (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != dentist?.Id) ||
+            patient == null || record == null)
         {
             await Shell.Current.DisplayAlert(
                 "Dental record unavailable",

@@ -34,6 +34,11 @@ public class DentalRecordService
                 await _db.ExecuteAsync(
                     "ALTER TABLE DentalRecord ADD COLUMN AppointmentId INTEGER NOT NULL DEFAULT 0");
             }
+            if (!columns.Any(column => column.Name.Equals("AttendingDentistId", StringComparison.OrdinalIgnoreCase)))
+            {
+                await _db.ExecuteAsync(
+                    "ALTER TABLE DentalRecord ADD COLUMN AttendingDentistId INTEGER NOT NULL DEFAULT 0");
+            }
 
             _initialized = true;
         }
@@ -43,12 +48,13 @@ public class DentalRecordService
         }
     }
 
-    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingDentistName)
+    public async Task<List<string>> GetDistinctPatientEmailsForStaffAsync(string attendingDentistName, int dentistId = 0)
     {
         await EnsureInitializedAsync();
         var all = await _db.Table<DentalRecord>().ToListAsync();
         return all
-            .Where(record => record.AttendingDentist.Equals(attendingDentistName, StringComparison.OrdinalIgnoreCase))
+            .Where(record => (dentistId > 0 && record.AttendingDentistId == dentistId) ||
+                             (record.AttendingDentistId == 0 && record.AttendingDentist.Equals(attendingDentistName, StringComparison.OrdinalIgnoreCase)))
             .Select(record => record.PatientEmail)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -105,6 +111,7 @@ public class DentalRecordService
             if (appointment == null ||
                 appointment.VisitDate.Date != DateTime.Today ||
                 appointment.Status != "VitalsRecorded" ||
+                (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != dentist.Id) ||
                 (appointment.ServiceType != "Dental" &&
                  !(appointment.ServiceType == "Cert Request" && appointment.SubService == "Dental Certificate")))
             {
@@ -120,6 +127,7 @@ public class DentalRecordService
             record.PatientEmail = appointment.PatientEmail;
             record.VisitDate = DateTime.Now;
             record.AttendingDentist = dentist.FullName;
+            record.AttendingDentistId = dentist.Id;
             connection.Insert(record);
 
             appointment.Status = "Completed";

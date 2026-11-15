@@ -19,6 +19,24 @@ public class AuthService
         "Non-Teaching"
     };
 
+    public static readonly string[] ClinicStaffRoles =
+    {
+        "Nurse",
+        "Doctor",
+        "Dentist",
+        "R.E.A.D.S. Scholar"
+    };
+
+    public static bool IsClinicStaffRole(string? role) =>
+        !string.IsNullOrWhiteSpace(role) &&
+        ClinicStaffRoles.Contains(role, StringComparer.OrdinalIgnoreCase);
+
+    public static bool IsClinicAdministrator(UserAccount? account) =>
+        account != null &&
+        string.Equals(account.Role, "Admin Personnel", StringComparison.OrdinalIgnoreCase) &&
+        account.EmailVerified &&
+        string.Equals(account.AccountStatus, "Active", StringComparison.OrdinalIgnoreCase);
+
     private readonly SQLiteAsyncConnection _db;
 
     private bool _initialized;
@@ -95,14 +113,7 @@ public class AuthService
         }
     }
 
-    private async Task SeedTestAccountsAsync()
-    {
-        await SeedDoctorAsync();
-        await SeedNurseAsync();
-        await SeedDentistAsync();
-        await SeedReadsAsync();
-        await SeedAdminAsync();
-    }
+    private async Task SeedTestAccountsAsync() => await SeedAdminAsync();
 
     private async Task SeedAdminAsync()
     {
@@ -124,130 +135,6 @@ public class AuthService
             EmploymentStatus = "Active",
             EmailVerified = true,
             AccountStatus = "Active"
-        });
-    }
-
-    private async Task SeedDoctorAsync()
-    {
-        var existing =
-            await _db.Table<UserAccount>()
-                .Where(a =>
-                    a.Email == "doctor@usjr.edu.ph")
-                .FirstOrDefaultAsync();
-
-        if (existing != null)
-            return;
-
-        await _db.InsertAsync(new UserAccount
-        {
-            FullName = "Dr. Jose Rizal",
-            Email = "doctor@usjr.edu.ph",
-
-            Password =
-                PasswordSecurityService.HashPassword(
-                    "Doctor123!"),
-
-            Role = "Doctor",
-            IdNumber = "DOC-0001",
-            ProgramOrDepartment = "USJ-R Clinic",
-            Specialization = "General Medicine",
-            LicenseNumber = "PRC-0123456",
-            YearsOfExperience = "8",
-            Position = "University Physician",
-            ConsultationSchedule = "Monday – Friday",
-            EmploymentStatus = "Active"
-        });
-    }
-
-    private async Task SeedNurseAsync()
-    {
-        var existing =
-            await _db.Table<UserAccount>()
-                .Where(a =>
-                    a.Email == "nurse@usjr.edu.ph")
-                .FirstOrDefaultAsync();
-
-        if (existing != null)
-            return;
-
-        await _db.InsertAsync(new UserAccount
-        {
-            FullName = "Ana Reyes",
-            Email = "nurse@usjr.edu.ph",
-
-            Password =
-                PasswordSecurityService.HashPassword(
-                    "Nurse123!"),
-
-            Role = "Nurse",
-            IdNumber = "NUR-0001",
-            ProgramOrDepartment = "USJ-R Clinic",
-            Position = "Staff Nurse",
-            ConsultationSchedule = "Monday – Saturday",
-            EmploymentStatus = "Active"
-        });
-    }
-
-    private async Task SeedDentistAsync()
-    {
-        var existing =
-            await _db.Table<UserAccount>()
-                .Where(a =>
-                    a.Email == "dentist@usjr.edu.ph")
-                .FirstOrDefaultAsync();
-
-        if (existing != null)
-            return;
-
-        await _db.InsertAsync(new UserAccount
-        {
-            FullName = "Dr. Maria Santos",
-            Email = "dentist@usjr.edu.ph",
-
-            Password =
-                PasswordSecurityService.HashPassword(
-                    "Dentist123!"),
-
-            Role = "Dentist",
-            IdNumber = "DEN-0001",
-            ProgramOrDepartment =
-                "USJ-R Clinic - Dental",
-            Specialization = "General Dentistry",
-            LicenseNumber = "PRC-0567890",
-            YearsOfExperience = "6",
-            Position = "University Dentist",
-            ConsultationSchedule =
-                "Mon, Wed, Fri, Sat",
-            EmploymentStatus = "Active"
-        });
-    }
-
-    private async Task SeedReadsAsync()
-    {
-        var existing =
-            await _db.Table<UserAccount>()
-                .Where(a =>
-                    a.Email == "reads@usjr.edu.ph")
-                .FirstOrDefaultAsync();
-
-        if (existing != null)
-            return;
-
-        await _db.InsertAsync(new UserAccount
-        {
-            FullName = "Carlos Mendoza",
-            Email = "reads@usjr.edu.ph",
-
-            Password =
-                PasswordSecurityService.HashPassword(
-                    "Reads123!"),
-
-            Role = "R.E.A.D.S. Scholar",
-            IdNumber = "READS-0001",
-            ProgramOrDepartment =
-                "USJ-R Clinic - Front Desk",
-            Position = "Front Desk Coordinator",
-            EmploymentStatus = "Active"
         });
     }
 
@@ -444,7 +331,10 @@ public class AuthService
             }
         }
 
-        if (!passwordIsValid)
+        // Allow valid credentials for unverified/pending accounts to reach the
+        // existing verification/review flow in LoginViewModel. Explicitly inactive
+        // clinic employees are blocked here before any dashboard can open.
+        if (!passwordIsValid || account.AccountStatus == "Inactive")
             return false;
 
         CurrentUser =
@@ -559,31 +449,141 @@ public class AuthService
             .ToList();
     }
 
+    public async Task<List<UserAccount>> GetClinicStaffAsync(
+        string? roleFilter = null,
+        bool includeInactive = true)
+    {
+        await EnsureInitializedAsync();
+        if (!IsClinicAdministrator(CurrentUser))
+            return new List<UserAccount>();
+
+        var accounts = await _db.Table<UserAccount>().ToListAsync();
+        return accounts
+            .Where(account => IsClinicStaffRole(account.Role))
+            .Where(account => string.IsNullOrWhiteSpace(roleFilter) ||
+                              string.Equals(account.Role, roleFilter, StringComparison.OrdinalIgnoreCase))
+            .Where(account => includeInactive || IsActiveClinicStaff(account))
+            .OrderBy(account => account.Role)
+            .ThenBy(account => account.FullName)
+            .ToList();
+    }
+
+    public async Task<bool> CreateClinicStaffAsync(UserAccount account, string initialPassword)
+    {
+        await EnsureInitializedAsync();
+        if (!IsClinicAdministrator(CurrentUser) || !IsClinicStaffRole(account.Role))
+            return false;
+
+        account.FullName = account.FullName.Trim();
+        account.Email = account.Email.Trim().ToLowerInvariant();
+        account.IdNumber = account.IdNumber.Trim();
+        if (string.IsNullOrWhiteSpace(account.FullName) ||
+            string.IsNullOrWhiteSpace(account.Email) ||
+            string.IsNullOrWhiteSpace(account.IdNumber) ||
+            string.IsNullOrWhiteSpace(initialPassword))
+            return false;
+
+        var all = await _db.Table<UserAccount>().ToListAsync();
+        if (all.Any(existing =>
+                existing.Email.Equals(account.Email, StringComparison.OrdinalIgnoreCase) ||
+                existing.IdNumber.Equals(account.IdNumber, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        account.Password = PasswordSecurityService.HashPassword(initialPassword);
+        account.EmailVerified = true;
+        account.AccountStatus = "Active";
+        account.EmploymentStatus = "Active";
+        await _db.InsertAsync(account);
+        return true;
+    }
+
+    public async Task<bool> UpdateClinicStaffAsync(UserAccount editedAccount)
+    {
+        await EnsureInitializedAsync();
+        if (!IsClinicAdministrator(CurrentUser) || !IsClinicStaffRole(editedAccount.Role))
+            return false;
+
+        var existing = await GetAccountByDatabaseIdAsync(editedAccount.Id);
+        if (existing == null || !IsClinicStaffRole(existing.Role))
+            return false;
+
+        editedAccount.FullName = editedAccount.FullName.Trim();
+        editedAccount.Email = editedAccount.Email.Trim().ToLowerInvariant();
+        editedAccount.IdNumber = editedAccount.IdNumber.Trim();
+        if (string.IsNullOrWhiteSpace(editedAccount.FullName) ||
+            string.IsNullOrWhiteSpace(editedAccount.Email) ||
+            string.IsNullOrWhiteSpace(editedAccount.IdNumber))
+            return false;
+
+        var all = await _db.Table<UserAccount>().ToListAsync();
+        if (all.Any(other => other.Id != editedAccount.Id &&
+                (other.Email.Equals(editedAccount.Email, StringComparison.OrdinalIgnoreCase) ||
+                 other.IdNumber.Equals(editedAccount.IdNumber, StringComparison.OrdinalIgnoreCase))))
+            return false;
+
+        var roleChanged = !string.Equals(existing.Role, editedAccount.Role, StringComparison.OrdinalIgnoreCase);
+        editedAccount.Password = existing.Password;
+        editedAccount.EmailVerified = existing.EmailVerified;
+        editedAccount.AccountStatus = existing.AccountStatus;
+        editedAccount.EmploymentStatus = existing.EmploymentStatus;
+        editedAccount.FacultyIdImagePath = existing.FacultyIdImagePath;
+        editedAccount.Allergies = existing.Allergies;
+        editedAccount.AllergyDetailsJson = existing.AllergyDetailsJson;
+        var updated = await _db.UpdateAsync(editedAccount);
+        if (updated > 0 && CurrentUser?.Id == editedAccount.Id)
+            CurrentUser = editedAccount;
+        if (updated > 0 && roleChanged)
+            await AppointmentService.Instance.ReassignAppointmentsFromStaffAsync(editedAccount.Id);
+        return updated > 0;
+    }
+
+    public async Task<bool> SetClinicStaffActiveAsync(int accountId, bool isActive)
+    {
+        await EnsureInitializedAsync();
+        if (!IsClinicAdministrator(CurrentUser))
+            return false;
+
+        var account = await GetAccountByDatabaseIdAsync(accountId);
+        if (account == null || !IsClinicStaffRole(account.Role))
+            return false;
+
+        account.AccountStatus = isActive ? "Active" : "Inactive";
+        account.EmploymentStatus = isActive ? "Active" : "Inactive";
+        if (isActive)
+            account.EmailVerified = true;
+        var updated = await _db.UpdateAsync(account);
+        if (updated > 0 && !isActive)
+            await AppointmentService.Instance.ReassignAppointmentsFromStaffAsync(account.Id);
+        return updated > 0;
+    }
+
+    public static bool IsActiveClinicStaff(UserAccount account) =>
+        IsClinicStaffRole(account.Role) &&
+        account.EmailVerified &&
+        string.Equals(account.AccountStatus, "Active", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(account.EmploymentStatus, "Active", StringComparison.OrdinalIgnoreCase);
+
+    public async Task<List<UserAccount>> GetActiveClinicStaffByRoleAsync(string role)
+    {
+        await EnsureInitializedAsync();
+        if (!IsClinicStaffRole(role))
+            return new List<UserAccount>();
+
+        return (await _db.Table<UserAccount>().ToListAsync())
+            .Where(account => string.Equals(account.Role, role, StringComparison.OrdinalIgnoreCase) &&
+                              IsActiveClinicStaff(account))
+            .OrderBy(account => account.FullName)
+            .ToList();
+    }
+
     public async Task<List<UserAccount>>
         GetAllDoctorsAsync()
     {
-        await EnsureInitializedAsync();
-
-        var all =
-            await _db.Table<UserAccount>()
-                .ToListAsync();
-
-        return all
-            .Where(a =>
-                a.Role == "Doctor")
-            .ToList();
+        return await GetActiveClinicStaffByRoleAsync("Doctor");
     }
 
-    public async Task<List<UserAccount>> GetAllDentistsAsync()
-    {
-        await EnsureInitializedAsync();
-
-        var all = await _db.Table<UserAccount>().ToListAsync();
-
-        return all
-            .Where(account => account.Role == "Dentist")
-            .ToList();
-    }
+    public async Task<List<UserAccount>> GetAllDentistsAsync() =>
+        await GetActiveClinicStaffByRoleAsync("Dentist");
 
     public async Task<bool> UpdateProfileAsync(
         UserAccount updatedAccount)

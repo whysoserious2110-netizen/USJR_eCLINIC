@@ -241,6 +241,8 @@
                                         VerticalOptions="Center" />
                             </Grid>
                         </Frame>
+                        <Label Text="{Binding AvailabilityMessage}" FontSize="13" TextColor="#B54708"
+                               IsVisible="{Binding HasNoAvailableTimeOptions}" />
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>

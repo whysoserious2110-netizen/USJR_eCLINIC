@@ -39,6 +39,12 @@ public class PrescriptionService
                     connection.Execute(
                         "ALTER TABLE Prescription ADD COLUMN Quantity INTEGER NOT NULL DEFAULT 1");
                 }
+                if (!columns.Any(column =>
+                        string.Equals(column.Name, "PrescribedByStaffId", StringComparison.OrdinalIgnoreCase)))
+                {
+                    connection.Execute(
+                        "ALTER TABLE Prescription ADD COLUMN PrescribedByStaffId INTEGER NOT NULL DEFAULT 0");
+                }
 
                 connection.Execute(
                     "UPDATE Prescription SET Quantity = 1 WHERE Quantity <= 0");

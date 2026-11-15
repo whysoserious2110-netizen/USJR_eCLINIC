@@ -59,11 +59,17 @@ public async Task RefreshAsync()
         var announcement = await Services.AnnouncementService.Instance.GetActiveForRoleAsync("Dentist");
         AnnouncementText = announcement?.Message ?? "No active clinic announcements right now.";
 
-        var allDentalAppointments = await Services.AppointmentService.Instance.GetAllForServiceAsync("Dental");
+        var allDentalAppointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Dental"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == user.Id)
+            .ToList();
         FollowUpVisitCount = allDentalAppointments.Count(IsUpcomingDentalFollowUp);
 
-        var dentalAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental");
-        var certificateAppointments = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request");
+        var dentalAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Dental"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == user.Id)
+            .ToList();
+        var certificateAppointments = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == user.Id)
+            .ToList();
         var todayVisits = dentalAppointments
             .Concat(certificateAppointments.Where(appointment => appointment.SubService == "Dental Certificate"))
             .OrderBy(Services.AppointmentService.GetVisitDateTime)
@@ -154,7 +160,10 @@ public async Task RefreshAsync()
         }
 
         var appointment = await Services.AppointmentService.Instance.GetByIdAsync(item.AppointmentId);
-        if (appointment == null || !IsReadyForDentalExamination(appointment))
+        var dentist = Services.AuthService.Instance.CurrentUser;
+        if (appointment == null ||
+            (appointment.AssignedStaffId.HasValue && appointment.AssignedStaffId != dentist?.Id) ||
+            !IsReadyForDentalExamination(appointment))
         {
             await Shell.Current.DisplayAlert(
                 "Nurse triage required",

@@ -24,6 +24,12 @@ public sealed class ClinicScheduleService
         return await GetDateUnavailableReasonAsync(date, serviceType, subService) == null;
     }
 
+    public async Task<int> GetSlotIntervalMinutesAsync()
+    {
+        var interval = (await GetConfigurationAsync()).SlotIntervalMinutes;
+        return interval > 0 ? interval : 30;
+    }
+
     public async Task<string?> GetDateUnavailableReasonAsync(
         DateTime date,
         string serviceType,

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
+             x:Class="USJR_eCLINIC.Views.AccountApprovalsPage"
+             x:Name="Root"
+             x:DataType="vm:AdminDashboardViewModel"
+             Title="Account Approvals" BackgroundColor="#F7F8F6"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <conv:ImagePathConverter x:Key="ImagePathConv" />
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto,5,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12"
+              BackgroundColor="#087A3D" Padding="14,12">
+            <Button Text="←" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="22" Padding="0" />
+            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                <Label Text="Account Approvals" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Review Faculty and Non-Teaching ID submissions" FontSize="13" TextColor="White" />
+            </VerticalStackLayout>
+        </Grid>
+        <BoxView Grid.Row="1" Color="#F4C400" />
+        <RefreshView Grid.Row="2" Command="{Binding LoadCommand}">
+            <CollectionView ItemsSource="{Binding PendingStaffIdAccounts}" SelectionMode="None">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,16,16,8" Spacing="6">
+                        <Label Text="Verify the submitted Employee ID against an authorized university record or physical ID before approval."
+                               FontSize="14" TextColor="#667085" />
+                        <Label Text="{Binding PendingApprovalsCount, StringFormat='{0} account(s) awaiting review'}"
+                               FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24" Spacing="7">
+                        <Label Text="All caught up" FontSize="19" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="There are no Faculty or Non-Teaching accounts waiting for ID review."
+                               FontSize="14" TextColor="#667085" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:StaffIdReviewItem">
+                        <Border Margin="14,6" Padding="14" BackgroundColor="White" Stroke="#E1E8E2" StrokeShape="RoundRectangle 16">
+                            <Border.Shadow><Shadow Brush="#14000000" Offset="0,2" Radius="8" /></Border.Shadow>
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="3">
+                                        <Label Text="{Binding FullName}" FontSize="17" FontAttributes="Bold" TextColor="#1F2933" />
+                                        <Label Text="{Binding Role}" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="Pending" FontSize="12" FontAttributes="Bold" TextColor="#8A6500"
+                                           BackgroundColor="#FFF5CC" Padding="8,5" VerticalOptions="Start" />
+                                </Grid>
+                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="14" TextColor="#344054" />
+                                <Label Text="{Binding Email}" FontSize="14" TextColor="#667085" />
+                                <Label Text="{Binding ProgramOrDepartment}" FontSize="13" TextColor="#667085" />
+                                <Image Source="{Binding FacultyIdImagePath, Converter={StaticResource ImagePathConv}}"
+                                       HeightRequest="220" Aspect="AspectFit" BackgroundColor="#F7F8F6" />
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,2,0,0">
+                                    <Button Text="Reject" Command="{Binding Source={x:Reference Root}, Path=BindingContext.RejectCommand}"
+                                            CommandParameter="{Binding .}" BackgroundColor="#FDE8E7" TextColor="#B42318"
+                                            FontAttributes="Bold" CornerRadius="11" HeightRequest="46" />
+                                    <Button Grid.Column="1" Text="Approve" Command="{Binding Source={x:Reference Root}, Path=BindingContext.ApproveCommand}"
+                                            CommandParameter="{Binding .}" BackgroundColor="#087A3D" TextColor="White"
+                                            FontAttributes="Bold" CornerRadius="11" HeightRequest="46" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

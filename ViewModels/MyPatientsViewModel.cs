@@ -28,7 +28,7 @@ public partial class MyPatientsViewModel : ObservableObject
         var doctor = Services.AuthService.Instance.CurrentUser;
         if (doctor == null) return;
 
-        var emails = await Services.MedicalRecordService.Instance.GetDistinctPatientEmailsForStaffAsync(doctor.FullName);
+        var emails = await Services.MedicalRecordService.Instance.GetDistinctPatientEmailsForStaffAsync(doctor.FullName, doctor.Id);
 
         Patients.Clear();
 

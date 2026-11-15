@@ -49,8 +49,18 @@ public partial class WriteRxViewModel : ObservableObject
             await Services.MedicalRecordService.Instance.GetPatientEmailsWithConsultationsAsync(),
             StringComparer.OrdinalIgnoreCase);
 
-        var todaysMedicalVisits = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical");
-        var todaysCertificateVisits = await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request");
+        var doctor = Services.AuthService.Instance.CurrentUser;
+        if (doctor?.Role != "Doctor")
+        {
+            HasEligiblePatients = false;
+            return;
+        }
+        var todaysMedicalVisits = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Medical"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == doctor.Id)
+            .ToList();
+        var todaysCertificateVisits = (await Services.AppointmentService.Instance.GetTodayForServiceAsync("Cert Request"))
+            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == doctor.Id)
+            .ToList();
 
         foreach (var appointment in todaysMedicalVisits.Concat(todaysCertificateVisits))
         {
@@ -162,7 +172,8 @@ public partial class WriteRxViewModel : ObservableObject
                 Quantity = quantity,
                 Instructions = medicine.Instructions.Trim(),
                 IsClinicGiven = medicine.IsClinicGiven,
-                PrescribedBy = doctor?.FullName ?? "Doctor"
+                PrescribedBy = doctor?.FullName ?? "Doctor",
+                PrescribedByStaffId = doctor?.Id ?? 0
             };
 
             await Services.PrescriptionService.Instance.AddAsync(prescription);

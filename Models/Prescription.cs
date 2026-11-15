@@ -15,6 +15,7 @@ public class Prescription
     public string Instructions { get; set; } = string.Empty;
     public bool IsClinicGiven { get; set; }
     public string PrescribedBy { get; set; } = string.Empty;
+    public int PrescribedByStaffId { get; set; }
     public bool IsDispensed { get; set; }
     public DateTime? DispensedDate { get; set; }
 }
