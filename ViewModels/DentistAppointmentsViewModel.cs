@@ -6,6 +6,7 @@ namespace USJR_eCLINIC.ViewModels;
 
 public partial class DentistAppointmentItem : ObservableObject
 {
+    public int AppointmentId { get; set; }
     public string PatientName { get; set; } = string.Empty;
     public string PatientIdNumber { get; set; } = string.Empty;
     public string PatientIdDisplay => string.IsNullOrWhiteSpace(PatientIdNumber) ? "ID unavailable" : $"ID: {PatientIdNumber}";
@@ -13,6 +14,7 @@ public partial class DentistAppointmentItem : ObservableObject
     public string ReasonOrPurpose { get; set; } = string.Empty;
     public bool HasReasonOrPurpose => !string.IsNullOrWhiteSpace(ReasonOrPurpose);
     public bool IsFollowUp { get; set; }
+    public bool CanReviewFollowUp { get; set; }
     public DateTime VisitDate { get; set; }
     public string DateDisplay { get; set; } = string.Empty;
     public string TimeDisplay { get; set; } = string.Empty;
@@ -54,7 +56,11 @@ public partial class DentistAppointmentsViewModel : ObservableObject
         if (dentist?.Role != "Dentist")
             return;
         var dentalAppointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Dental"))
-            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
+            .Where(appointment =>
+                appointment.Status != "Reschedule Requested" &&
+                (!appointment.AssignedStaffId.HasValue ||
+                 appointment.AssignedStaffId == dentist.Id ||
+                 (Services.AppointmentService.IsFollowUpAppointment(appointment) && appointment.Status == "Pending")))
             .ToList();
         var certificateAppointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Cert Request"))
             .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == dentist.Id)
@@ -73,11 +79,13 @@ public partial class DentistAppointmentsViewModel : ObservableObject
 
             _all.Add(new DentistAppointmentItem
             {
+                AppointmentId = appointment.Id,
                 PatientName = patient?.FullName ?? appointment.PatientEmail,
                 PatientIdNumber = patient?.IdNumber ?? string.Empty,
                 DentalService = appointment.ServiceType == "Cert Request" ? "Dental Certificate Visit" : appointment.SubService,
                 ReasonOrPurpose = appointment.ReasonOrPurpose,
                 IsFollowUp = isFollowUp,
+                CanReviewFollowUp = isFollowUp && appointment.Status == "Pending",
                 VisitDate = appointment.VisitDate,
                 DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy"),
                 TimeDisplay = appointment.VisitTime,
@@ -145,6 +153,21 @@ public partial class DentistAppointmentsViewModel : ObservableObject
         OnPropertyChanged(nameof(IsUpcomingTab));
         OnPropertyChanged(nameof(IsPastTab));
         ApplyFilter();
+    }
+
+    [RelayCommand]
+    private async Task ReviewFollowUp(DentistAppointmentItem item)
+    {
+        if (item == null || !item.CanReviewFollowUp)
+            return;
+
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Dentist")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only a Dentist can review dental follow-up requests.", "OK");
+            return;
+        }
+
+        await Shell.Current.Navigation.PushAsync(new Views.FollowUpReviewPage(item.AppointmentId));
     }
 
     [RelayCommand]

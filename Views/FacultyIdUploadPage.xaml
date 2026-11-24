@@ -7,19 +7,19 @@
              Title="Employee ID Review" BackgroundColor="#F7F8F6" NavigationPage.HasNavigationBar="False">
     <VerticalStackLayout Padding="22,12" Spacing="16">
         <Grid RowDefinitions="Auto,5" Margin="-22,-12,-22,4">
-            <Label Text="Employee ID review" BackgroundColor="#176B38" TextColor="#F4C400" FontSize="19"
+            <Label Text="Employee ID review" BackgroundColor="#176B38" TextColor="#F4C400" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" Padding="18,18"/>
             <BoxView Grid.Row="1" Color="#F4C400"/>
         </Grid>
-        <Label Text="{Binding ReviewHeading}" FontSize="22" FontAttributes="Bold" TextColor="#17212B"/>
+        <Label Text="{Binding ReviewHeading}" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#17212B"/>
         <Label Text="{Binding ReviewInstructions}"
-               FontSize="14" TextColor="#667085"/>
+               FontSize="{StaticResource Typography.Body}" TextColor="#667085"/>
         <Button Text="Choose Employee ID photo" Command="{Binding ChooseImageCommand}" BackgroundColor="White"
                 TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1" CornerRadius="12" HeightRequest="48"/>
-        <Label Text="No photo selected" IsVisible="{Binding IsPhotoMissing}" FontSize="13" TextColor="#667085"/>
+        <Label Text="No photo selected" IsVisible="{Binding IsPhotoMissing}" FontSize="{StaticResource Typography.Body}" TextColor="#667085"/>
         <HorizontalStackLayout IsVisible="{Binding HasPhoto}" Spacing="10">
             <Image Source="{Binding ImagePath}" WidthRequest="48" HeightRequest="48" Aspect="AspectFill"/>
-            <Label Text="{Binding ImageName}" FontSize="13" TextColor="#344054" VerticalOptions="Center" LineBreakMode="MiddleTruncation"/>
+            <Label Text="{Binding ImageName}" FontSize="{StaticResource Typography.Body}" TextColor="#344054" VerticalOptions="Center" LineBreakMode="MiddleTruncation"/>
         </HorizontalStackLayout>
         <Button Text="Submit for review" Command="{Binding SubmitCommand}" BackgroundColor="#087A3D"
                 TextColor="White" FontAttributes="Bold" CornerRadius="14" HeightRequest="50"/>

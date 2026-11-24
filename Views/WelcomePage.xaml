@@ -21,8 +21,8 @@
     Margin="0,0,0,0" />
 
             <Label
-                    FontSize="27"
-                    FontFamily="GeistBold"
+                    FontSize="{StaticResource Typography.Headline}"
+                    FontFamily="OpenSansSemibold"
     
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
@@ -35,7 +35,7 @@
                 </Label.FormattedText>
             </Label>
             <Label Text="Your Health, Our Priority"
-                   FontSize="15"
+                   FontSize="{StaticResource Typography.Body}"
                    TextColor="Black"
                    HorizontalOptions="Center"/>
 
@@ -54,7 +54,7 @@
 
         <Label Grid.Row="1"
                Text="UNIVERSITY OF SAN JOSE - RECOLETOS"
-               FontSize="11"
+               FontSize="{StaticResource Typography.Caption}"
                CharacterSpacing="1"
                TextColor="DarkGreen"
                HorizontalOptions="Center"

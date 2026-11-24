@@ -90,8 +90,7 @@ public partial class NurseDashboardViewModel : ObservableObject
             "Log Out", "Are you sure you want to log out?", "Log Out", "Cancel");
         if (!confirm) return;
 
-        await Services.SecureSessionService.Instance.ClearSessionAsync();
-        Services.AuthService.Instance.Logout();
+        await Services.SecureSessionService.Instance.SignOutAsync();
         await Shell.Current.Navigation.PopToRootAsync();
     }
 }

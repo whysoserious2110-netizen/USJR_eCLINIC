@@ -35,7 +35,7 @@
                                VerticalOptions="Center">
                             <Grid>
                                 <Label Text="&#128100;"
-                                       FontSize="24"
+                                       FontSize="{StaticResource Typography.Headline}"
                                        TextColor="#087A3D"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
@@ -49,10 +49,10 @@
                                              Spacing="2"
                                              VerticalOptions="Center">
                             <Label Text="Adelante, Scholar!"
-                                   FontSize="12"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    TextColor="#087A3D"/>
                             <Label Text="{Binding StaffName}"
-                                   FontSize="19"
+                                   FontSize="{StaticResource Typography.Section}"
                                    FontAttributes="Bold"
                                    TextColor="#087A3D"/>
                             <Border BackgroundColor="White"
@@ -62,7 +62,7 @@
                                     HorizontalOptions="Start"
                                     Margin="0,3,0,0">
                                 <Label Text="R.E.A.D.S. SCHOLAR"
-                                       FontSize="10"
+                                       FontSize="{StaticResource Typography.Caption}"
                                        FontAttributes="Bold"
                                        TextColor="#087A3D"/>
                             </Border>
@@ -85,14 +85,14 @@
                         <Label
                             Grid.Column="0"
                             Text="&#9432;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#B8862B"
                             VerticalOptions="Start"/>
 
                         <Label
                             Grid.Column="1"
                             Text="{Binding AnnouncementText}"
-                            FontSize="13"
+                            FontSize="{StaticResource Typography.Body}"
                             TextColor="#5A4A1E"/>
 
                     </Grid>
@@ -102,7 +102,7 @@
                 <!-- Front Desk Actions -->
                 <Label
                     Text="Front Desk Actions"
-                    FontSize="17"
+                    FontSize="{StaticResource Typography.Emphasis}"
                     FontAttributes="Bold"
                     TextColor="#12212E"
                     Margin="0,6,0,0"/>
@@ -128,12 +128,12 @@
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#E6F3FD" CornerRadius="10" Padding="8"
                                    WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128202;" FontSize="18"
+                                <Label Text="&#128202;" FontSize="{StaticResource Typography.Section}"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Today's Overview" FontAttributes="Bold"
-                                   FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Clinic operations" FontSize="11" TextColor="#8793A0"/>
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                            <Label Text="Clinic operations" FontSize="{StaticResource Typography.Caption}" TextColor="#8793A0"/>
                         </VerticalStackLayout>
                     </Frame>
 
@@ -151,12 +151,12 @@
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="8"
                                    WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#9989;" FontSize="18"
+                                <Label Text="&#9989;" FontSize="{StaticResource Typography.Section}"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Check-In Patient" FontAttributes="Bold"
-                                   FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Enter or scan ID" FontSize="11" TextColor="#687585"/>
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                            <Label Text="Enter or scan ID" FontSize="{StaticResource Typography.Caption}" TextColor="#687585"/>
                         </VerticalStackLayout>
                     </Frame>
 
@@ -174,12 +174,12 @@
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="8"
                                    WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128269;" FontSize="18"
+                                <Label Text="&#128269;" FontSize="{StaticResource Typography.Section}"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Patient Lookup" FontAttributes="Bold"
-                                   FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Search or register patient" FontSize="11" TextColor="#8793A0"/>
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                            <Label Text="Search or register patient" FontSize="{StaticResource Typography.Caption}" TextColor="#8793A0"/>
                         </VerticalStackLayout>
                     </Frame>
 
@@ -197,12 +197,12 @@
                         <VerticalStackLayout Spacing="10">
                             <Frame BackgroundColor="#E6F3FD" CornerRadius="10" Padding="8"
                                    WidthRequest="40" HeightRequest="40" HasShadow="False">
-                                <Label Text="&#128227;" FontSize="18"
+                                <Label Text="&#128227;" FontSize="{StaticResource Typography.Section}"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Post Announcement" FontAttributes="Bold"
-                                   FontSize="14" TextColor="#12212E"/>
-                            <Label Text="Clinic-wide notice" FontSize="11" TextColor="#8793A0"/>
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                            <Label Text="Clinic-wide notice" FontSize="{StaticResource Typography.Caption}" TextColor="#8793A0"/>
                         </VerticalStackLayout>
                     </Frame>
                 </Grid>
@@ -220,16 +220,16 @@
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                         <Frame Grid.Column="0" BackgroundColor="#FFF4C7" CornerRadius="10"
                                Padding="8" WidthRequest="42" HeightRequest="42" HasShadow="False">
-                            <Label Text="&#128196;" FontSize="19" HorizontalOptions="Center"
+                            <Label Text="&#128196;" FontSize="{StaticResource Typography.Section}" HorizontalOptions="Center"
                                    VerticalOptions="Center" TextColor="#087A3D"/>
                         </Frame>
                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="Issued Certificate" FontSize="14"
+                            <Label Text="Issued Certificate" FontSize="{StaticResource Typography.Body}"
                                    FontAttributes="Bold" TextColor="#12212E"/>
                             <Label Text="{Binding ReadyCertificateCount, StringFormat='{0} ready for pickup'}"
-                                   FontSize="11" TextColor="#9AA4AE"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                         </VerticalStackLayout>
-                        <Label Grid.Column="2" Text="›" FontSize="22" TextColor="#087A3D"
+                        <Label Grid.Column="2" Text="›" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                VerticalOptions="Center"/>
                     </Grid>
                 </Frame>
@@ -247,13 +247,13 @@
 
                             <Label
                                 Text="Next Arrivals"
-                                FontSize="17"
+                                FontSize="{StaticResource Typography.Emphasis}"
                                 FontAttributes="Bold"
                                 TextColor="#12212E"/>
 
                             <Label
                                 Text="{Binding NextArrivalsSummary}"
-                                FontSize="11"
+                                FontSize="{StaticResource Typography.Caption}"
                                 TextColor="#9AA4AE"/>
 
                         </VerticalStackLayout>
@@ -261,7 +261,7 @@
                         <Label
                             Grid.Column="1"
                             Text="View All →"
-                            FontSize="12"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             TextColor="#0F9B8E"
                             VerticalOptions="Center">
@@ -300,7 +300,7 @@
 
                                 <Label
                                     Text="&#128197;"
-                                    FontSize="21"
+                                    FontSize="{StaticResource Typography.PageTitle}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -313,13 +313,13 @@
 
                                 <Label
                                     Text="No upcoming visits today"
-                                    FontSize="13"
+                                    FontSize="{StaticResource Typography.Body}"
                                     FontAttributes="Bold"
                                     TextColor="#6B7684"/>
 
                                 <Label
                                     Text="Confirmed visits scheduled for later today will appear here."
-                                    FontSize="11"
+                                    FontSize="{StaticResource Typography.Caption}"
                                     TextColor="#9AA4AE"/>
 
                             </VerticalStackLayout>
@@ -361,13 +361,13 @@
                                                                  HorizontalOptions="Center"
                                                                  VerticalOptions="Center">
                                                 <Label Text="{Binding TimeDisplay}"
-                                                       FontSize="11"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="#12212E"
                                                        HorizontalOptions="Center"
                                                        HorizontalTextAlignment="Center" />
                                                 <Label Text="{Binding ArrivalTimeContext}"
-                                                       FontSize="9"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding ArrivalTimeContextColor}"
                                                        HorizontalOptions="Center"
@@ -380,15 +380,15 @@
                                                              Spacing="2"
                                                              VerticalOptions="Center">
                                             <Label Text="{Binding PatientName}"
-                                                   FontSize="13"
+                                                   FontSize="{StaticResource Typography.Body}"
                                                    FontAttributes="Bold"
                                                    TextColor="#12212E"
                                                    LineBreakMode="TailTruncation" />
                                             <Label Text="{Binding PatientIdNumber}"
-                                                   FontSize="10"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    TextColor="#8793A0"
                                                    LineBreakMode="TailTruncation" />
-                                            <Label FontSize="11"
+                                            <Label FontSize="{StaticResource Typography.Caption}"
                                                    TextColor="#526171"
                                                    LineBreakMode="TailTruncation">
                                                 <Label.FormattedText>
@@ -437,13 +437,13 @@
 
                     <Label
                         Text="&#8962;"
-                        FontSize="18"
+                        FontSize="{StaticResource Typography.Section}"
                         TextColor="#0F9B8E"
                         HorizontalOptions="Center"/>
 
                     <Label
                         Text="Home"
-                        FontSize="11"
+                        FontSize="{StaticResource Typography.Caption}"
                         TextColor="#0F9B8E"
                         FontAttributes="Bold"
                         HorizontalOptions="Center"/>
@@ -466,13 +466,13 @@
 
                         <Label
                             Text="&#128197;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
                         <Label
                             Text="Appointments"
-                            FontSize="11"
+                            FontSize="{StaticResource Typography.Caption}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
@@ -492,7 +492,7 @@
 
                         <Label
                             Text="{Binding PendingApprovalCount}"
-                            FontSize="10"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center"
@@ -518,13 +518,13 @@
 
                         <Label
                             Text="&#128276;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
                         <Label
                             Text="Notifications"
-                            FontSize="11"
+                            FontSize="{StaticResource Typography.Caption}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
@@ -544,7 +544,7 @@
 
                         <Label
                             Text="{Binding UnreadNotificationCount}"
-                            FontSize="10"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center"
@@ -567,13 +567,13 @@
 
                     <Label
                         Text="&#128100;"
-                        FontSize="18"
+                        FontSize="{StaticResource Typography.Section}"
                         TextColor="#9AA4AE"
                         HorizontalOptions="Center"/>
 
                     <Label
                         Text="Profile"
-                        FontSize="11"
+                        FontSize="{StaticResource Typography.Caption}"
                         TextColor="#9AA4AE"
                         HorizontalOptions="Center"/>
 

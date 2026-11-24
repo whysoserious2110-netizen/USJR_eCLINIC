@@ -20,7 +20,7 @@
                         StrokeShape="RoundRectangle 41"
                         HorizontalOptions="Center">
                     <Label Text="+"
-                           FontSize="62"
+                           FontSize="{StaticResource Typography.Display}"
                            FontAttributes="Bold"
                            TextColor="#176B38"
                            HorizontalTextAlignment="Center"
@@ -30,12 +30,12 @@
 
                 <VerticalStackLayout Spacing="5">
                     <Label Text="{Binding WelcomeText}"
-                           FontSize="27"
+                           FontSize="{StaticResource Typography.Headline}"
                            FontAttributes="Bold"
                            TextColor="#173323"
                            HorizontalOptions="Center" />
                     <Label Text="Sign in with your password to continue."
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            TextColor="#718075"
                            HorizontalOptions="Center" />
                 </VerticalStackLayout>
@@ -55,7 +55,7 @@
                                 HorizontalOptions="Center">
                             <Grid>
                                 <Label Text="●"
-                                       FontSize="42"
+                                       FontSize="{StaticResource Typography.Display}"
                                        TextColor="#9AAC9E"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center" />
@@ -68,12 +68,12 @@
 
                         <VerticalStackLayout Spacing="3">
                             <Label Text="{Binding UserName}"
-                                   FontSize="19"
+                                   FontSize="{StaticResource Typography.Section}"
                                    FontAttributes="Bold"
                                    TextColor="#173323"
                                    HorizontalTextAlignment="Center" />
                             <Label Text="{Binding Role}"
-                                   FontSize="13"
+                                   FontSize="{StaticResource Typography.Body}"
                                    TextColor="#176B38"
                                    HorizontalOptions="Center" />
                         </VerticalStackLayout>
@@ -82,11 +82,11 @@
 
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="{Binding IdLabel}"
-                                   FontSize="12"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    TextColor="#718075" />
                             <Label Grid.Column="1"
                                    Text="{Binding MaskedId}"
-                                   FontSize="12"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    FontAttributes="Bold"
                                    TextColor="#173323" />
                         </Grid>
@@ -108,7 +108,7 @@
                                    HorizontalOptions="Center" />
 
                 <Label Text="Use another account"
-                       FontSize="13"
+                       FontSize="{StaticResource Typography.Body}"
                        FontAttributes="Bold"
                        TextColor="#176B38"
                        HorizontalOptions="Center">
@@ -121,7 +121,7 @@
 
         <Label Grid.Row="1"
                Text="Your password is never saved on this device."
-               FontSize="11"
+               FontSize="{StaticResource Typography.Caption}"
                TextColor="#89968B"
                HorizontalTextAlignment="Center"
                Margin="0,15,0,5" />

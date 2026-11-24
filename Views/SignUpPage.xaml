@@ -17,16 +17,16 @@
         <VerticalStackLayout Padding="22,12,22,30" Spacing="0">
             <Grid RowDefinitions="Auto,5" Margin="-22,-12,-22,18">
                 <Grid Grid.Row="0" ColumnDefinitions="48,*" BackgroundColor="#176B38" Padding="22,13">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="22" TextColor="#087A3D"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="10" WidthRequest="40" HeightRequest="40"
                             Padding="0" Command="{Binding GoBackCommand}" VerticalOptions="Center"/>
-                    <Label Grid.Column="1" Text="Create Account" FontSize="18" FontAttributes="Bold"
+                    <Label Grid.Column="1" Text="Create Account" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                            TextColor="#F4C400" Margin="10,0,0,0" VerticalOptions="Center"/>
                 </Grid>
                 <BoxView Grid.Row="1" Color="#F4C400"/>
             </Grid>
 
-            <Label Text="Choose your university role" FontSize="14" FontAttributes="Bold"
+            <Label Text="Choose your university role" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                    TextColor="#17212B" Margin="0,0,0,8"/>
             <FlexLayout Wrap="Wrap" Margin="0,0,0,15">
                 <Frame BackgroundColor="{Binding SelectedRole, Converter={StaticResource RoleBgConverter}, ConverterParameter='Student'}"
@@ -46,27 +46,27 @@
                 </Frame>
             </FlexLayout>
 
-            <Label Text="{Binding IdLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="{Binding IdLabel}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Entry ClassId="NoAndroidUnderline" Text="{Binding IdNumber}" Placeholder="{Binding IdPlaceholder}" Keyboard="{Binding IdKeyboard}" MaxLength="{Binding IdMaxLength}" VerticalOptions="Center"/>
             </Border>
-            <Label IsVisible="{Binding RequiresEmployeeIdReview}" Text="{Binding IdHelperText}" FontSize="12" TextColor="#667085" Margin="0,-8,0,12"/>
+            <Label IsVisible="{Binding RequiresEmployeeIdReview}" Text="{Binding IdHelperText}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" Margin="0,-8,0,12"/>
 
             <VerticalStackLayout IsVisible="{Binding RequiresEmployeeIdReview}" Spacing="6" Margin="0,0,0,14">
-                <Label Text="Employee ID photo (required for review)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Employee ID photo (required for review)" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Button Text="{Binding EmployeeIdPhotoButtonText}" Command="{Binding ChooseEmployeeIdImageCommand}"
                         BackgroundColor="White" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
                         CornerRadius="11" HeightRequest="46"/>
-                <Label Text="No photo selected" IsVisible="{Binding IsEmployeeIdPhotoMissing}" FontSize="12" TextColor="#667085"/>
+                <Label Text="No photo selected" IsVisible="{Binding IsEmployeeIdPhotoMissing}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
                 <HorizontalStackLayout IsVisible="{Binding HasEmployeeIdPhoto}" Spacing="10">
                     <Image Source="{Binding FacultyIdImagePath}" WidthRequest="44" HeightRequest="44" Aspect="AspectFill"/>
-                    <Label Text="{Binding EmployeeIdPhotoName}" FontSize="12" TextColor="#667085" VerticalOptions="Center" LineBreakMode="MiddleTruncation"/>
+                    <Label Text="{Binding EmployeeIdPhotoName}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" VerticalOptions="Center" LineBreakMode="MiddleTruncation"/>
                 </HorizontalStackLayout>
                 <Label Text="An authorized clinic administrator will compare this photo with an official university ID before activating the account."
-                       FontSize="12" TextColor="#667085"/>
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
             </VerticalStackLayout>
 
-            <Label Text="{Binding ProgramDepartmentLabel}" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="{Binding ProgramDepartmentLabel}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="10,0" HeightRequest="52" Margin="0,0,0,14">
                 <Picker Title="{Binding ProgramDepartmentPickerTitle}"
                         ItemsSource="{Binding ProgramDepartmentOptions}"
@@ -75,7 +75,7 @@
             </Border>
 
             <VerticalStackLayout IsVisible="{Binding IsStudent}" Spacing="6" Margin="0,-8,0,14">
-                <Label Text="Year Level" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Year Level" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="10,0" HeightRequest="52">
                     <Picker Title="Select your current year level"
                             ItemsSource="{Binding YearLevelOptions}"
@@ -90,40 +90,40 @@
                        Placeholder="Enter your course, school, or department"/>
             </Border>
 
-            <Label Text="Full Name" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="Full Name" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Entry ClassId="NoAndroidUnderline" Text="{Binding FullName}" Placeholder="Last, First, M.I."/>
             </Border>
 
-            <Label Text="USJ-R Email Address" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="USJ-R Email Address" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Entry ClassId="NoAndroidUnderline" Text="{Binding Email}" Placeholder="name@usjr.edu.ph" Keyboard="Email"/>
             </Border>
 
-            <Label Text="Allergies (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="Allergies (optional)" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Entry ClassId="NoAndroidUnderline" Text="{Binding Allergies}" Placeholder="Enter allergies (if any), or None"/>
             </Border>
 
-            <Label Text="Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="Password" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,14">
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Text="{Binding Password}" Placeholder="Create a password" IsPassword="{Binding IsPasswordHidden}"/>
                     <Button Grid.Column="1" Text="{Binding PasswordVisibilityText}" Command="{Binding TogglePasswordVisibilityCommand}" BackgroundColor="Transparent" TextColor="#087A3D" Padding="6,0"/>
                 </Grid>
             </Border>
-            <Label Text="Confirm Password" FontSize="13" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
+            <Label Text="Confirm Password" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,0,0,7"/>
             <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 12" Padding="12,0" HeightRequest="50" Margin="0,0,0,5">
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry ClassId="NoAndroidUnderline" Grid.Column="0" Text="{Binding ConfirmPassword}" Placeholder="Re-enter your password" IsPassword="{Binding IsConfirmPasswordHidden}"/>
                     <Button Grid.Column="1" Text="{Binding ConfirmPasswordVisibilityText}" Command="{Binding ToggleConfirmPasswordVisibilityCommand}" BackgroundColor="Transparent" TextColor="#087A3D" Padding="6,0"/>
                 </Grid>
             </Border>
-            <Label Text="{Binding PasswordMatchMessage}" TextColor="{Binding PasswordMatchColor}" FontSize="12" Margin="2,2,0,16"/>
+            <Label Text="{Binding PasswordMatchMessage}" TextColor="{Binding PasswordMatchColor}" FontSize="{StaticResource Typography.Caption}" Margin="2,2,0,16"/>
 
             <HorizontalStackLayout Spacing="8" Margin="0,0,0,18">
                 <CheckBox IsChecked="{Binding AgreedToPrivacyPolicy}" Color="#087A3D"/>
-                <Label Text="I agree to the USJ-R Health Service Data Privacy Policy" FontSize="13" TextColor="#12212E" VerticalOptions="Center"/>
+                <Label Text="I agree to the USJ-R Health Service Data Privacy Policy" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" VerticalOptions="Center"/>
             </HorizontalStackLayout>
             <Button Text="Continue to Email Verification" Command="{Binding RegisterCommand}" IsEnabled="{Binding IsRegistering, Converter={StaticResource InvertedBoolConverter}}"
                     BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold" CornerRadius="18" HeightRequest="54"/>

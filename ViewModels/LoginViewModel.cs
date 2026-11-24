@@ -57,7 +57,7 @@ public partial class LoginViewModel : ObservableObject
 
         if (HasRememberedAccount && RememberMe && string.IsNullOrWhiteSpace(Password))
         {
-            await ResumeRememberedAccountAsync();
+            await ResumeRememberedAccountAsync(EmailOrId?.Trim() ?? string.Empty);
             return;
         }
 
@@ -132,12 +132,13 @@ public partial class LoginViewModel : ObservableObject
         finally { IsLoggingIn = false; }
     }
 
-    private async Task ResumeRememberedAccountAsync()
+    private async Task ResumeRememberedAccountAsync(string identifier)
     {
         IsLoggingIn = true;
         try
         {
-            var restored = await Services.SecureSessionService.Instance.TryRestoreSessionAsync();
+            var restored = await Services.SecureSessionService.Instance
+                .ReauthenticateRememberedUserAsync(identifier);
             var user = Services.AuthService.Instance.CurrentUser;
             if (!restored || user == null || !user.EmailVerified || user.AccountStatus != "Active")
             {

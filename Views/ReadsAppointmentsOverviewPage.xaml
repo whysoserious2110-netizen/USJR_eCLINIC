@@ -21,15 +21,15 @@
                     StrokeShape="RoundRectangle 12" Padding="12,10">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                     <Button Grid.Column="0" Text="&#8592;"
-                            FontSize="21" TextColor="#087A3D"
+                            FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="9"
                             WidthRequest="38" HeightRequest="38" Padding="0"
                             Command="{Binding GoBackCommand}" />
                     <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                        <Label Text="All Appointments" FontSize="19"
+                        <Label Text="All Appointments" FontSize="{StaticResource Typography.Section}"
                                FontAttributes="Bold" TextColor="#F4C400" />
                         <Label Text="Clinic-wide overview across all service types"
-                               FontSize="11" TextColor="#E9F3EC" />
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#E9F3EC" />
                     </VerticalStackLayout>
                 </Grid>
             </Border>
@@ -51,7 +51,7 @@
                                               CommandParameter="All" />
                     </VerticalStackLayout.GestureRecognizers>
                     <Label Text="All"
-                           FontSize="13"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
                            TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}" />
@@ -70,7 +70,7 @@
                                               CommandParameter="Upcoming" />
                     </VerticalStackLayout.GestureRecognizers>
                     <Label Text="Upcoming"
-                           FontSize="13"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
                            TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}" />
@@ -89,7 +89,7 @@
                                               CommandParameter="Past" />
                     </VerticalStackLayout.GestureRecognizers>
                     <Label Text="Past"
-                           FontSize="13"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
                            TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}" />
@@ -130,7 +130,7 @@
                                         <Label Grid.Column="0"
                                                Text="{Binding PatientName}"
                                                FontAttributes="Bold"
-                                               FontSize="15"
+                                               FontSize="{StaticResource Typography.Body}"
                                                TextColor="#12212E"
                                                VerticalOptions="Center"
                                                LineBreakMode="TailTruncation" />
@@ -142,13 +142,13 @@
                                                HasShadow="False"
                                                VerticalOptions="Center">
                                             <Label Text="{Binding StatusDisplay}"
-                                                   FontSize="10"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    FontAttributes="Bold"
                                                    TextColor="White" />
                                         </Frame>
                                     </Grid>
 
-                                    <Label FontSize="13"
+                                    <Label FontSize="{StaticResource Typography.Body}"
                                            TextColor="#526171"
                                            LineBreakMode="TailTruncation">
                                         <Label.FormattedText>
@@ -161,6 +161,11 @@
                                         </Label.FormattedText>
                                     </Label>
 
+                                    <Label Text="{Binding AssignedClinicianDisplay}"
+                                           FontSize="{StaticResource Typography.Caption}"
+                                           TextColor="#087A3D"
+                                           LineBreakMode="TailTruncation" />
+
                                     <!-- Date and time -->
                                     <Grid ColumnDefinitions="*,*"
                                           ColumnSpacing="8">
@@ -171,11 +176,11 @@
                                                HasShadow="False">
                                             <VerticalStackLayout Spacing="2">
                                                 <Label Text="DATE"
-                                                       FontSize="9"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="#8A96A3" />
                                                 <Label Text="{Binding DateDisplay}"
-                                                       FontSize="12"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="#334155" />
                                             </VerticalStackLayout>
@@ -188,11 +193,11 @@
                                                HasShadow="False">
                                             <VerticalStackLayout Spacing="2">
                                                 <Label Text="TIME"
-                                                       FontSize="9"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="#8A96A3" />
                                                 <Label Text="{Binding TimeDisplay}"
-                                                       FontSize="12"
+                                                       FontSize="{StaticResource Typography.Caption}"
                                                        FontAttributes="Bold"
                                                        TextColor="#334155" />
                                             </VerticalStackLayout>
@@ -206,7 +211,7 @@
                                                      Padding="16,12,16,15"
                                                      Spacing="8">
                                     <Label Text="NEW REQUEST · NEEDS REVIEW"
-                                           FontSize="10"
+                                           FontSize="{StaticResource Typography.Caption}"
                                            FontAttributes="Bold"
                                            TextColor="#A87518" />
                                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
@@ -252,16 +257,16 @@
                                  Spacing="8"
                                  Padding="24">
                 <Label Text="&#128197;"
-                       FontSize="40"
+                       FontSize="{StaticResource Typography.Display}"
                        HorizontalOptions="Center"
                        TextColor="#B8C2CC" />
                 <Label Text="No appointments here"
-                       FontSize="16"
+                       FontSize="{StaticResource Typography.Emphasis}"
                        FontAttributes="Bold"
                        TextColor="#526171"
                        HorizontalOptions="Center" />
                 <Label Text="Appointments for this filter will appear here."
-                       FontSize="12"
+                       FontSize="{StaticResource Typography.Caption}"
                        TextColor="#8793A0"
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>

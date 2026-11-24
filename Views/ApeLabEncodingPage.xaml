@@ -9,12 +9,12 @@
 
     <Grid RowDefinitions="Auto,6,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" BackgroundColor="#176B38" Padding="18,42,18,15">
-            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="28"
+            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="{StaticResource Typography.Headline}"
                     TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
                     HeightRequest="40" WidthRequest="40" CornerRadius="10" />
             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                <Label Text="APE &amp; Lab Results" FontSize="20" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="Encode results from verified reports" FontSize="12" TextColor="White" />
+                <Label Text="APE &amp; Lab Results" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Encode results from verified reports" FontSize="{StaticResource Typography.Caption}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6" />
@@ -24,13 +24,13 @@
             <Border BackgroundColor="#F1ECFA" Stroke="#E2DAF4" StrokeThickness="1"
                     Padding="13" StrokeShape="RoundRectangle 14">
                 <Label Text="For Faculty and Non-Teaching patients. Select the correct patient before entering results."
-                       FontSize="12" TextColor="#5E5279" />
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#5E5279" />
             </Border>
 
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1"
                     Padding="15" StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="9">
-                    <Label Text="PATIENT" FontSize="10" FontAttributes="Bold" TextColor="#72808D" />
+                    <Label Text="PATIENT" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#72808D" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#DDE4E9" StrokeThickness="1"
                             Padding="10,1" StrokeShape="RoundRectangle 11">
                         <Entry Placeholder="Search by patient name or ID" Text="{Binding PatientSearchText}"
@@ -40,13 +40,13 @@
                     <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding IsLoadingPatients}" ColumnSpacing="8">
                         <ActivityIndicator IsRunning="{Binding IsLoadingPatients}" Color="#087A3D"
                                            HeightRequest="20" WidthRequest="20" />
-                        <Label Grid.Column="1" Text="{Binding PatientLoadMessage}" FontSize="11"
+                        <Label Grid.Column="1" Text="{Binding PatientLoadMessage}" FontSize="{StaticResource Typography.Caption}"
                                TextColor="#72808D" VerticalOptions="Center" />
                     </Grid>
                     <Label Text="{Binding PatientLoadMessage}" IsVisible="{Binding HasNoPatients}"
-                           FontSize="11" TextColor="#A36E1D" />
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#A36E1D" />
                     <Label Text="Type the patient's name or ID, then select the matching record."
-                           IsVisible="{Binding IsSearchPromptVisible}" FontSize="11" TextColor="#72808D" />
+                           IsVisible="{Binding IsSearchPromptVisible}" FontSize="{StaticResource Typography.Caption}" TextColor="#72808D" />
 
                     <CollectionView ItemsSource="{Binding FilteredPatients}"
                                     IsVisible="{Binding HasSearchResults}"
@@ -61,13 +61,13 @@
                                     </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                         <VerticalStackLayout Spacing="3">
-                                            <Label Text="{Binding FullName}" FontSize="13" FontAttributes="Bold"
+                                            <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                                    TextColor="#172B3A" LineBreakMode="TailTruncation" />
-                                            <Label Text="{Binding IdNumberDisplay}" FontSize="11"
+                                            <Label Text="{Binding IdNumberDisplay}" FontSize="{StaticResource Typography.Caption}"
                                                    FontAttributes="Bold" TextColor="#087A3D" />
-                                            <Label Text="{Binding Role}" FontSize="10" TextColor="#72808D" />
+                                            <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Caption}" TextColor="#72808D" />
                                         </VerticalStackLayout>
-                                        <Label Grid.Column="1" Text="›" FontSize="24" TextColor="#9AA6B2"
+                                        <Label Grid.Column="1" Text="›" FontSize="{StaticResource Typography.Headline}" TextColor="#9AA6B2"
                                                VerticalOptions="Center" />
                                     </Grid>
                                 </Border>
@@ -76,38 +76,38 @@
                     </CollectionView>
 
                     <Label Text="No matching patient. Search again using the registered name or ID."
-                           IsVisible="{Binding HasNoSearchResults}" FontSize="11" TextColor="#A36E1D" />
+                           IsVisible="{Binding HasNoSearchResults}" FontSize="{StaticResource Typography.Caption}" TextColor="#A36E1D" />
 
                     <Border IsVisible="{Binding HasSelectedPatient}" BackgroundColor="#EAF6F4"
                             Stroke="#CFE9E4" StrokeThickness="1" Padding="12"
                             StrokeShape="RoundRectangle 12">
                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="3">
-                            <Label Text="{Binding SelectedPatient.FullName}" FontSize="14"
+                            <Label Text="{Binding SelectedPatient.FullName}" FontSize="{StaticResource Typography.Body}"
                                    FontAttributes="Bold" TextColor="#172B3A" />
                             <Button Grid.Column="1" Grid.RowSpan="3" Text="Change"
-                                    Command="{Binding ChangePatientCommand}" FontSize="11"
+                                    Command="{Binding ChangePatientCommand}" FontSize="{StaticResource Typography.Caption}"
                                     TextColor="#087A3D" BackgroundColor="White" CornerRadius="10"
                                     Padding="11,5" VerticalOptions="Center" />
                             <Label Grid.Row="1" Text="{Binding SelectedPatient.IdNumberDisplay}"
-                                   FontSize="12" FontAttributes="Bold" TextColor="#087A3D" />
+                                   FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" />
                             <Label Grid.Row="2" Text="{Binding SelectedPatient.Role}"
-                                   FontSize="11" TextColor="#57756F" />
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#57756F" />
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
             </Border>
 
             <Grid ColumnDefinitions="*,Auto" Margin="2,2,2,0">
-                <Label Text="Laboratory results" FontSize="16" FontAttributes="Bold" TextColor="#172B3A" />
-                <Label Grid.Column="1" Text="OPTIONAL IF NOT PERFORMED" FontSize="9" FontAttributes="Bold"
+                <Label Text="Laboratory results" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#172B3A" />
+                <Label Grid.Column="1" Text="OPTIONAL IF NOT PERFORMED" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                        TextColor="#8795A1" VerticalOptions="Center" />
             </Grid>
 
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="CBC" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
-                    <Label Text="Complete Blood Count" FontSize="11" TextColor="#8795A1" />
+                    <Label Text="CBC" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Complete Blood Count" FontSize="{StaticResource Typography.Caption}" TextColor="#8795A1" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Enter the CBC result" Text="{Binding Cbc}"
@@ -119,7 +119,7 @@
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Urinalysis" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Urinalysis" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#172B3A" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Enter the urinalysis result" Text="{Binding Urinalysis}"
@@ -131,7 +131,7 @@
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Chest X-ray" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Chest X-ray" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#172B3A" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Enter the chest X-ray report summary" Text="{Binding ChestXray}"
@@ -143,8 +143,8 @@
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="ECG" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
-                    <Label Text="Electrocardiogram" FontSize="11" TextColor="#8795A1" />
+                    <Label Text="ECG" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Electrocardiogram" FontSize="{StaticResource Typography.Caption}" TextColor="#8795A1" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Enter the ECG result" Text="{Binding Ecg}"
@@ -156,7 +156,7 @@
             <Border BackgroundColor="White" Stroke="#E1E7EC" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Drug test" FontSize="13" FontAttributes="Bold" TextColor="#172B3A" />
+                    <Label Text="Drug test" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#172B3A" />
                     <Border BackgroundColor="#F7F9FA" Stroke="#E4E9ED" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Enter the drug test result" Text="{Binding DrugTest}"
@@ -168,8 +168,8 @@
             <Border BackgroundColor="#EAF6F4" Stroke="#CFE9E4" StrokeThickness="1" Padding="14"
                     StrokeShape="RoundRectangle 15">
                 <VerticalStackLayout Spacing="7">
-                    <Label Text="Overall findings" FontSize="13" FontAttributes="Bold" TextColor="#087D70" />
-                    <Label Text="Add a concise summary based on the verified results." FontSize="11" TextColor="#57756F" />
+                    <Label Text="Overall findings" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087D70" />
+                    <Label Text="Add a concise summary based on the verified results." FontSize="{StaticResource Typography.Caption}" TextColor="#57756F" />
                     <Border BackgroundColor="White" Stroke="#D6E8E4" StrokeThickness="1" Padding="10,5"
                             StrokeShape="RoundRectangle 10">
                         <Editor Placeholder="Summary and relevant notes" Text="{Binding OverallFindings}"
@@ -179,7 +179,7 @@
             </Border>
 
             <Button Text="Save APE results" Command="{Binding SaveResultCommand}"
-                    BackgroundColor="#087A3D" TextColor="White" FontSize="15"
+                    BackgroundColor="#087A3D" TextColor="White" FontSize="{StaticResource Typography.Body}"
                     FontAttributes="Bold" CornerRadius="14" HeightRequest="52" Margin="0,2,0,0" />
         </VerticalStackLayout>
         </ScrollView>

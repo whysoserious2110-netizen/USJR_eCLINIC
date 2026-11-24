@@ -13,11 +13,11 @@
             <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                     StrokeShape="Rectangle" Padding="18,50,18,14">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
                             CornerRadius="9" WidthRequest="40" HeightRequest="40"
                             Padding="0" Command="{Binding GoBackCommand}" />
-                    <Label Grid.Column="1" Text="Medical Records" FontSize="19"
+                    <Label Grid.Column="1" Text="Medical Records" FontSize="{StaticResource Typography.Section}"
                            FontAttributes="Bold" TextColor="#F4C400"
                            VerticalOptions="Center" />
                 </Grid>
@@ -28,11 +28,11 @@
         <Grid Grid.Row="1" Padding="14,14,14,8">
             <VerticalStackLayout IsVisible="{Binding HasRecords, Converter={StaticResource BoolInverter}}"
                                  VerticalOptions="Center" Spacing="9">
-                <Label Text="&#128203;" FontSize="40" HorizontalOptions="Center" TextColor="#9AA4AE" />
-                <Label Text="No medical records yet" FontSize="15" FontAttributes="Bold"
+                <Label Text="&#128203;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#9AA4AE" />
+                <Label Text="No medical records yet" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                        TextColor="#526057" HorizontalOptions="Center" />
                 <Label Text="Your consultation history will appear here after a clinic visit."
-                       FontSize="12" TextColor="#84918A" HorizontalOptions="Center"
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#84918A" HorizontalOptions="Center"
                        HorizontalTextAlignment="Center" Margin="22,0" />
             </VerticalStackLayout>
 
@@ -52,41 +52,43 @@
                                     <Border BackgroundColor="#D5F5EF" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 6" Padding="7,3"
                                             HorizontalOptions="Start">
-                                        <Label Text="CONSULTATION" FontSize="9" FontAttributes="Bold"
+                                        <Label Text="CONSULTATION" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                TextColor="#087A3D" />
                                     </Border>
-                                    <Label Grid.Column="1" Text="{Binding DateDisplay}" FontSize="10"
+                                    <Label Grid.Column="1" Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}"
                                            TextColor="#8495B5" VerticalOptions="Center" />
                                 </Grid>
 
                                 <VerticalStackLayout Spacing="2">
-                                    <Label Text="CHIEF COMPLAINT" FontSize="9" FontAttributes="Bold" TextColor="#84918A" />
-                                    <Label Text="{Binding ChiefComplaint}" FontSize="12" TextColor="#17221B"
+                                    <Label Text="CHIEF COMPLAINT" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#84918A" />
+                                    <Label Text="{Binding ChiefComplaint}" FontSize="{StaticResource Typography.Caption}" TextColor="#17221B"
                                            LineBreakMode="TailTruncation" MaxLines="2" />
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Spacing="2">
-                                    <Label Text="DIAGNOSIS" FontSize="9" FontAttributes="Bold" TextColor="#84918A" />
-                                    <Label Text="{Binding Diagnosis}" FontSize="12" TextColor="#17221B"
+                                    <Label Text="DIAGNOSIS" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#84918A" />
+                                    <Label Text="{Binding Diagnosis}" FontSize="{StaticResource Typography.Caption}" TextColor="#17221B"
                                            LineBreakMode="TailTruncation" MaxLines="2" />
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Spacing="2">
-                                    <Label Text="TREATMENT GIVEN" FontSize="9" FontAttributes="Bold" TextColor="#84918A" />
-                                    <Label Text="{Binding Treatment}" FontSize="11" TextColor="#526057"
+                                    <Label Text="TREATMENT GIVEN" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#84918A" />
+                                    <Label Text="{Binding Treatment}" FontSize="{StaticResource Typography.Caption}" TextColor="#526057"
                                            LineBreakMode="TailTruncation" MaxLines="2" />
                                 </VerticalStackLayout>
 
-                                <Label Text="{Binding FollowUpNotes}" FontSize="10" TextColor="#087A3D"
+                                <Label Text="{Binding FollowUpNotes}" FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D"
                                        IsVisible="{Binding HasFollowUpNotes}"
                                        LineBreakMode="TailTruncation" MaxLines="1" />
+                                <Label Text="{Binding FollowUpRecommendationDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D"
+                                       IsVisible="{Binding HasFollowUpRecommendation}" />
 
                                 <Border BackgroundColor="#F7F8F6" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 8" Padding="9,6" Margin="0,2,0,0">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="View full consultation" FontSize="10" FontAttributes="Bold"
+                                        <Label Text="View full consultation" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                TextColor="#17221B" />
-                                        <Label Grid.Column="1" Text="&#8250;" FontSize="17"
+                                        <Label Grid.Column="1" Text="&#8250;" FontSize="{StaticResource Typography.Emphasis}"
                                                TextColor="#009688" VerticalOptions="Center" />
                                     </Grid>
                                 </Border>
@@ -104,29 +106,29 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#8962;" FontSize="20" TextColor="#087A3D" HorizontalOptions="Center" />
-                    <Label Text="Home" FontSize="10" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Appointments" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128276;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Notifications" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128276;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Notifications" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Profile" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </Grid>

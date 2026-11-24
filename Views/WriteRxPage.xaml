@@ -14,11 +14,11 @@
     <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,50,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+            <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                     TextColor="#087A3D" BackgroundColor="#F4C400"
                     CornerRadius="9" WidthRequest="40" HeightRequest="40"
                     Padding="0" Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1" Text="Write Prescription" FontSize="18"
+            <Label Grid.Column="1" Text="Write Prescription" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" TextColor="#F4C400"
                    VerticalOptions="Center" />
         </Grid>
@@ -27,19 +27,19 @@
 </Grid>
 
             <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPresetPatient}">
-                <Label Text="Prescription for" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Prescription for" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="#E5F3EA" BorderColor="#B9D8C2" CornerRadius="12" Padding="12" HasShadow="False">
                     <VerticalStackLayout Spacing="3">
-                        <Label Text="{Binding PresetPatientName}" FontSize="14" FontAttributes="Bold" TextColor="#087A3D"/>
-                        <Label Text="Patient selected from the active consultation" FontSize="11" TextColor="#647067"/>
+                        <Label Text="{Binding PresetPatientName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D"/>
+                        <Label Text="Patient selected from the active consultation" FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                     </VerticalStackLayout>
                 </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPresetPatient, Converter={StaticResource BoolInverter}}">
-                <Label Text="Patient" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Patient" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Label Text="Only patients with a consultation record or a checked-in visit are listed."
-                       FontSize="11" TextColor="#647067"/>
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                 <Frame IsVisible="{Binding HasEligiblePatients}" BackgroundColor="White" BorderColor="#E2E6EA"
                        CornerRadius="12" Padding="10,0" HeightRequest="52" HasShadow="False">
                     <Picker ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}"
@@ -49,10 +49,10 @@
                        BackgroundColor="#FFF4C7" BorderColor="#E8CF5A" CornerRadius="12" Padding="12"
                        HasShadow="False">
                     <Label Text="No eligible patients yet. A patient must have a consultation on record or be checked in before a prescription can be started."
-                           FontSize="12" TextColor="#514A2C"/>
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#514A2C"/>
                 </Frame>
             </VerticalStackLayout>
-            <Label Text="Medicines" FontSize="15" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="Medicines" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
 
             <CollectionView ItemsSource="{Binding Medicines}">
                 <CollectionView.ItemTemplate>
@@ -61,25 +61,25 @@
                             <VerticalStackLayout Spacing="10">
 
                                 <VerticalStackLayout Spacing="6">
-                                    <Label Text="Medicine Name" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                    <Label Text="Medicine Name" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#12212E"/>
                                     <Entry Placeholder="e.g., Paracetamol" Text="{Binding MedicineName}"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Spacing="6">
-                                    <Label Text="Dosage" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                    <Label Text="Dosage" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#12212E"/>
                                     <Entry Placeholder="e.g., 500mg, 3x daily" Text="{Binding Dosage}"/>
                                 </VerticalStackLayout>
                                 <VerticalStackLayout Spacing="6">
-                                    <Label Text="Quantity (units)" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                    <Label Text="Quantity (units)" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#12212E"/>
                                     <Entry Placeholder="e.g., 10 tablets" Text="{Binding Quantity}" Keyboard="Numeric"/>
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Spacing="6">
-                                    <Label Text="Instructions (optional)" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                    <Label Text="Instructions (optional)" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#12212E"/>
                                     <Editor Placeholder="e.g., Take after meals" Text="{Binding Instructions}" HeightRequest="60"/>
                                 </VerticalStackLayout>
 
-                                <Label Text="Dispensing Type" FontSize="12" FontAttributes="Bold" TextColor="#12212E"/>
+                                <Label Text="Dispensing Type" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#12212E"/>
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
 
                                     <Frame Grid.Column="0" BackgroundColor="White" BorderColor="#E2E6EA"
@@ -130,7 +130,7 @@
 
                                 </Grid>
 
-                                <Label Text="Remove this medicine" FontSize="11" TextColor="#E05B5B" HorizontalOptions="End">
+                                <Label Text="Remove this medicine" FontSize="{StaticResource Typography.Caption}" TextColor="#E05B5B" HorizontalOptions="End">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.RemoveMedicineCommand}" CommandParameter="{Binding .}"/>
                                     </Label.GestureRecognizers>

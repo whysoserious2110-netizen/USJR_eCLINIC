@@ -13,11 +13,11 @@
     <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,50,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+            <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                     TextColor="#087A3D" BackgroundColor="#F4C400"
                     CornerRadius="9" WidthRequest="40" HeightRequest="40"
                     Padding="0" Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1" Text="Patient Records" FontSize="18"
+            <Label Grid.Column="1" Text="Patient Records" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" TextColor="#F4C400"
                    VerticalOptions="Center" />
         </Grid>
@@ -25,13 +25,13 @@
     <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
 </Grid>
 
-        <Label Text="Patients you have personally consulted." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+        <Label Text="Patients you have personally consulted." FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" FontAttributes="Italic"/>
 
         <VerticalStackLayout IsVisible="{Binding HasPatients, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128203;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No patient records yet" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
-            <Label Text="Patients you consult will appear here." FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+            <Label Text="&#128203;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No patient records yet" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="Patients you consult will appear here." FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
         <CollectionView ItemsSource="{Binding Patients}" IsVisible="{Binding HasPatients}">
@@ -46,13 +46,13 @@
                             <Frame Grid.Column="0" WidthRequest="44" HeightRequest="44" CornerRadius="22" Padding="0"
                                    BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
                                 <Grid>
-                                    <Label Text="&#128100;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
                                     <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
                                 </Grid>
                             </Frame>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Label FontSize="12" TextColor="#9AA4AE">
+                                <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding Role}"/>
@@ -61,7 +61,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Text="{Binding LastVisitDisplay}" FontSize="11" TextColor="#0F9B8E"/>
+                                <Label Text="{Binding LastVisitDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#0F9B8E"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Frame>

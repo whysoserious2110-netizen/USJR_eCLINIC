@@ -12,10 +12,10 @@
     <Grid RowDefinitions="Auto,5,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="#176B38" Padding="14,12" ColumnSpacing="12">
             <Button Text="‹" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
-                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="25" Padding="0" />
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="{StaticResource Typography.Headline}" Padding="0" />
             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
-                <Label Text="Clinic Staff" FontSize="20" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="Accounts, roles, and schedules" FontSize="13" TextColor="White" />
+                <Label Text="Clinic Staff" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Accounts, roles, and schedules" FontSize="{StaticResource Typography.Body}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" />
@@ -25,19 +25,19 @@
                     <VerticalStackLayout Padding="16,16,16,8" Spacing="10">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <SearchBar Placeholder="Search name, email, or employee ID"
-                                       Text="{Binding SearchText}" FontSize="14" BackgroundColor="White" />
+                                       Text="{Binding SearchText}" FontSize="{StaticResource Typography.Body}" BackgroundColor="White" />
                             <Button Grid.Column="1" Text="+ Add" Command="{Binding AddStaffCommand}"
                                     BackgroundColor="#087A3D" TextColor="White" CornerRadius="10" />
                         </Grid>
                         <Picker Title="Filter by role" ItemsSource="{Binding RoleFilters}"
                                 SelectedItem="{Binding SelectedRoleFilter}" BackgroundColor="White" />
-                        <Label Text="{Binding ResultSummary}" FontSize="14" TextColor="#667085" />
+                        <Label Text="{Binding ResultSummary}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                     </VerticalStackLayout>
                 </CollectionView.Header>
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="24" Spacing="6">
-                        <Label Text="No clinic employees found" FontSize="17" FontAttributes="Bold" TextColor="#344054" />
-                        <Label Text="Add an employee account or adjust your search." FontSize="14" TextColor="#667085" />
+                        <Label Text="No clinic employees found" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#344054" />
+                        <Label Text="Add an employee account or adjust your search." FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
@@ -46,20 +46,18 @@
                             <VerticalStackLayout Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="2">
-                                        <Label Text="{Binding FullName}" FontSize="17" FontAttributes="Bold" TextColor="#17212B" />
-                                        <Label Text="{Binding Role}" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                                        <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#17212B" />
+                                        <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="1" Text="{Binding AccountStatus}" FontSize="12" FontAttributes="Bold"
+                                    <Label Grid.Column="1" Text="{Binding AccountStatus}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                            TextColor="#087A3D" VerticalOptions="Start" />
                                 </Grid>
-                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="14" TextColor="#344054" />
-                                <Label Text="{Binding Email}" FontSize="13" TextColor="#667085" />
-                                <Label Text="{Binding ProgramOrDepartment}" FontSize="13" TextColor="#667085" />
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="{StaticResource Typography.Body}" TextColor="#344054" />
+                                <Label Text="{Binding Email}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                                <Label Text="{Binding ProgramOrDepartment}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                                <Grid ColumnDefinitions="*">
                                     <Button Text="Edit" Command="{Binding Source={x:Reference Root}, Path=BindingContext.EditStaffCommand}"
                                             CommandParameter="{Binding .}" BackgroundColor="#F4C400" TextColor="#087A3D" CornerRadius="9" />
-                                    <Button Grid.Column="1" Text="Schedule" Command="{Binding Source={x:Reference Root}, Path=BindingContext.ManageScheduleCommand}"
-                                            CommandParameter="{Binding .}" BackgroundColor="#E8F4EC" TextColor="#087A3D" CornerRadius="9" />
                                 </Grid>
                                 <Button Text="Activate" Command="{Binding Source={x:Reference Root}, Path=BindingContext.ToggleActiveCommand}"
                                         CommandParameter="{Binding .}" BackgroundColor="#F2F4F7" TextColor="#344054" CornerRadius="9">

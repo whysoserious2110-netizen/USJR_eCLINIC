@@ -16,12 +16,12 @@
         <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                 StrokeShape="RoundRectangle 0" Padding="18,42,18,12">
             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="27"
+                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="{StaticResource Typography.Headline}"
                         TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
                         HeightRequest="38" WidthRequest="38" CornerRadius="10"/>
                 <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
-                    <Label Text="{Binding HeaderTitle}" FontSize="17" FontAttributes="Bold" TextColor="#F4C400"/>
-                    <Label Text="{Binding HeaderSubtitle}" FontSize="10" TextColor="White"/>
+                    <Label Text="{Binding HeaderTitle}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#F4C400"/>
+                    <Label Text="{Binding HeaderSubtitle}" FontSize="{StaticResource Typography.Caption}" TextColor="White"/>
                 </VerticalStackLayout>
             </Grid>
         </Border>
@@ -32,7 +32,7 @@
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="All"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="All" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="All" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsAllTab, Converter={StaticResource TabTextColor}}"/>
                 <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsAllTab}" Color="#F4C400"/>
             </VerticalStackLayout>
@@ -40,7 +40,7 @@
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Upcoming"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Upcoming" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="Upcoming" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsUpcomingTab, Converter={StaticResource TabTextColor}}"/>
                 <BoxView HeightRequest="2" WidthRequest="60" IsVisible="{Binding IsUpcomingTab}" Color="#F4C400"/>
             </VerticalStackLayout>
@@ -48,7 +48,7 @@
                 <VerticalStackLayout.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Past"/>
                 </VerticalStackLayout.GestureRecognizers>
-                <Label Text="Past" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"
+                <Label Text="Past" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" HorizontalOptions="Center"
                        TextColor="{Binding IsPastTab, Converter={StaticResource TabTextColor}}"/>
                 <BoxView HeightRequest="2" WidthRequest="30" IsVisible="{Binding IsPastTab}" Color="#F4C400"/>
             </VerticalStackLayout>
@@ -58,8 +58,8 @@
                         Margin="14,0,14,12">
             <CollectionView.EmptyView>
                 <VerticalStackLayout Padding="24,56,24,20" Spacing="8" HorizontalOptions="Center">
-                    <Label Text="&#128197;" FontSize="38" HorizontalOptions="Center" TextColor="#9AA6B2"/>
-                    <Label Text="{Binding EmptyMessage}" FontSize="15" FontAttributes="Bold"
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#9AA6B2"/>
+                    <Label Text="{Binding EmptyMessage}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                            TextColor="#17221B" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
@@ -70,19 +70,21 @@
                         <VerticalStackLayout Spacing="4">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <VerticalStackLayout Spacing="1">
-                                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="13"
+                                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}"
                                            TextColor="#17221B" LineBreakMode="TailTruncation"/>
-                                    <Label Text="{Binding PatientIdDisplay}" FontSize="10" TextColor="#647067"/>
+                                    <Label Text="{Binding PatientIdDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                                 </VerticalStackLayout>
                                 <Border Grid.Column="1" BackgroundColor="{Binding StatusColor}" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 9" Padding="8,3" VerticalOptions="Start">
-                                    <Label Text="{Binding Status}" FontSize="8" FontAttributes="Bold" TextColor="White"/>
+                                    <Label Text="{Binding Status}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="White"/>
                                 </Border>
                             </Grid>
-                            <Label Text="{Binding DentalService}" FontSize="12" FontAttributes="Bold" TextColor="#087A3D"/>
-                            <Label Text="{Binding ReasonOrPurpose}" FontSize="10" TextColor="#647067"
+                            <Label Text="{Binding DentalService}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D"/>
+                            <Label Text="DENTAL FOLLOW-UP" IsVisible="{Binding IsFollowUp}"
+                                   FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="{Binding ReasonOrPurpose}" FontSize="{StaticResource Typography.Caption}" TextColor="#647067"
                                    IsVisible="{Binding HasReasonOrPurpose}"/>
-                            <Label FontSize="10" TextColor="#77847B">
+                            <Label FontSize="{StaticResource Typography.Caption}" TextColor="#77847B">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding DateDisplay}"/>
@@ -91,6 +93,10 @@
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
+                            <Button IsVisible="{Binding CanReviewFollowUp}" Text="Review Follow-Up Request"
+                                    Command="{Binding Source={x:Reference Root}, Path=BindingContext.ReviewFollowUpCommand}"
+                                    CommandParameter="{Binding .}" BackgroundColor="#F4C400" TextColor="#087A3D"
+                                    FontAttributes="Bold" CornerRadius="10" HeightRequest="40" Margin="0,5,0,0" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

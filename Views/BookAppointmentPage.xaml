@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
              xmlns:conv="clr-namespace:USJR_eCLINIC.Converters"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="USJR_eCLINIC.Views.BookAppointmentPage"
              x:Name="Root"
              x:DataType="vm:BookAppointmentViewModel"
@@ -32,7 +31,7 @@
                         <Grid ColumnDefinitions="44,*" ColumnSpacing="10">
                             <Button Grid.Column="0"
                                     Text="&#8592;"
-                                    FontSize="22"
+                                    FontSize="{StaticResource Typography.PageTitle}"
                                     TextColor="#087A3D"
                                     BackgroundColor="#F4C400"
                                     CornerRadius="10"
@@ -43,7 +42,7 @@
                                     VerticalOptions="Center" />
                             <Label Grid.Column="1"
                                    Text="Request Appointment"
-                                   FontSize="19"
+                                   FontSize="{StaticResource Typography.Section}"
                                    FontAttributes="Bold"
                                    TextColor="#F4C400"
                                    VerticalOptions="Center" />
@@ -59,7 +58,7 @@
                     <!-- Service Type -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="Service Type"
-                               FontSize="13"
+                               FontSize="{StaticResource Typography.Body}"
                                FontAttributes="Bold"
                                TextColor="#17221B" />
                         <FlexLayout Wrap="Wrap" JustifyContent="Start">
@@ -69,7 +68,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Medical" />
                                 </Frame.GestureRecognizers>
-                                <Label Text="Medical" FontSize="12" FontAttributes="Bold"
+                                <Label Text="Medical" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                        TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Medical'}" />
                             </Frame>
 
@@ -79,7 +78,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Dental" />
                                 </Frame.GestureRecognizers>
-                                <Label Text="Dental" FontSize="12" FontAttributes="Bold"
+                                <Label Text="Dental" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                        TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Dental'}" />
                             </Frame>
 
@@ -89,7 +88,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Follow-up" />
                                 </Frame.GestureRecognizers>
-                                <Label Text="Follow-up" FontSize="12" FontAttributes="Bold"
+                                <Label Text="Follow-up" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                        TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Follow-up'}" />
                             </Frame>
 
@@ -99,7 +98,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SelectServiceTypeCommand}" CommandParameter="Cert Request" />
                                 </Frame.GestureRecognizers>
-                                <Label Text="Certificate Request" FontSize="12" FontAttributes="Bold"
+                                <Label Text="Certificate Request" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                        TextColor="{Binding SelectedServiceType, Converter={StaticResource ChipText}, ConverterParameter='Cert Request'}" />
                             </Frame>
                         </FlexLayout>
@@ -107,11 +106,11 @@
 
                     <!-- Medical reason -->
                     <VerticalStackLayout IsVisible="{Binding IsMedical}" Spacing="7">
-                        <Label Text="Reason for Visit" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
-                        <Frame BackgroundColor="#F4C400" BorderColor="#087A3D" CornerRadius="12"
+                        <Label Text="Reason for Visit" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
+                        <Frame BackgroundColor="{Binding SelectedMedicalReason, Converter={StaticResource ChipBg}}" BorderColor="#087A3D" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#9998;" FontSize="19" TextColor="#087A3D" VerticalOptions="Center" />
+                                <Label Text="&#9998;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
                                 <Picker Grid.Column="1" ItemsSource="{Binding MedicalReasons}"
                                         SelectedItem="{Binding SelectedMedicalReason}"
                                         Title="Select reason for visit" TextColor="#24342B"
@@ -121,7 +120,7 @@
                         </Frame>
 
                         <VerticalStackLayout IsVisible="{Binding ShowOtherReason}" Spacing="7" Margin="0,8,0,0">
-                            <Label Text="Please describe your reason for visit" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
+                            <Label Text="Please describe your reason for visit" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
                             <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12" Padding="12,8" HasShadow="False">
                                 <Editor Placeholder="Describe your reason..." Text="{Binding OtherReasonText}"
                                         HeightRequest="76" TextColor="#24342B" />
@@ -131,11 +130,11 @@
 
                     <!-- Dental service selection -->
                     <VerticalStackLayout IsVisible="{Binding IsDental}" Spacing="7">
-                        <Label Text="Reason for Visit" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
-                        <Frame BackgroundColor="#F4C400" BorderColor="#087A3D" CornerRadius="12"
+                        <Label Text="Reason for Visit" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
+                        <Frame BackgroundColor="{Binding SelectedDentalService, Converter={StaticResource ChipBg}}" BorderColor="#087A3D" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#9998;" FontSize="19" TextColor="#087A3D" VerticalOptions="Center" />
+                                <Label Text="&#9998;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
                                 <Picker Grid.Column="1" ItemsSource="{Binding DentalServices}"
                                         SelectedItem="{Binding SelectedDentalService}"
                                         Title="Select dental service" TextColor="#24342B"
@@ -150,9 +149,9 @@
                            BackgroundColor="#FFF8D8" BorderColor="#E8CF5A"
                            CornerRadius="14" Padding="14" HasShadow="False">
                         <VerticalStackLayout Spacing="8">
-                            <Label Text="Dental Consultation" FontAttributes="Bold" FontSize="15" TextColor="#17221B" />
+                            <Label Text="Dental Consultation" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#17221B" />
                             <Label Text="Walk-in consultation. No appointment is required — please visit the clinic during operating hours."
-                                   FontSize="13" TextColor="#526057" />
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#526057" />
                             <Button Text="View Clinic Hours" BackgroundColor="#087A3D" TextColor="White"
                                     CornerRadius="12" HeightRequest="42" Margin="0,4,0,0" />
                         </VerticalStackLayout>
@@ -160,20 +159,34 @@
 
                     <!-- Follow-up -->
                     <VerticalStackLayout IsVisible="{Binding IsFollowUp}" Spacing="7">
-                        <Label Text="Follow-up for" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
+                        <Label Text="Select the previous visit with a follow-up recommendation"
+                               FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
                         <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
-                            <Picker ItemsSource="{Binding FollowUpClinicTypes}"
-                                    SelectedItem="{Binding SelectedFollowUpClinicType}"
-                                    Title="Choose Medical or Dental" TextColor="#24342B"
+                            <Picker ItemsSource="{Binding FollowUpRecommendations}"
+                                    ItemDisplayBinding="{Binding DisplayText}"
+                                    SelectedItem="{Binding SelectedFollowUpRecommendation}"
+                                    Title="Choose a previous visit" TextColor="#24342B"
                                     TitleColor="#526057" BackgroundColor="Transparent"
                                     VerticalOptions="Center" />
                         </Frame>
-                        <Label Text="Follow-Up Reason" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
-                        <Frame BackgroundColor="#F4C400" BorderColor="#087A3D" CornerRadius="12"
+                        <Label Text="No completed visit has a follow-up recommendation yet. Ask your Doctor or Dentist to add one after your consultation."
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#B54708" IsVisible="{Binding HasFollowUpRecommendations, Converter={StaticResource NotBool}}" />
+                        <Frame IsVisible="{Binding HasSelectedFollowUpRecommendation}"
+                               BackgroundColor="#F3F8F4" BorderColor="#DCE5DD" CornerRadius="12"
+                               Padding="12" HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Clinician's recommendation" FontSize="{StaticResource Typography.Caption}"
+                                       FontAttributes="Bold" TextColor="#087A3D" />
+                                <Label Text="{Binding SelectedFollowUpRecommendationDetails}"
+                                       FontSize="{StaticResource Typography.Caption}" TextColor="#526057" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Label Text="Follow-Up Reason" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
+                        <Frame BackgroundColor="{Binding SelectedFollowUpReason, Converter={StaticResource ChipBg}}" BorderColor="#087A3D" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#9998;" FontSize="19" TextColor="#087A3D" VerticalOptions="Center" />
+                                <Label Text="&#9998;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
                                 <Picker Grid.Column="1" ItemsSource="{Binding FollowUpReasons}"
                                         SelectedItem="{Binding SelectedFollowUpReason}"
                                         Title="Select follow-up reason" TextColor="#24342B"
@@ -181,7 +194,7 @@
                                         VerticalOptions="Center" />
                             </Grid>
                         </Frame>
-                        <Label Text="Additional Notes" FontSize="13" FontAttributes="Bold" TextColor="#17221B" Margin="0,8,0,0" />
+                        <Label Text="Additional Notes" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" Margin="0,8,0,0" />
                         <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12" Padding="12,8" HasShadow="False">
                             <Editor Placeholder="Additional notes (optional)" Text="{Binding AdditionalNotes}"
                                     HeightRequest="72" TextColor="#24342B" />
@@ -190,11 +203,11 @@
 
                     <!-- Certificate request -->
                     <VerticalStackLayout IsVisible="{Binding IsCertRequest}" Spacing="7">
-                        <Label Text="Paper Certificate Type" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
-                        <Frame BackgroundColor="#F4C400" BorderColor="#087A3D" CornerRadius="12"
+                        <Label Text="Paper Certificate Type" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
+                        <Frame BackgroundColor="{Binding SelectedCertificateType, Converter={StaticResource ChipBg}}" BorderColor="#087A3D" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#9998;" FontSize="19" TextColor="#087A3D" VerticalOptions="Center" />
+                                <Label Text="&#9998;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
                                 <Picker Grid.Column="1" ItemsSource="{Binding CertificateTypes}"
                                         SelectedItem="{Binding SelectedCertificateType}"
                                         Title="Select certificate type" TextColor="#24342B"
@@ -202,52 +215,118 @@
                                         VerticalOptions="Center" />
                             </Grid>
                         </Frame>
-                        <Label Text="Purpose / Reason for Request" FontSize="13" FontAttributes="Bold" TextColor="#17221B" Margin="0,8,0,0" />
+                        <Label Text="Purpose / Reason for Request" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" Margin="0,8,0,0" />
                         <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12" Padding="12,8" HasShadow="False">
                             <Editor Placeholder="Why do you need this certificate?" Text="{Binding CertificatePurpose}"
                                     HeightRequest="72" TextColor="#24342B" />
                         </Frame>
                         <Label Text="R.E.A.D.S. reviews the appointment request. The doctor or dentist reviews the certificate after your clinic visit; the clinic provides a paper copy."
-                               FontSize="11" TextColor="#68756D" Margin="0,3,0,0" />
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" Margin="0,3,0,0" />
                     </VerticalStackLayout>
 
                     <!-- Date and time selection -->
                     <VerticalStackLayout IsVisible="{Binding ShowDateTimeSection}" Spacing="8">
-                        <Label Text="Select Date" FontSize="13" FontAttributes="Bold" TextColor="#17221B" />
+                        <Label Text="Select Date" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B" />
                         <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
                                Padding="12,0" HeightRequest="50" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#128197;" FontSize="17" TextColor="#8B9DB5" VerticalOptions="Center" />
-                                <DatePicker Grid.Column="1" Date="{Binding PickerDate}"
-                                            MinimumDate="{x:Static system:DateTime.Today}"
-                                            TextColor="#526057" BackgroundColor="Transparent"
-                                            VerticalOptions="Center" />
+                                <Label Text="&#128197;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#8B9DB5" VerticalOptions="Center" />
+                                <Button Grid.Column="1" Text="{Binding DateDisplayText}"
+                                        Command="{Binding OpenCalendarCommand}"
+                                        FontSize="{StaticResource Typography.Body}"
+                                        TextColor="#526057" BackgroundColor="Transparent"
+                                        HorizontalOptions="Fill" Padding="0" />
                             </Grid>
                         </Frame>
 
-                        <Label Text="{Binding DateDisplayText}" FontSize="12" TextColor="#087A3D"
-                               FontAttributes="Bold" IsVisible="{Binding HasSelectedDate}" />
-
-                        <Label Text="Select Time Slot" FontSize="13" FontAttributes="Bold" TextColor="#17221B"
+                        <Label Text="Choose Appointment Time" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"
                                Margin="0,7,0,0" IsVisible="{Binding HasSelectedDate}" />
-                        <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
-                               Padding="12,0" HeightRequest="50" HasShadow="False"
-                               IsVisible="{Binding HasSelectedDate}">
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Text="&#9719;" FontSize="18" TextColor="#8B9DB5" VerticalOptions="Center" />
-                                <Picker Grid.Column="1" ItemsSource="{Binding AvailableTimeOptions}"
-                                        SelectedItem="{Binding SelectedTimeOption}"
-                                        Title="Select time slot" TextColor="#526057"
-                                        VerticalOptions="Center" />
-                            </Grid>
-                        </Frame>
-                        <Label Text="{Binding AvailabilityMessage}" FontSize="13" TextColor="#B54708"
-                               IsVisible="{Binding HasNoAvailableTimeOptions}" />
+                        <VerticalStackLayout IsVisible="{Binding HasSelectedDate}" Spacing="8">
+                            <Label Text="Clinic session" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#526057" />
+                            <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
+                                   Padding="12,0" HeightRequest="50" HasShadow="False">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <Label Text="&#9719;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
+                                    <Picker Grid.Column="1" ItemsSource="{Binding SessionOptions}"
+                                            SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                                            Title="Choose a shift" TextColor="#526057"
+                                            VerticalOptions="Center" />
+                                </Grid>
+                            </Frame>
+                            <Label Text="Time" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#526057" />
+                            <Frame BackgroundColor="White" BorderColor="#DCE5DD" CornerRadius="12"
+                                   Padding="12,0" HeightRequest="50" HasShadow="False">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <Label Text="&#128336;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" VerticalOptions="Center" />
+                                    <TimePicker Grid.Column="1" Time="{Binding SelectedTime, Mode=TwoWay}"
+                                                Format="h:mm tt" TextColor="#526057"
+                                                HorizontalOptions="Start" VerticalOptions="Center" />
+                                </Grid>
+                            </Frame>
+                            <Label Text="{Binding SelectedSessionHint}" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label Text="{Binding SelectedTimeDisplay, StringFormat='Selected appointment: {0}'}"
+                                   FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="{Binding AvailabilityMessage}" FontSize="{StaticResource Typography.Caption}" TextColor="#B54708"
+                                   IsVisible="{Binding HasNoAvailableTimeOptions}" />
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- Calendar header is green/yellow; Sundays and past dates are disabled by the view model. -->
+        <Grid Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding IsCalendarVisible}"
+              Padding="22" ZIndex="10">
+            <BoxView BackgroundColor="#66000000">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseCalendarCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 18" Padding="14"
+                    VerticalOptions="Center" HorizontalOptions="Fill">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="Auto,*,Auto" BackgroundColor="#176B38" Padding="10,8" ColumnSpacing="8">
+                        <Button Text="‹" Command="{Binding PreviousCalendarMonthCommand}"
+                                BackgroundColor="Transparent" TextColor="#F4C400" FontSize="{StaticResource Typography.Headline}" Padding="4,0" />
+                        <Label Grid.Column="1" Text="{Binding CalendarMonthTitle}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold"
+                               TextColor="#F4C400" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        <Button Grid.Column="2" Text="›" Command="{Binding NextCalendarMonthCommand}"
+                                BackgroundColor="Transparent" TextColor="#F4C400" FontSize="{StaticResource Typography.Headline}" Padding="4,0" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                        <Label Text="Sun" TextColor="#98A2B3" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="1" Text="Mon" TextColor="#344054" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="2" Text="Tue" TextColor="#344054" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="3" Text="Wed" TextColor="#344054" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="4" Text="Thu" TextColor="#344054" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="5" Text="Fri" TextColor="#344054" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="6" Text="Sat" TextColor="#344054" HorizontalTextAlignment="Center" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding CalendarDays}" SelectionMode="None" HeightRequest="270">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="7" VerticalItemSpacing="3" HorizontalItemSpacing="3" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CalendarDayCell">
+                                <Button Text="{Binding DayNumber}"
+                                        Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectCalendarDateCommand}"
+                                        CommandParameter="{Binding .}" IsEnabled="{Binding IsSelectable}"
+                                        BackgroundColor="{Binding CellBackgroundColor}"
+                                        TextColor="{Binding TextColor}" BorderColor="{Binding CellBorderColor}"
+                                        BorderWidth="1" CornerRadius="18" Padding="0" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Label Text="Sundays are unavailable for appointments." FontSize="{StaticResource Typography.Caption}" TextColor="#667085" VerticalOptions="Center" />
+                        <Button Grid.Column="1" Text="Close" Command="{Binding CloseCalendarCommand}"
+                                BackgroundColor="#F4C400" TextColor="#087A3D" CornerRadius="9" Padding="18,7" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
 
         <!-- Keep the primary action above the bottom navigation. -->
         <Button Grid.Row="1"
@@ -256,7 +335,7 @@
                 IsVisible="{Binding IsDentalConsultation, Converter={StaticResource NotBool}}"
                 BackgroundColor="#176519"
                 TextColor="White"
-                FontSize="14"
+                FontSize="{StaticResource Typography.Body}"
                 FontAttributes="Bold"
                 CornerRadius="13"
                 HeightRequest="50"
@@ -270,32 +349,32 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#8962;" FontSize="20" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Home" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="18" TextColor="#0F9B8E" HorizontalOptions="Center" />
-                    <Label Text="Appointments" FontSize="10" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" />
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Section}" TextColor="#0F9B8E" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128276;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Notifications" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128276;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Notifications" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Profile" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </Grid>

@@ -13,6 +13,13 @@ public partial class MedicalRecordListItem : ObservableObject
     public string Diagnosis { get; set; } = string.Empty;
     public string Treatment { get; set; } = string.Empty;
     public string FollowUpNotes { get; set; } = string.Empty;
+    public bool FollowUpRecommended { get; set; }
+    public DateTime? RecommendedFollowUpDate { get; set; }
+    public bool HasFollowUpRecommendation => FollowUpRecommended;
+    public string FollowUpRecommendationDisplay =>
+        RecommendedFollowUpDate.HasValue
+            ? $"A follow-up appointment was recommended around {RecommendedFollowUpDate.Value:MMM d, yyyy}."
+            : "A follow-up appointment was recommended.";
     public string AttendingStaff { get; set; } = string.Empty;
     public string BloodPressure { get; set; } = string.Empty;
     public string Temperature { get; set; } = string.Empty;
@@ -73,6 +80,8 @@ public partial class MedicalRecordsViewModel : ObservableObject
                 Diagnosis = record.Diagnosis,
                 Treatment = record.Treatment,
                 FollowUpNotes = record.FollowUpNotes,
+                FollowUpRecommended = record.FollowUpRecommended,
+                RecommendedFollowUpDate = record.RecommendedFollowUpDate,
                 AttendingStaff = record.AttendingStaff,
                 BloodPressure = record.BloodPressure,
                 Temperature = record.Temperature,

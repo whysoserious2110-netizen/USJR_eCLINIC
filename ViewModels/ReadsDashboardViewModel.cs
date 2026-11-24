@@ -166,26 +166,24 @@ public partial class ReadsDashboardViewModel : ObservableObject
         List<Models.Appointment> todaysAppointments,
         DateTime now)
     {
-        // "Next Arrivals" should only show appointments that have not started yet.
-        // This removes yesterday's records and earlier appointments from today.
+        // The booked time is a preferred arrival time, not a check-in deadline.
+        // Keep today's confirmed appointments visible until the clinic closes.
         var upcomingAppointments = todaysAppointments
             .Select(appointment => new
             {
                 Appointment = appointment,
                 AppointmentDateTime = GetAppointmentDateTime(appointment)
             })
-            .Where(item =>
-                item.AppointmentDateTime.HasValue &&
-                item.AppointmentDateTime.Value > now)
+            .Where(item => item.AppointmentDateTime.HasValue)
             .OrderBy(item => item.AppointmentDateTime)
             .ToList();
 
         NextArrivalsSummary = upcomingAppointments.Count switch
         {
-            0 => "No upcoming confirmed visits today.",
-            1 => "1 upcoming confirmed visit today.",
-            <= 3 => $"{upcomingAppointments.Count} upcoming confirmed visits today.",
-            _ => $"Showing the next 3 of {upcomingAppointments.Count} upcoming confirmed visits today."
+            0 => "No confirmed visits scheduled for today.",
+            1 => "1 confirmed visit can check in today.",
+            <= 3 => $"{upcomingAppointments.Count} confirmed visits can check in today.",
+            _ => $"Showing 3 of {upcomingAppointments.Count} confirmed visits scheduled for today."
         };
 
         NextArrivals.Clear();
@@ -257,6 +255,9 @@ public partial class ReadsDashboardViewModel : ObservableObject
         DateTime now)
     {
         var timeUntilAppointment = appointmentDateTime - now;
+
+        if (timeUntilAppointment < TimeSpan.Zero)
+            return ("Late today · check in before closing", Color.FromArgb("#B54708"));
 
         if (timeUntilAppointment <= TimeSpan.FromMinutes(30))
             return ("Due soon", Color.FromArgb("#B47B19"));

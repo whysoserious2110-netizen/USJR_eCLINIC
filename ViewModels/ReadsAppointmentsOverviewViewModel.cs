@@ -10,14 +10,16 @@ public partial class ReadsAppointmentOverviewItem : ObservableObject
     public string PatientName { get; set; } = string.Empty;
     public string ServiceType { get; set; } = string.Empty;
     public string SubService { get; set; } = string.Empty;
+    public bool IsFollowUp { get; set; }
     public DateTime VisitDate { get; set; }
     public string DateDisplay { get; set; } = string.Empty;
     public string TimeDisplay { get; set; } = string.Empty;
+    public string AssignedClinicianDisplay { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public Color StatusColor { get; set; } = Colors.Gray;
 
-    public bool CanApprove => Status == "Pending";
-    public bool CanDecline => Status == "Pending";
+    public bool CanApprove => Status == "Pending" && !IsFollowUp;
+    public bool CanDecline => Status == "Pending" && !IsFollowUp;
 
     public string StatusDisplay =>
         Status switch
@@ -27,6 +29,8 @@ public partial class ReadsAppointmentOverviewItem : ObservableObject
             "Declined" => "Declined",
             "Expired" => "Expired",
             "Missed" => "Missed",
+            "Reschedule Requested" => "Alternative offered to patient",
+            "Pending" when IsFollowUp => "Awaiting Doctor/Dentist review",
             _ => Status
         };
 }
@@ -59,6 +63,16 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
             var patient =
                 await Services.AuthService.Instance.GetAccountByEmailAsync(
                     appointment.PatientEmail);
+            var assignedClinician = appointment.AssignedStaffId is int assignedStaffId
+                ? await Services.AuthService.Instance.GetAccountByDatabaseIdAsync(assignedStaffId)
+                : null;
+            var clinicalType = Services.AppointmentService.GetClinicalType(appointment);
+            var expectedRole = clinicalType switch
+            {
+                "Medical" => "Doctor",
+                "Dental" => "Dentist",
+                _ => "clinician"
+            };
 
             _all.Add(new ReadsAppointmentOverviewItem
             {
@@ -68,9 +82,13 @@ public partial class ReadsAppointmentsOverviewViewModel : ObservableObject
                     ? "Certificate Request"
                     : appointment.ServiceType,
                 SubService = appointment.SubService,
+                IsFollowUp = Services.AppointmentService.IsFollowUpAppointment(appointment),
                 VisitDate = appointment.VisitDate,
                 DateDisplay = appointment.VisitDate.ToString("MMM dd, yyyy"),
                 TimeDisplay = appointment.VisitTime,
+                AssignedClinicianDisplay = assignedClinician == null
+                    ? $"Assigned {expectedRole}: Pending assignment"
+                    : $"Assigned {assignedClinician.Role}: {assignedClinician.FullName}",
                 Status = appointment.Status,
                 StatusColor = appointment.Status switch
                 {

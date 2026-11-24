@@ -12,15 +12,15 @@
 
             <Border Margin="-20,0" BackgroundColor="#176B38" StrokeThickness="0" Padding="20,8">
                 <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="8">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
                             CornerRadius="9" WidthRequest="34" HeightRequest="34"
                             Padding="0" Command="{Binding GoBackCommand}"
                             VerticalOptions="Center" />
-                    <Label Grid.Column="1" Text="Profile" FontSize="17"
+                    <Label Grid.Column="1" Text="Profile" FontSize="{StaticResource Typography.Emphasis}"
                            FontAttributes="Bold" TextColor="#F4C400"
                            VerticalOptions="Center" />
-                    <Button Grid.Column="2" Text="Edit" FontSize="12"
+                    <Button Grid.Column="2" Text="Edit" FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="8"
                             Padding="10,3" HeightRequest="30"
@@ -34,90 +34,90 @@
                 <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40" Padding="0"
            BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
                     <Grid>
-                        <Label Text="&#128100;" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                        <Label Text="&#128100;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
                         <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
                     </Grid>
                 </Frame>
 
-                <Label Text="Change photo" FontSize="12" FontAttributes="Bold" Margin="60,0,60,0" TextColor="#0F9B8E">
+                <Label Text="Change photo" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" Margin="60,0,60,0" TextColor="#0F9B8E">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ChangePhotoCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
 
-                <Label Text="{Binding FullName}" FontSize="18" FontAttributes="Bold" TextColor="#12212E" HorizontalOptions="Center"/>
+                <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#12212E" HorizontalOptions="Center"/>
                 <Frame BackgroundColor="#D5F5EF" Padding="10,3" CornerRadius="10" HasShadow="False">
-                    <Label Text="{Binding Role}" FontSize="11" FontAttributes="Bold" Margin="65,0,60,0" TextColor="#0F9B8E"/>
+                    <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" Margin="65,0,60,0" TextColor="#0F9B8E"/>
                 </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Full Name" FontSize="12" TextColor="#9AA4AE"/>
-                <Entry Text="{Binding FullName}" IsEnabled="{Binding IsEditing}" FontSize="15" TextColor="#12212E"/>
+                <Label Text="Full Name" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                <Entry Text="{Binding FullName}" IsEnabled="{Binding IsEditing}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="{Binding IdLabel}" FontSize="12" TextColor="#9AA4AE"/>
-                <Label Text="{Binding IdNumber}" FontSize="15" TextColor="#12212E"/>
+                <Label Text="{Binding IdLabel}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                <Label Text="{Binding IdNumber}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="{Binding ProgramOrDepartmentLabel}" FontSize="12" TextColor="#9AA4AE"/>
+                <Label Text="{Binding ProgramOrDepartmentLabel}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                 <Entry Text="{Binding ProgramOrDepartment}" IsEnabled="{Binding IsEditing}"
-                       Placeholder="{Binding ProgramOrDepartmentPlaceholder}" FontSize="15" TextColor="#12212E"/>
+                       Placeholder="{Binding ProgramOrDepartmentPlaceholder}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Personal Email" FontSize="12" TextColor="#9AA4AE"/>
-                <Label Text="{Binding Email}" FontSize="15" TextColor="#12212E"/>
+                <Label Text="Personal Email" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                <Label Text="{Binding Email}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Mobile Number" FontSize="12" TextColor="#9AA4AE"/>
+                <Label Text="Mobile Number" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                 <Entry Text="{Binding MobileNumber}" IsEnabled="{Binding IsEditing}"
-                       Placeholder="+63 9XX XXX XXXX" Keyboard="Telephone" FontSize="15" TextColor="#12212E"/>
+                       Placeholder="+63 9XX XXX XXXX" Keyboard="Telephone" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </VerticalStackLayout>
 
             <!-- Clinical Info -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="14">
-                    <Label Text="Clinical Info (For Emergency)" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Label Text="Clinical Info (For Emergency)" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#12212E"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
                         <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="Blood Type" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding BloodType}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., O+" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Blood Type" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                            <Entry Text="{Binding BloodType}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., O+" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="5">
-                            <Label Text="Allergies" FontSize="11" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding Allergies}" FontSize="12" TextColor="#B42318"
+                            <Label Text="Allergies" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                            <Label Text="{Binding Allergies}" FontSize="{StaticResource Typography.Body}" TextColor="#B42318"
                                    LineBreakMode="TailTruncation" MaxLines="2" />
                             <Button Text="Edit Allergies" Command="{Binding EditAllergiesCommand}"
                                     BackgroundColor="#F4C400" TextColor="#087A3D"
-                                    FontSize="11" FontAttributes="Bold" CornerRadius="10"
+                                    FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" CornerRadius="10"
                                     HeightRequest="34" Padding="8,0" />
                         </VerticalStackLayout>
                     </Grid>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
                         <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="Height" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding Height}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., 170 cm" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Height" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                            <Entry Text="{Binding Height}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., 170 cm" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="6">
-                            <Label Text="Weight" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding Weight}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., 65 kg" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Weight" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                            <Entry Text="{Binding Weight}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., 65 kg" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                     </Grid>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Known Medical Conditions" FontSize="11" TextColor="#9AA4AE"/>
-                        <Entry Text="{Binding MedicalConditions}" IsEnabled="{Binding IsEditing}" Placeholder="If none, leave blank" FontSize="14" TextColor="#12212E"/>
+                        <Label Text="Known Medical Conditions" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                        <Entry Text="{Binding MedicalConditions}" IsEnabled="{Binding IsEditing}" Placeholder="If none, leave blank" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Current Medications" FontSize="11" TextColor="#9AA4AE"/>
-                        <Entry Text="{Binding CurrentMedications}" IsEnabled="{Binding IsEditing}" Placeholder="If none, leave blank" FontSize="14" TextColor="#12212E"/>
+                        <Label Text="Current Medications" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
+                        <Entry Text="{Binding CurrentMedications}" IsEnabled="{Binding IsEditing}" Placeholder="If none, leave blank" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Frame>
@@ -125,21 +125,21 @@
             <!-- Emergency Contact -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="14">
-                    <Label Text="Emergency Contact" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Label Text="Emergency Contact" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Contact Name" FontSize="11" TextColor="#9AA4AE"/>
-                        <Entry Text="{Binding EmergencyContactName}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Maria Dela Cruz" FontSize="14" TextColor="#12212E"/>
+                        <Label Text="Contact Name" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                        <Entry Text="{Binding EmergencyContactName}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Maria Dela Cruz" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
                         <VerticalStackLayout Grid.Column="0" Spacing="6">
-                            <Label Text="Relationship" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding EmergencyContactRelationship}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Mother" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Relationship" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Entry Text="{Binding EmergencyContactRelationship}" IsEnabled="{Binding IsEditing}" Placeholder="e.g., Mother" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="6">
-                            <Label Text="Contact Number" FontSize="11" TextColor="#9AA4AE"/>
-                            <Entry Text="{Binding EmergencyContactNumber}" IsEnabled="{Binding IsEditing}" Placeholder="+63 9XX XXX XXXX" Keyboard="Telephone" FontSize="14" TextColor="#12212E"/>
+                            <Label Text="Contact Number" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Entry Text="{Binding EmergencyContactNumber}" IsEnabled="{Binding IsEditing}" Placeholder="+63 9XX XXX XXXX" Keyboard="Telephone" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                     </Grid>
                 </VerticalStackLayout>

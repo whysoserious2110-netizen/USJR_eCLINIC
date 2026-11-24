@@ -18,11 +18,11 @@
             <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                     StrokeShape="Rectangle" Padding="18,50,18,14">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
                             CornerRadius="9" WidthRequest="40" HeightRequest="40"
                             Padding="0" Command="{Binding GoBackCommand}" />
-                    <Label Grid.Column="1" Text="{Binding HeaderTitle}" FontSize="17"
+                    <Label Grid.Column="1" Text="{Binding HeaderTitle}" FontSize="{StaticResource Typography.Emphasis}"
                            FontAttributes="Bold" TextColor="#F4C400"
                            VerticalOptions="Center" />
                 </Grid>
@@ -39,7 +39,7 @@
                         <VerticalStackLayout.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Action"/>
                         </VerticalStackLayout.GestureRecognizers>
-                        <Label Text="{Binding FirstTabLabel}" FontSize="12" FontAttributes="Bold"
+                        <Label Text="{Binding FirstTabLabel}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                HorizontalOptions="Center"
                                TextColor="{Binding IsPendingTab, Converter={StaticResource TabTextColor}}"/>
                         <BoxView HeightRequest="2" WidthRequest="76" IsVisible="{Binding IsPendingTab}" Color="#087A3D"/>
@@ -49,7 +49,7 @@
                         <VerticalStackLayout.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="History"/>
                         </VerticalStackLayout.GestureRecognizers>
-                        <Label Text="History" FontSize="12" FontAttributes="Bold"
+                        <Label Text="History" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                HorizontalOptions="Center"
                                TextColor="{Binding IsIssuedTab, Converter={StaticResource TabTextColor}}"/>
                         <BoxView HeightRequest="2" WidthRequest="44" IsVisible="{Binding IsIssuedTab}" Color="#087A3D"/>
@@ -60,8 +60,8 @@
             <VerticalStackLayout Grid.Row="1"
                                  IsVisible="{Binding HasCertificates, Converter={StaticResource BoolInverter}}"
                                  VerticalOptions="Center" Spacing="9">
-                <Label Text="&#128196;" FontSize="40" HorizontalOptions="Center" TextColor="#94A3B8"/>
-                <Label Text="{Binding EmptyMessage}" FontSize="13" TextColor="#526057"
+                <Label Text="&#128196;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#94A3B8"/>
+                <Label Text="{Binding EmptyMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#526057"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
             </VerticalStackLayout>
 
@@ -77,25 +77,25 @@
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="7">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                    <Label Text="{Binding PatientName}" FontSize="14" FontAttributes="Bold"
+                                    <Label Text="{Binding PatientName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                            TextColor="#17221B" VerticalOptions="Center"/>
                                     <Border Grid.Column="1" BackgroundColor="{Binding StatusColor}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="9,4">
-                                        <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold"
+                                        <Label Text="{Binding Status}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                TextColor="White"/>
                                     </Border>
                                 </Grid>
-                                <Label Text="{Binding CertificateType}" FontSize="12" FontAttributes="Bold"
+                                <Label Text="{Binding CertificateType}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                        TextColor="#087A3D"/>
-                                <Label Text="{Binding Purpose}" FontSize="12" TextColor="#526057"
+                                <Label Text="{Binding Purpose}" FontSize="{StaticResource Typography.Caption}" TextColor="#526057"
                                        LineBreakMode="TailTruncation" MaxLines="2"/>
                                 <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="5">
-                                    <Label Text="{Binding DateDisplay}" FontSize="10" TextColor="#84918A"/>
-                                    <Label Grid.Column="1" Text="·" FontSize="10" TextColor="#84918A"/>
-                                    <Label Grid.Column="2" Text="{Binding TimeDisplay}" FontSize="10" TextColor="#84918A"/>
+                                    <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#84918A"/>
+                                    <Label Grid.Column="1" Text="·" FontSize="{StaticResource Typography.Caption}" TextColor="#84918A"/>
+                                    <Label Grid.Column="2" Text="{Binding TimeDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#84918A"/>
                                 </Grid>
                                 <Label Text="{Binding ActionLabel, StringFormat='{0}  ›'}"
-                                       FontSize="11" FontAttributes="Bold" TextColor="#087A3D"/>
+                                       FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D"/>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

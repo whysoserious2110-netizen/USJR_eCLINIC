@@ -14,12 +14,12 @@
                         StrokeShape="RoundRectangle 12" Padding="12,10">
                     <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="&#8592;"
-                                FontSize="21" TextColor="#087A3D"
+                                FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                 BackgroundColor="#F4C400" CornerRadius="9"
                                 WidthRequest="38" HeightRequest="38" Padding="0"
                                 Command="{Binding GoBackCommand}" />
                         <Label Grid.Column="1" Text="Administrative Notes"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                TextColor="#F4C400" VerticalOptions="Center" />
                     </Grid>
                 </Border>
@@ -27,23 +27,23 @@
             </VerticalStackLayout>
 
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
-                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
             </Frame>
 
             <!-- New note form -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Add a Note" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Label Text="Add a Note" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Category" FontSize="12" TextColor="#9AA4AE"/>
+                        <Label Text="Category" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                         <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="10,0" HeightRequest="48" HasShadow="False">
                             <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" Title="Select category" VerticalOptions="Center"/>
                         </Frame>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Note" FontSize="12" TextColor="#9AA4AE"/>
+                        <Label Text="Note" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                         <Frame BackgroundColor="#F7F8FA" BorderColor="#E2E6EA" CornerRadius="10" Padding="14,10" HasShadow="False">
                             <Editor Placeholder="e.g., Patient arrived 15 minutes late for 2:00 PM appointment." Text="{Binding NoteText}" HeightRequest="80"/>
                         </Frame>
@@ -60,8 +60,8 @@
             </Frame>
 
             <!-- Note history -->
-            <Label Text="Note History" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
-            <Label Text="No administrative notes yet." FontSize="13" TextColor="#9AA4AE"
+            <Label Text="Note History" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No administrative notes yet." FontSize="{StaticResource Typography.Body}" TextColor="#9AA4AE"
                    IsVisible="{Binding HasNotes, Converter={StaticResource BoolInverter}}"/>
 
             <CollectionView ItemsSource="{Binding Notes}" IsVisible="{Binding HasNotes}">
@@ -73,11 +73,11 @@
                                 <Grid ColumnDefinitions="*,Auto">
                                     <Frame Grid.Column="0" BackgroundColor="#E6F3FD" CornerRadius="10" Padding="10,3"
                                            HasShadow="False" HorizontalOptions="Start">
-                                        <Label Text="{Binding Category}" FontSize="10" FontAttributes="Bold" TextColor="#2E6FDB"/>
+                                        <Label Text="{Binding Category}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#2E6FDB"/>
                                     </Frame>
                                 </Grid>
-                                <Label Text="{Binding NoteText}" FontSize="13" TextColor="#12212E"/>
-                                <Label FontSize="11" TextColor="#9AA4AE">
+                                <Label Text="{Binding NoteText}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding AuthorName}"/>

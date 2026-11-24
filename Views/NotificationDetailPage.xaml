@@ -12,11 +12,11 @@
             <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                     StrokeShape="Rectangle" Padding="18,50,18,14">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
                             CornerRadius="9" WidthRequest="40" HeightRequest="40"
                             Padding="0" Command="{Binding GoBackCommand}" />
-                    <Label Grid.Column="1" Text="Notification Details" FontSize="19"
+                    <Label Grid.Column="1" Text="Notification Details" FontSize="{StaticResource Typography.Section}"
                            FontAttributes="Bold" TextColor="#F4C400"
                            VerticalOptions="Center" />
                 </Grid>
@@ -33,22 +33,22 @@
                             <Border BackgroundColor="#F4C400" StrokeThickness="0"
                                     StrokeShape="RoundRectangle 11" WidthRequest="40" HeightRequest="40"
                                     Padding="0" VerticalOptions="Center">
-                                <Label Text="&#128276;" FontSize="20" HorizontalOptions="Center"
+                                <Label Text="&#128276;" FontSize="{StaticResource Typography.PageTitle}" HorizontalOptions="Center"
                                        VerticalOptions="Center" />
                             </Border>
                             <Label Grid.Column="1" Text="{Binding Title}" FontAttributes="Bold"
-                                   FontSize="19" TextColor="#17221B" VerticalOptions="Center" />
+                                   FontSize="{StaticResource Typography.Section}" TextColor="#17221B" VerticalOptions="Center" />
                         </Grid>
-                        <Label Text="RECEIVED" FontSize="10" FontAttributes="Bold" TextColor="#68756D" />
-                        <Label Text="{Binding DateDisplay}" FontSize="12" TextColor="#526057" />
+                        <Label Text="RECEIVED" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#68756D" />
+                        <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#526057" />
                     </VerticalStackLayout>
                 </Border>
 
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="MESSAGE DETAILS" FontSize="12" FontAttributes="Bold" TextColor="#68756D" />
+                    <Label Text="MESSAGE DETAILS" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#68756D" />
                     <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
                             StrokeShape="RoundRectangle 14" Padding="16">
-                        <Label Text="{Binding Message}" FontSize="14" TextColor="#26332B"
+                        <Label Text="{Binding Message}" FontSize="{StaticResource Typography.Body}" TextColor="#26332B"
                                LineHeight="1.4" />
                     </Border>
                 </VerticalStackLayout>

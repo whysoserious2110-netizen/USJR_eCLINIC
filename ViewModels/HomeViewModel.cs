@@ -208,19 +208,40 @@ public partial class HomeViewModel : ObservableObject
 
         foreach (var appointment in upcoming)
         {
+            var isSuggestedSchedule = appointment.Status == "Reschedule Requested" &&
+                                      appointment.ProposedVisitDate.HasValue &&
+                                      !string.IsNullOrWhiteSpace(appointment.ProposedVisitTime);
+            var displayDate = isSuggestedSchedule
+                ? appointment.ProposedVisitDate!.Value.Date
+                : appointment.VisitDate.Date;
+            var displayTime = isSuggestedSchedule ? appointment.ProposedVisitTime : appointment.VisitTime;
+            var displayDateTime = displayDate;
+            if (DateTime.TryParse(
+                    displayTime,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out var parsedDisplayTime))
+            {
+                displayDateTime = displayDate.Add(parsedDisplayTime.TimeOfDay);
+            }
+
             UpcomingVisits.Add(new UpcomingVisitItem
             {
                 AppointmentId = appointment.Id,
-                VisitDateTime = Services.AppointmentService.GetVisitDateTime(appointment),
-                Day = appointment.VisitDate.Day.ToString(),
-                Month = appointment.VisitDate.ToString("MMM").ToUpperInvariant(),
+                VisitDateTime = displayDateTime,
+                Day = displayDate.Day.ToString(),
+                Month = displayDate.ToString("MMM").ToUpperInvariant(),
                 Title = appointment.ServiceType,
                 SubService = appointment.SubService,
-                Details = $"{appointment.VisitTime} · {appointment.Location}",
+                Details = isSuggestedSchedule
+                    ? $"{displayTime} · Schedule response needed"
+                    : $"{displayTime} · {appointment.AssignedShift} Shift · {appointment.Location}",
                 Status = appointment.Status switch
                 {
                     "CheckedIn" => "Checked In",
                     "VitalsRecorded" => "Vitals Recorded",
+                    "Reschedule Requested" => "Respond to suggested time",
+                    "Reschedule Required" => "Reschedule Required",
                     _ => appointment.Status
                 },
                 StatusColor = appointment.Status switch
@@ -228,6 +249,7 @@ public partial class HomeViewModel : ObservableObject
                     "Confirmed" => Color.FromArgb("#0F9B8E"),
                     "CheckedIn" => Color.FromArgb("#2E6FDB"),
                     "VitalsRecorded" => Color.FromArgb("#7B61C8"),
+                    "Reschedule Required" => Color.FromArgb("#C2410C"),
                     _ => Color.FromArgb("#D9A441")
                 }
             });

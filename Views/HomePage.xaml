@@ -40,7 +40,7 @@
 
                                 <Label
                                 Text="&#128100;"
-                                FontSize="22"
+                                FontSize="{StaticResource Typography.PageTitle}"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
                                 TextColor="#78917F"/>
@@ -61,12 +61,12 @@
 
                             <Label
                             Text="{Binding Greeting}"
-                            FontSize="12"
+                            FontSize="{StaticResource Typography.Caption}"
                             TextColor="#315A3F"/>
 
                             <Label
                             Text="{Binding UserName}"
-                            FontSize="17"
+                            FontSize="{StaticResource Typography.Emphasis}"
                             FontAttributes="Bold"
                             TextColor="#087A3D"
                             LineBreakMode="TailTruncation" />
@@ -77,7 +77,7 @@
                                 Padding="7,3"
                                 HorizontalOptions="Start">
                                 <Label Text="{Binding IdLabelDisplay}"
-                                   FontSize="10"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    FontAttributes="Bold"
                                    TextColor="#087A3D"
                                    LineBreakMode="TailTruncation" />
@@ -104,14 +104,14 @@
                         <Label
                             Grid.Column="0"
                             Text="&#9432;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#B8862B"
                             VerticalOptions="Start"/>
 
                         <Label
                             Grid.Column="1"
                             Text="{Binding AnnouncementText}"
-                            FontSize="13"
+                            FontSize="{StaticResource Typography.Body}"
                             TextColor="#5A4A1E"/>
 
                     </Grid>
@@ -120,7 +120,7 @@
 
                 <Label
                     Text="Services &amp; Records"
-                    FontSize="17"
+                    FontSize="{StaticResource Typography.Emphasis}"
                     FontAttributes="Bold"
                     TextColor="#12212E"
                     Margin="0,6,0,0"/>
@@ -159,7 +159,7 @@
 
                                 <Label
                                     Text="&#128197;"
-                                    FontSize="18"
+                                    FontSize="{StaticResource Typography.Section}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -168,12 +168,12 @@
                             <Label
                                 Text="Book Appointment"
                                 FontAttributes="Bold"
-                                FontSize="14"
+                                FontSize="{StaticResource Typography.Body}"
                                 TextColor="#12212E"/>
 
                             <Label
                                 Text="Schedule clinic visit"
-                                FontSize="11"
+                                FontSize="{StaticResource Typography.Caption}"
                                 TextColor="#9AA4AE"/>
 
                         </VerticalStackLayout>
@@ -207,7 +207,7 @@
 
                                 <Label
                                     Text="&#128203;"
-                                    FontSize="18"
+                                    FontSize="{StaticResource Typography.Section}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -216,12 +216,12 @@
                             <Label
                                 Text="Medical Records"
                                 FontAttributes="Bold"
-                                FontSize="14"
+                                FontSize="{StaticResource Typography.Body}"
                                 TextColor="#12212E"/>
 
                             <Label
                                 Text="Clinical summaries"
-                                FontSize="11"
+                                FontSize="{StaticResource Typography.Caption}"
                                 TextColor="#9AA4AE"/>
 
                         </VerticalStackLayout>
@@ -255,7 +255,7 @@
 
                                 <Label
                                     Text="&#129688;"
-                                    FontSize="18"
+                                    FontSize="{StaticResource Typography.Section}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -264,12 +264,12 @@
                             <Label
                                 Text="Dental Records"
                                 FontAttributes="Bold"
-                                FontSize="14"
+                                FontSize="{StaticResource Typography.Body}"
                                 TextColor="#12212E"/>
 
                             <Label
                                 Text="Oral health charts"
-                                FontSize="11"
+                                FontSize="{StaticResource Typography.Caption}"
                                 TextColor="#9AA4AE"/>
 
                         </VerticalStackLayout>
@@ -303,7 +303,7 @@
 
                                 <Label
                                     Text="&#128138;"
-                                    FontSize="18"
+                                    FontSize="{StaticResource Typography.Section}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -312,12 +312,12 @@
                             <Label
                                 Text="Prescriptions"
                                 FontAttributes="Bold"
-                                FontSize="14"
+                                FontSize="{StaticResource Typography.Body}"
                                 TextColor="#12212E"/>
 
                             <Label
                                 Text="Active medications"
-                                FontSize="11"
+                                FontSize="{StaticResource Typography.Caption}"
                                 TextColor="#9AA4AE"/>
 
                         </VerticalStackLayout>
@@ -356,7 +356,7 @@
 
                                 <Label
                                     Text="&#128300;"
-                                    FontSize="20"
+                                    FontSize="{StaticResource Typography.PageTitle}"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"/>
 
@@ -370,12 +370,12 @@
                                 <Label
                                     Text="APE Lab Results"
                                     FontAttributes="Bold"
-                                    FontSize="15"
+                                    FontSize="{StaticResource Typography.Body}"
                                     TextColor="#12212E"/>
 
                                 <Label
                                     Text="View Annual Physical Examination findings"
-                                    FontSize="11"
+                                    FontSize="{StaticResource Typography.Caption}"
                                     TextColor="#9AA4AE"/>
 
                             </VerticalStackLayout>
@@ -383,7 +383,7 @@
                             <Label
                                 Grid.Column="2"
                                 Text="&#8250;"
-                                FontSize="28"
+                                FontSize="{StaticResource Typography.Headline}"
                                 TextColor="#7B61C8"
                                 VerticalOptions="Center"/>
 
@@ -401,7 +401,7 @@
 
                     <Label
                         Text="Upcoming Visits"
-                        FontSize="17"
+                        FontSize="{StaticResource Typography.Emphasis}"
                         FontAttributes="Bold"
                         TextColor="#12212E"/>
 
@@ -447,14 +447,14 @@
 
                                                 <Label
                                                     Text="{Binding Day}"
-                                                    FontSize="18"
+                                                    FontSize="{StaticResource Typography.Section}"
                                                     FontAttributes="Bold"
                                                     TextColor="#0F9B8E"
                                                     HorizontalOptions="Center"/>
 
                                                 <Label
                                                     Text="{Binding Month}"
-                                                    FontSize="10"
+                                                    FontSize="{StaticResource Typography.Caption}"
                                                     TextColor="#0F9B8E"
                                                     HorizontalOptions="Center"/>
 
@@ -469,22 +469,22 @@
                                             <Label
                                                 Text="{Binding Title}"
                                                 FontAttributes="Bold"
-                                                FontSize="14"
+                                                FontSize="{StaticResource Typography.Body}"
                                                 TextColor="#12212E"/>
 
                                             <Label
                                                 Text="{Binding SubService}"
-                                                FontSize="12"
+                                                FontSize="{StaticResource Typography.Caption}"
                                                 TextColor="#6B7684"/>
 
                                             <Label
                                                 Text="{Binding Details}"
-                                                FontSize="12"
+                                                FontSize="{StaticResource Typography.Caption}"
                                                 TextColor="#6B7684"/>
 
                                             <Label
                                                 Text="View appointment details  ›"
-                                                FontSize="10"
+                                                FontSize="{StaticResource Typography.Caption}"
                                                 FontAttributes="Bold"
                                                 TextColor="#087A3D"
                                                 Margin="0,5,0,0"/>
@@ -501,7 +501,7 @@
 
                                             <Label
                                                 Text="{Binding Status}"
-                                                FontSize="10"
+                                                FontSize="{StaticResource Typography.Caption}"
                                                 FontAttributes="Bold"
                                                 TextColor="White"/>
 
@@ -540,13 +540,13 @@
 
                     <Label
                         Text="&#8962;"
-                        FontSize="18"
+                        FontSize="{StaticResource Typography.Section}"
                         TextColor="#0F9B8E"
                         HorizontalOptions="Center"/>
 
                     <Label
                         Text="Home"
-                        FontSize="11"
+                        FontSize="{StaticResource Typography.Caption}"
                         TextColor="#0F9B8E"
                         FontAttributes="Bold"
                         HorizontalOptions="Center"/>
@@ -568,13 +568,13 @@
 
                         <Label
                             Text="&#128197;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
                         <Label
                             Text="Appointments"
-                            FontSize="11"
+                            FontSize="{StaticResource Typography.Caption}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
@@ -594,7 +594,7 @@
 
                         <Label
                             Text="{Binding UnseenAppointmentCount}"
-                            FontSize="10"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center"
@@ -619,13 +619,13 @@
 
                         <Label
                             Text="&#128276;"
-                            FontSize="18"
+                            FontSize="{StaticResource Typography.Section}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
                         <Label
                             Text="Notifications"
-                            FontSize="11"
+                            FontSize="{StaticResource Typography.Caption}"
                             TextColor="#9AA4AE"
                             HorizontalOptions="Center"/>
 
@@ -645,7 +645,7 @@
 
                         <Label
                             Text="{Binding UnreadNotificationCount}"
-                            FontSize="10"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             TextColor="White"
                             HorizontalOptions="Center"
@@ -667,13 +667,13 @@
 
                     <Label
                         Text="&#128100;"
-                        FontSize="18"
+                        FontSize="{StaticResource Typography.Section}"
                         TextColor="#9AA4AE"
                         HorizontalOptions="Center"/>
 
                     <Label
                         Text="Profile"
-                        FontSize="11"
+                        FontSize="{StaticResource Typography.Caption}"
                         TextColor="#9AA4AE"
                         HorizontalOptions="Center"/>
 

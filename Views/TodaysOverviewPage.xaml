@@ -17,18 +17,18 @@
                 <Grid ColumnDefinitions="42,*,44" ColumnSpacing="10">
                     <Button Grid.Column="0" Text="&#8592;"
                             Command="{Binding GoBackCommand}"
-                            FontSize="21" TextColor="#087A3D"
+                            FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="9"
                             WidthRequest="38" HeightRequest="38" Padding="0" />
                     <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                        <Label Text="Today's Clinic" FontSize="18"
+                        <Label Text="Today's Clinic" FontSize="{StaticResource Typography.Section}"
                                FontAttributes="Bold" TextColor="#F4C400" />
-                        <Label Text="{Binding TodayDisplay}" FontSize="11" TextColor="#E9F3EC" />
+                        <Label Text="{Binding TodayDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#E9F3EC" />
                     </VerticalStackLayout>
                     <Button Grid.Column="2" Text="&#8635;"
                             Command="{Binding RefreshDashboardCommand}"
                             BackgroundColor="#F4C400" TextColor="#087A3D"
-                            FontSize="20" CornerRadius="10"
+                            FontSize="{StaticResource Typography.PageTitle}" CornerRadius="10"
                             WidthRequest="38" HeightRequest="38" Padding="0" />
                 </Grid>
             </Border>
@@ -46,11 +46,11 @@
                                      Spacing="3"
                                      VerticalOptions="Center">
                     <Label Text="Pending requests"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#6D511B" />
                     <Label Text="All appointment dates"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#927443" />
                 </VerticalStackLayout>
 
@@ -59,7 +59,7 @@
                                      HorizontalOptions="End"
                                      VerticalOptions="Center">
                     <Label Text="{Binding PendingApprovalCount}"
-                           FontSize="20"
+                           FontSize="{StaticResource Typography.PageTitle}"
                            FontAttributes="Bold"
                            TextColor="#A87518"
                            HorizontalOptions="Center" />
@@ -68,7 +68,7 @@
                             Command="{Binding ReviewPendingRequestsCommand}"
                             BackgroundColor="#E6B449"
                             TextColor="#38280B"
-                            FontSize="11"
+                            FontSize="{StaticResource Typography.Caption}"
                             FontAttributes="Bold"
                             CornerRadius="10"
                             HeightRequest="34"
@@ -87,11 +87,11 @@
                    HasShadow="False">
                 <VerticalStackLayout Spacing="5">
                     <Label Text="{Binding TodayAppointmentCount}"
-                           FontSize="25"
+                           FontSize="{StaticResource Typography.Headline}"
                            FontAttributes="Bold"
                            TextColor="#0F9B8E" />
                     <Label Text="Visits today"
-                           FontSize="10"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#687585" />
                 </VerticalStackLayout>
             </Frame>
@@ -104,11 +104,11 @@
                    HasShadow="False">
                 <VerticalStackLayout Spacing="5">
                     <Label Text="{Binding CheckedInTodayCount}"
-                           FontSize="25"
+                           FontSize="{StaticResource Typography.Headline}"
                            FontAttributes="Bold"
                            TextColor="#2E6FDB" />
                     <Label Text="Checked in"
-                           FontSize="10"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#687585" />
                 </VerticalStackLayout>
             </Frame>
@@ -121,11 +121,11 @@
                    HasShadow="False">
                 <VerticalStackLayout Spacing="5">
                     <Label Text="{Binding CompletedTodayCount}"
-                           FontSize="25"
+                           FontSize="{StaticResource Typography.Headline}"
                            FontAttributes="Bold"
                            TextColor="#4A90D9" />
                     <Label Text="Completed"
-                           FontSize="10"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#687585" />
                 </VerticalStackLayout>
             </Frame>
@@ -135,13 +135,13 @@
         <Grid Grid.Row="3" RowDefinitions="Auto,*" RowSpacing="10">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
                 <Label Text="Today's visits"
-                       FontSize="17"
+                       FontSize="{StaticResource Typography.Emphasis}"
                        FontAttributes="Bold"
                        TextColor="#12212E"
                        VerticalOptions="Center" />
                 <Label Grid.Column="1"
                        Text="In time order"
-                       FontSize="11"
+                       FontSize="{StaticResource Typography.Caption}"
                        TextColor="#8793A0"
                        VerticalOptions="Center" />
             </Grid>
@@ -170,12 +170,12 @@
                                                              Spacing="3"
                                                              VerticalOptions="Center">
                                             <Label Text="{Binding PatientName}"
-                                                   FontSize="14"
+                                                   FontSize="{StaticResource Typography.Body}"
                                                    FontAttributes="Bold"
                                                    TextColor="#12212E"
                                                    LineBreakMode="TailTruncation" />
                                             <Label Text="{Binding PatientIdNumber}"
-                                                   FontSize="11"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    TextColor="#8793A0" />
                                         </VerticalStackLayout>
 
@@ -186,7 +186,7 @@
                                                HasShadow="False"
                                                VerticalOptions="Center">
                                             <Label Text="{Binding StatusDisplay}"
-                                                   FontSize="10"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    FontAttributes="Bold"
                                                    TextColor="White" />
                                         </Frame>
@@ -198,11 +198,11 @@
                                                              Spacing="2"
                                                              VerticalOptions="Center">
                                             <Label Text="TIME"
-                                                   FontSize="9"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    FontAttributes="Bold"
                                                    TextColor="#8A96A3" />
                                             <Label Text="{Binding TimeDisplay}"
-                                                   FontSize="14"
+                                                   FontSize="{StaticResource Typography.Body}"
                                                    FontAttributes="Bold"
                                                    TextColor="#0F9B8E" />
                                         </VerticalStackLayout>
@@ -211,11 +211,11 @@
                                                              Spacing="2"
                                                              VerticalOptions="Center">
                                             <Label Text="{Binding ServiceType}"
-                                                   FontSize="12"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    FontAttributes="Bold"
                                                    TextColor="#526171" />
                                             <Label Text="{Binding SubService}"
-                                                   FontSize="12"
+                                                   FontSize="{StaticResource Typography.Caption}"
                                                    TextColor="#687585"
                                                    LineBreakMode="TailTruncation" />
                                         </VerticalStackLayout>
@@ -228,7 +228,7 @@
                                            HasShadow="False"
                                            HorizontalOptions="Start">
                                         <Label Text="{Binding QueueNumberDisplay}"
-                                               FontSize="11"
+                                               FontSize="{StaticResource Typography.Caption}"
                                                FontAttributes="Bold"
                                                TextColor="#2E6FDB" />
                                     </Frame>
@@ -247,16 +247,16 @@
                                      Spacing="8"
                                      Padding="24">
                     <Label Text="&#128197;"
-                           FontSize="40"
+                           FontSize="{StaticResource Typography.Display}"
                            HorizontalOptions="Center"
                            TextColor="#B8C2CC" />
                     <Label Text="No visits scheduled today"
-                           FontSize="16"
+                           FontSize="{StaticResource Typography.Emphasis}"
                            FontAttributes="Bold"
                            TextColor="#526171"
                            HorizontalOptions="Center" />
                     <Label Text="Confirmed appointments will appear here."
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#8793A0"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>

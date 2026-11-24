@@ -13,11 +13,11 @@
             <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                     StrokeShape="Rectangle" Padding="18,50,18,14">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                             TextColor="#087A3D" BackgroundColor="#F4C400"
                             CornerRadius="9" WidthRequest="40" HeightRequest="40"
                             Padding="0" Command="{Binding GoBackCommand}" />
-                    <Label Grid.Column="1" Text="APE LAB Result" FontSize="19"
+                    <Label Grid.Column="1" Text="APE LAB Result" FontSize="{StaticResource Typography.Section}"
                            FontAttributes="Bold" TextColor="#F4C400"
                            VerticalOptions="Center" />
                 </Grid>
@@ -29,10 +29,10 @@
             <Grid RowDefinitions="Auto,*" Padding="14,14,14,8" RowSpacing="10"
                   IsVisible="{Binding HasResults}">
                 <VerticalStackLayout Grid.Row="0" Spacing="2">
-                    <Label Text="Annual Physical Examination" FontSize="14"
+                    <Label Text="Annual Physical Examination" FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold" TextColor="#17221B" />
                     <Label Text="{Binding PatientName, StringFormat='Results for {0}'}"
-                           FontSize="11" TextColor="#68756D" />
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
                 </VerticalStackLayout>
 
                 <CollectionView Grid.Row="1" ItemsSource="{Binding Results}" SelectionMode="None">
@@ -50,24 +50,24 @@
                                         <Border BackgroundColor="#D5F5EF" StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 6" Padding="7,3"
                                                 HorizontalOptions="Start">
-                                            <Label Text="{Binding Category}" FontSize="9" FontAttributes="Bold"
+                                            <Label Text="{Binding Category}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                    TextColor="#087A3D" />
                                         </Border>
                                         <Label Grid.Column="1" Text="{Binding DateDisplay, StringFormat='Issued: {0}'}"
-                                               FontSize="10" TextColor="White" VerticalOptions="Center" />
+                                               FontSize="{StaticResource Typography.Caption}" TextColor="White" VerticalOptions="Center" />
                                     </Grid>
-                                    <Label Text="{Binding ResultTitle}" FontSize="12" FontAttributes="Bold"
+                                    <Label Text="{Binding ResultTitle}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                            TextColor="White" />
                                     <VerticalStackLayout Spacing="2">
-                                        <Label Text="RESULT SUMMARY" FontSize="8" TextColor="#D8E9DD" />
-                                        <Label Text="{Binding ResultText}" FontSize="11" TextColor="White"
+                                        <Label Text="RESULT SUMMARY" FontSize="{StaticResource Typography.Caption}" TextColor="#D8E9DD" />
+                                        <Label Text="{Binding ResultText}" FontSize="{StaticResource Typography.Caption}" TextColor="White"
                                                LineBreakMode="TailTruncation" MaxLines="3" />
                                     </VerticalStackLayout>
                                     <BoxView HeightRequest="1" Color="#B7D6C0" Opacity="0.8" Margin="0,1,0,0" />
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="View full result" FontSize="10" FontAttributes="Bold"
+                                        <Label Text="View full result" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                TextColor="White" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text="&#8250;" FontSize="17"
+                                        <Label Grid.Column="1" Text="&#8250;" FontSize="{StaticResource Typography.Emphasis}"
                                                TextColor="#D5F5EF" VerticalOptions="Center" />
                                     </Grid>
                                 </VerticalStackLayout>
@@ -80,11 +80,11 @@
             <VerticalStackLayout IsVisible="{Binding HasNoResults}"
                                  VerticalOptions="Center" HorizontalOptions="Center"
                                  Spacing="9" Padding="24">
-                <Label Text="&#128300;" FontSize="42" HorizontalOptions="Center" TextColor="#9AA4AE" />
-                <Label Text="No APE results available" FontSize="15" FontAttributes="Bold"
+                <Label Text="&#128300;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#9AA4AE" />
+                <Label Text="No APE results available" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                        TextColor="#526057" HorizontalOptions="Center" />
                 <Label Text="Your Annual Physical Examination results will appear here after they are entered by the clinic."
-                       FontSize="12" TextColor="#84918A" HorizontalTextAlignment="Center"
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#84918A" HorizontalTextAlignment="Center"
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
 
@@ -100,26 +100,26 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#8962;" FontSize="20" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Home" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Appointments" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#128276;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center" />
-                    <Label Text="Notifications" FontSize="10" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="&#128276;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" HorizontalOptions="Center" />
+                    <Label Text="Notifications" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="18" TextColor="#94A3B8" HorizontalOptions="Center" />
-                    <Label Text="Profile" FontSize="10" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" TextColor="#94A3B8" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#94A3B8" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </Grid>

@@ -15,19 +15,19 @@
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <Frame Grid.Column="0" BackgroundColor="#F4C400" CornerRadius="9" Padding="0"
                                WidthRequest="34" HeightRequest="34" HasShadow="False" BorderColor="Transparent">
-                            <Label Text="&#8249;" FontSize="18" FontAttributes="Bold" TextColor="#087A3D"
+                            <Label Text="&#8249;" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding PreviousMonthCommand}"/>
                             </Frame.GestureRecognizers>
                         </Frame>
 
-                        <Label Grid.Column="1" Text="{Binding CurrentMonthLabel}" FontSize="17" FontAttributes="Bold"
+                        <Label Grid.Column="1" Text="{Binding CurrentMonthLabel}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold"
                                TextColor="#F4C400" HorizontalOptions="Center" VerticalOptions="Center"/>
 
                         <Frame Grid.Column="2" BackgroundColor="#F4C400" CornerRadius="9" Padding="0"
                                WidthRequest="34" HeightRequest="34" HasShadow="False" BorderColor="Transparent">
-                            <Label Text="&#8250;" FontSize="18" FontAttributes="Bold" TextColor="#087A3D"
+                            <Label Text="&#8250;" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding NextMonthCommand}"/>
@@ -40,13 +40,13 @@
                 <VerticalStackLayout Padding="16,14" Spacing="12">
 
                     <Grid ColumnDefinitions="*,*,*,*,*,*,*">
-                        <Label Grid.Column="0" Text="S" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="1" Text="M" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="2" Text="T" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="3" Text="W" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="4" Text="T" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="5" Text="F" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
-                        <Label Grid.Column="6" Text="S" FontSize="11" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="0" Text="S" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="1" Text="M" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="2" Text="T" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="3" Text="W" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="4" Text="T" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="5" Text="F" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
+                        <Label Grid.Column="6" Text="S" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#B7BEC5" HorizontalOptions="Center"/>
                     </Grid>
 
                     <CollectionView ItemsSource="{Binding CalendarDays}" HeightRequest="270">
@@ -63,7 +63,7 @@
                                         <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.SelectDateAndCloseCommand}" CommandParameter="{Binding .}"/>
                                     </Frame.GestureRecognizers>
                                     <Label Text="{Binding DayNumber}" TextColor="{Binding TextColor}"
-                                           FontSize="13" FontAttributes="Bold"
+                                           FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Frame>
                             </DataTemplate>
@@ -74,9 +74,9 @@
 
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="6" Margin="0,2,0,0">
                         <Ellipse Grid.Column="0" WidthRequest="10" HeightRequest="10" Fill="#2E6FDB" VerticalOptions="Center"/>
-                        <Label Grid.Column="1" Text="Available" FontSize="11" TextColor="#6B7684" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Available" FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684" VerticalOptions="Center"/>
                         <Ellipse Grid.Column="2" WidthRequest="10" HeightRequest="10" Fill="#E05B5B" VerticalOptions="Center" Margin="8,0,0,0"/>
-                        <Label Grid.Column="3" Text="Unavailable" FontSize="11" TextColor="#6B7684" VerticalOptions="Center"/>
+                        <Label Grid.Column="3" Text="Unavailable" FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684" VerticalOptions="Center"/>
                     </Grid>
 
                     <Button Text="Close" Command="{Binding ClosePopupCommand}"

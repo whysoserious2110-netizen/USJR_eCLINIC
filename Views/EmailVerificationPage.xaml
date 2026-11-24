@@ -9,10 +9,10 @@
     <VerticalStackLayout Padding="22,12,22,24" Spacing="18">
         <Grid RowDefinitions="Auto,5" Margin="-22,-12,-22,8">
             <Grid Grid.Row="0" ColumnDefinitions="48,*" BackgroundColor="#176B38" Padding="22,13">
-                <Button Text="&#8592;" FontSize="22" TextColor="#087A3D" BackgroundColor="#F4C400"
+                <Button Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D" BackgroundColor="#F4C400"
                         CornerRadius="10" WidthRequest="40" HeightRequest="40" Padding="0"
                         Command="{Binding BackToLoginCommand}"/>
-                <Label Grid.Column="1" Text="Verify Email" FontSize="18" FontAttributes="Bold"
+                <Label Grid.Column="1" Text="Verify Email" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                        TextColor="#F4C400" Margin="10,0,0,0" VerticalOptions="Center"/>
             </Grid>
             <BoxView Grid.Row="1" Color="#F4C400"/>
@@ -20,22 +20,22 @@
 
         <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 18" Padding="20">
             <VerticalStackLayout Spacing="14">
-                <Label Text="Check your inbox" FontSize="23" FontAttributes="Bold" TextColor="#17212B"/>
+                <Label Text="Check your inbox" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#17212B"/>
                 <Label Text="Enter the 6-digit verification code sent to the email address you registered. The code expires in 10 minutes."
-                       FontSize="14" TextColor="#667085"/>
+                       FontSize="{StaticResource Typography.Body}" TextColor="#667085"/>
                 <Entry Text="{Binding VerificationCode}" Placeholder="6-digit code" Keyboard="Numeric"
-                       MaxLength="6" FontSize="22" HorizontalTextAlignment="Center"/>
+                       MaxLength="6" FontSize="{StaticResource Typography.PageTitle}" HorizontalTextAlignment="Center"/>
                 <Button Text="Verify Email" Command="{Binding VerifyCommand}" BackgroundColor="#087A3D"
                         TextColor="White" FontAttributes="Bold" CornerRadius="14" HeightRequest="50"/>
                 <Button Text="Resend Code" Command="{Binding ResendCommand}" BackgroundColor="Transparent"
                         TextColor="#087A3D"/>
                 <Label Text="Email verification confirms control of the address. Faculty accounts still require an authorized ID review."
-                       FontSize="12" TextColor="#667085"/>
+                       FontSize="{StaticResource Typography.Caption}" TextColor="#667085"/>
             </VerticalStackLayout>
         </Border>
         <Border IsVisible="{Binding HasStatusMessage}" BackgroundColor="#FFF7D6" Stroke="#F4C400"
                 StrokeShape="RoundRectangle 12" Padding="13">
-            <Label Text="{Binding StatusMessage}" FontSize="13" TextColor="#514A2C"/>
+            <Label Text="{Binding StatusMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#514A2C"/>
         </Border>
         <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="#087A3D"/>
     </VerticalStackLayout>

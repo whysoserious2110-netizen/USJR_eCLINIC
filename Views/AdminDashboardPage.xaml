@@ -9,18 +9,15 @@
              BackgroundColor="#F7F8F6"
              NavigationPage.HasNavigationBar="False">
     <Grid RowDefinitions="Auto,5,*,Auto">
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6"
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="6"
               BackgroundColor="#087A3D" Padding="18,13">
             <VerticalStackLayout Spacing="3" VerticalOptions="Center">
-                <Label Text="Adelante, Administrator!" FontSize="20" FontAttributes="Bold" TextColor="White" />
-                <Label Text="{Binding CurrentDateText}" FontSize="14" TextColor="#E8F3EC" />
+                <Label Text="Adelante, Administrator!" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="White" />
+                <Label Text="{Binding CurrentDateText}" FontSize="{StaticResource Typography.Body}" TextColor="#E8F3EC" />
             </VerticalStackLayout>
-            <Button Grid.Column="1" Text="Settings" Command="{Binding OpenSettingsCommand}"
-                    BackgroundColor="Transparent" TextColor="White" FontSize="13" Padding="8,4"
-                    VerticalOptions="Center" />
-            <Button Grid.Column="2" Text="Sign out" Command="{Binding LogoutCommand}"
+            <Button Grid.Column="1" Text="Sign out" Command="{Binding LogoutCommand}"
                     BackgroundColor="#F4C400" TextColor="#087A3D" FontAttributes="Bold"
-                    FontSize="13" Padding="10,6" CornerRadius="10" VerticalOptions="Center" />
+                    FontSize="{StaticResource Typography.Body}" Padding="10,6" CornerRadius="10" VerticalOptions="Center" />
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" />
 
@@ -28,34 +25,34 @@
             <ScrollView>
                 <VerticalStackLayout Padding="16,16,16,20" Spacing="17">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="Clinic Overview" FontSize="21" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="Clinic Overview" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#1F2933" />
                         <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
                             <HorizontalStackLayout Spacing="10">
                                 <Border WidthRequest="154" Padding="14,12" BackgroundColor="White" Stroke="#E5EAE6" StrokeShape="RoundRectangle 16">
                                     <Border.Shadow><Shadow Brush="#18000000" Offset="0,2" Radius="8" /></Border.Shadow>
                                     <VerticalStackLayout Spacing="5">
-                                        <Label Text="📋" FontSize="20" />
-                                        <Label Text="PENDING APPROVALS" FontSize="11" FontAttributes="Bold" TextColor="#667085" />
-                                        <Label Text="{Binding PendingApprovalsCount}" FontSize="28" FontAttributes="Bold" TextColor="#087A3D" />
-                                        <Label Text="Faculty &amp; Non-Teaching" FontSize="12" TextColor="#667085" />
+                                        <Label Text="📋" FontSize="{StaticResource Typography.PageTitle}" />
+                                        <Label Text="PENDING APPROVALS" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#667085" />
+                                        <Label Text="{Binding PendingApprovalsCount}" FontSize="{StaticResource Typography.Headline}" FontAttributes="Bold" TextColor="#087A3D" />
+                                        <Label Text="Faculty &amp; Non-Teaching" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                                     </VerticalStackLayout>
                                 </Border>
                                 <Border WidthRequest="154" Padding="14,12" BackgroundColor="White" Stroke="#E5EAE6" StrokeShape="RoundRectangle 16">
                                     <Border.Shadow><Shadow Brush="#18000000" Offset="0,2" Radius="8" /></Border.Shadow>
                                     <VerticalStackLayout Spacing="5">
-                                        <Label Text="👥" FontSize="20" />
-                                        <Label Text="ACTIVE CLINIC STAFF" FontSize="11" FontAttributes="Bold" TextColor="#667085" />
-                                        <Label Text="{Binding ActiveStaffCount}" FontSize="28" FontAttributes="Bold" TextColor="#087A3D" />
-                                        <Label Text="Nurse · Doctor · Dentist · READS" FontSize="11" TextColor="#667085" />
+                                        <Label Text="👥" FontSize="{StaticResource Typography.PageTitle}" />
+                                        <Label Text="ACTIVE CLINIC STAFF" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#667085" />
+                                        <Label Text="{Binding ActiveStaffCount}" FontSize="{StaticResource Typography.Headline}" FontAttributes="Bold" TextColor="#087A3D" />
+                                        <Label Text="Nurse · Doctor · Dentist · READS" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                                     </VerticalStackLayout>
                                 </Border>
                                 <Border WidthRequest="154" Padding="14,12" BackgroundColor="White" Stroke="#E5EAE6" StrokeShape="RoundRectangle 16">
                                     <Border.Shadow><Shadow Brush="#18000000" Offset="0,2" Radius="8" /></Border.Shadow>
                                     <VerticalStackLayout Spacing="5">
-                                        <Label Text="🗓️" FontSize="20" />
-                                        <Label Text="STAFF ON DUTY TODAY" FontSize="11" FontAttributes="Bold" TextColor="#667085" />
-                                        <Label Text="{Binding StaffOnDutyCount}" FontSize="28" FontAttributes="Bold" TextColor="#087A3D" />
-                                        <Label Text="Based on today's schedules" FontSize="12" TextColor="#667085" />
+                                        <Label Text="🗓️" FontSize="{StaticResource Typography.PageTitle}" />
+                                        <Label Text="STAFF ON DUTY TODAY" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#667085" />
+                                        <Label Text="{Binding StaffOnDutyCount}" FontSize="{StaticResource Typography.Headline}" FontAttributes="Bold" TextColor="#087A3D" />
+                                        <Label Text="Based on today's schedules" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                                     </VerticalStackLayout>
                                 </Border>
                             </HorizontalStackLayout>
@@ -70,23 +67,23 @@
                             <VerticalStackLayout Spacing="11">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="3">
-                                        <Label Text="Pending account approvals" FontSize="18" FontAttributes="Bold" TextColor="#1F2933" />
-                                        <Label Text="Faculty and Non-Teaching registrations" FontSize="13" TextColor="#667085" />
+                                        <Label Text="Pending account approvals" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#1F2933" />
+                                        <Label Text="Faculty and Non-Teaching registrations" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="1" Text="Review" FontSize="12" FontAttributes="Bold" TextColor="#087A3D" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Review" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" VerticalOptions="Center" />
                                 </Grid>
                                 <Label Text="{Binding ApprovalPreviewEmptyMessage}" IsVisible="{Binding IsApprovalPreviewEmpty}"
-                                       FontSize="14" TextColor="#667085" />
+                                       FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding PendingApprovalPreview}" Spacing="8">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="vm:StaffIdReviewItem">
                                             <Border Padding="11,9" BackgroundColor="#F7F8F6" Stroke="#EDF0ED" StrokeShape="RoundRectangle 12">
                                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                                     <VerticalStackLayout Spacing="2">
-                                                        <Label Text="{Binding FullName}" FontSize="15" FontAttributes="Bold" TextColor="#1F2933" />
-                                                        <Label Text="{Binding Role}" FontSize="13" TextColor="#087A3D" />
+                                                        <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#1F2933" />
+                                                        <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Body}" TextColor="#087A3D" />
                                                     </VerticalStackLayout>
-                                                    <Label Grid.Column="1" Text="{Binding IdNumber}" FontSize="12" TextColor="#667085" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding IdNumber}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" VerticalOptions="Center" />
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -104,32 +101,29 @@
                             <VerticalStackLayout Spacing="11">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="3">
-                                        <Label Text="Today's clinic staff" FontSize="18" FontAttributes="Bold" TextColor="#1F2933" />
-                                        <Label Text="Scheduled team members and duty hours" FontSize="13" TextColor="#667085" />
+                                        <Label Text="Today's clinic staff" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#1F2933" />
+                                        <Label Text="Scheduled team members and duty hours" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="1" Text="Today" FontSize="12" FontAttributes="Bold" TextColor="#087A3D" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Today" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" VerticalOptions="Center" />
                                 </Grid>
                                 <Label Text="{Binding StaffPreviewEmptyMessage}" IsVisible="{Binding IsStaffPreviewEmpty}"
-                                       FontSize="14" TextColor="#667085" />
+                                       FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding StaffOnDutyPreview}" Spacing="8">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="vm:ClinicStaffScheduleDisplay">
                                             <Border Padding="11,9" BackgroundColor="#F7F8F6" Stroke="#EDF0ED" StrokeShape="RoundRectangle 12">
                                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                                     <VerticalStackLayout Spacing="2">
-                                                        <Label Text="{Binding FullName}" FontSize="15" FontAttributes="Bold" TextColor="#1F2933" />
-                                                        <Label Text="{Binding Role}" FontSize="13" TextColor="#087A3D" />
+                                                        <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#1F2933" />
+                                                        <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Body}" TextColor="#087A3D" />
                                                     </VerticalStackLayout>
-                                                    <Label Grid.Column="1" Text="{Binding ScheduleText}" FontSize="12" TextColor="#667085"
+                                                    <Label Grid.Column="1" Text="{Binding ScheduleText}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085"
                                                            VerticalOptions="Center" HorizontalTextAlignment="End" />
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
-                                <Button Text="View staff schedules" Command="{Binding OpenStaffSchedulesCommand}"
-                                        BackgroundColor="White" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
-                                        CornerRadius="11" HeightRequest="44" />
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
@@ -140,13 +134,13 @@
         <Grid Grid.Row="3" ColumnDefinitions="*,*,*,*" BackgroundColor="White" Padding="4,8"
               ColumnSpacing="2">
             <Button Text="Dashboard" Command="{Binding LoadCommand}" BackgroundColor="Transparent"
-                    TextColor="#087A3D" FontAttributes="Bold" FontSize="11" Padding="1,8" />
-            <Button Grid.Column="1" Text="Approvals" Command="{Binding OpenAccountApprovalsCommand}"
-                    BackgroundColor="Transparent" TextColor="#667085" FontSize="11" Padding="1,8" />
+                    TextColor="#087A3D" FontAttributes="Bold" FontSize="{StaticResource Typography.Caption}" Padding="1,8" />
+            <Button Grid.Column="1" Text="Settings" Command="{Binding OpenSettingsCommand}"
+                    BackgroundColor="Transparent" TextColor="#667085" FontSize="{StaticResource Typography.Caption}" Padding="1,8" />
             <Button Grid.Column="2" Text="Staff" Command="{Binding OpenStaffManagementCommand}"
-                    BackgroundColor="Transparent" TextColor="#667085" FontSize="11" Padding="1,8" />
+                    BackgroundColor="Transparent" TextColor="#667085" FontSize="{StaticResource Typography.Caption}" Padding="1,8" />
             <Button Grid.Column="3" Text="Schedules" Command="{Binding OpenStaffSchedulesCommand}"
-                    BackgroundColor="Transparent" TextColor="#667085" FontSize="11" Padding="1,8" />
+                    BackgroundColor="Transparent" TextColor="#667085" FontSize="{StaticResource Typography.Caption}" Padding="1,8" />
         </Grid>
     </Grid>
 </ContentPage>

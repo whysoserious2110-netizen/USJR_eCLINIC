@@ -27,7 +27,7 @@ public sealed class ClinicScheduleService
     public async Task<int> GetSlotIntervalMinutesAsync()
     {
         var interval = (await GetConfigurationAsync()).SlotIntervalMinutes;
-        return interval > 0 ? interval : 30;
+        return interval > 0 ? interval : AppointmentShiftPolicy.AppointmentDurationMinutes;
     }
 
     public async Task<string?> GetDateUnavailableReasonAsync(
@@ -37,6 +37,9 @@ public sealed class ClinicScheduleService
     {
         if (date.Date < DateTime.Today)
             return "Please choose a future date.";
+
+        if (date.DayOfWeek == DayOfWeek.Sunday)
+            return "The clinic does not accept appointments on Sundays. Please choose another day.";
 
         var configuration = await GetConfigurationAsync();
         var dateKey = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -58,6 +61,9 @@ public sealed class ClinicScheduleService
         if (date.Date < DateTime.Today)
             return new List<string>();
 
+        if (date.DayOfWeek == DayOfWeek.Sunday)
+            return new List<string>();
+
         var configuration = await GetConfigurationAsync();
         var dateKey = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
@@ -68,16 +74,20 @@ public sealed class ClinicScheduleService
         if (rule == null ||
             !TimeSpan.TryParseExact(rule.Start, @"hh\:mm", CultureInfo.InvariantCulture, out var start) ||
             !TimeSpan.TryParseExact(rule.End, @"hh\:mm", CultureInfo.InvariantCulture, out var end) ||
-            end <= start ||
-            configuration.SlotIntervalMinutes <= 0)
+            end <= start)
         {
             return new List<string>();
         }
 
         var options = new List<string>();
 
-        for (var time = start; time < end; time = time.Add(TimeSpan.FromMinutes(configuration.SlotIntervalMinutes)))
+        foreach (var time in AppointmentShiftPolicy.GetBookableStartTimes())
         {
+            var shift = AppointmentShiftPolicy.GetShiftForAppointmentStart(time);
+            var appointmentEnd = time.Add(TimeSpan.FromMinutes(AppointmentShiftPolicy.AppointmentDurationMinutes));
+            if (shift == null || time < start || appointmentEnd > end)
+                continue;
+
             if (date.Date == DateTime.Today && time <= DateTime.Now.TimeOfDay)
                 continue;
 
@@ -132,12 +142,18 @@ public sealed class ClinicScheduleService
         if (date.Date < DateTime.Today)
             return "Please choose a future date.";
 
+        if (date.DayOfWeek == DayOfWeek.Sunday)
+            return "The clinic does not accept appointments on Sundays. Please choose another day.";
+
         if (!DateTime.TryParse(timeText, CultureInfo.CurrentCulture, DateTimeStyles.None, out var parsedTime))
             return "Please select a valid appointment time.";
 
         var time = parsedTime.TimeOfDay;
         if (date.Date == DateTime.Today && date.Date.Add(time) <= DateTime.Now)
             return "That appointment time has already passed. Please choose a future time.";
+
+        if (!AppointmentShiftPolicy.IsBookableAppointmentStart(time) || AppointmentShiftPolicy.GetShiftForAppointmentStart(time) == null)
+            return AppointmentShiftPolicy.GetSlotPolicyError(time);
 
         var configuration = await GetConfigurationAsync();
         var dateKey = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -151,17 +167,16 @@ public sealed class ClinicScheduleService
 
         if (!TimeSpan.TryParseExact(rule.Start, @"hh\:mm", CultureInfo.InvariantCulture, out var start) ||
             !TimeSpan.TryParseExact(rule.End, @"hh\:mm", CultureInfo.InvariantCulture, out var end) ||
-            end <= start ||
-            configuration.SlotIntervalMinutes <= 0)
+            end <= start)
         {
             return "The clinic schedule is not configured for this service.";
         }
 
-        var offset = time - start;
-        if (time < start ||
+        var appointmentEnd = time.Add(TimeSpan.FromMinutes(AppointmentShiftPolicy.AppointmentDurationMinutes));
+        if (!AppointmentShiftPolicy.IsBookableAppointmentStart(time) ||
+            time < start ||
             time >= end ||
-            offset.Ticks % TimeSpan.FromMinutes(configuration.SlotIntervalMinutes).Ticks != 0 ||
-            time.Seconds != 0)
+            appointmentEnd > end)
         {
             return "That time is outside the clinic's available appointment slots.";
         }
@@ -215,7 +230,7 @@ public sealed class ClinicScheduleService
 
     public sealed class ClinicScheduleConfiguration
     {
-        public int SlotIntervalMinutes { get; set; } = 30;
+        public int SlotIntervalMinutes { get; set; } = AppointmentShiftPolicy.AppointmentDurationMinutes;
         public List<string> Holidays { get; set; } = new();
         public List<ClinicScheduleRule> Rules { get; set; } = new();
     }

@@ -12,10 +12,10 @@ public sealed class StaffScheduleService
 {
     public static StaffScheduleService Instance { get; } = new();
 
-    public static readonly string[] ShiftTypes = { "Morning", "Afternoon", "Night", "Custom" };
+    public static readonly string[] ShiftTypes = { "Morning", "Afternoon", "Custom" };
     public static readonly string[] DateScheduleTypes = { "Override weekly schedule", "Additional shift" };
     public static readonly string[] DateScheduleStatuses = { "Available", "Unavailable", "Rest Day" };
-    public static readonly string[] LeaveTypes = { "Vacation Leave", "Sick Leave", "Absent", "Unavailable" };
+    public static readonly string[] LeaveTypes = { "Vacation Leave", "Sick Leave", "Other" };
 
     private readonly SQLiteAsyncConnection _db = ClinicDatabase.Connection;
     private readonly SemaphoreSlim _initLock = new(1, 1);
@@ -173,7 +173,11 @@ public sealed class StaffScheduleService
             return false;
         foreach (var day in daySettings.Where(day => day.IsWorkingDay))
         {
-            if (!TryReadTime(day.StartTime, out var start) || !TryReadTime(day.EndTime, out var end) || start == end)
+            if (!TryReadTime(day.StartTime, out var start) ||
+                !TryReadTime(day.EndTime, out var end) ||
+                !IsWithinClinicHours(start, end) ||
+                (day.ShiftType == "Morning" && (start < AppointmentShiftPolicy.MorningStart || end > AppointmentShiftPolicy.MorningEnd)) ||
+                (day.ShiftType == "Afternoon" && (start < AppointmentShiftPolicy.AfternoonStart || end > AppointmentShiftPolicy.AfternoonEnd)))
                 return false;
         }
         if (HasOverlappingWeeklyIntervals(daySettings)) return false;
@@ -267,8 +271,10 @@ public sealed class StaffScheduleService
         shift.ShiftDate = shift.ShiftDate.Date;
         shift.StartsAt = shift.ShiftDate.Add(shift.StartsAt.TimeOfDay);
         shift.EndsAt = shift.ShiftDate.Add(shift.EndsAt.TimeOfDay);
-        if (shift.Status != "Rest Day" && shift.EndsAt <= shift.StartsAt)
-            shift.EndsAt = shift.EndsAt.AddDays(1); // supports an overnight shift
+        if (shift.Status != "Rest Day" &&
+            (shift.EndsAt <= shift.StartsAt ||
+             !IsWithinClinicHours(shift.StartsAt.TimeOfDay, shift.EndsAt.TimeOfDay)))
+            return false;
         shift.IsActive = true;
         shift.CreatedAt = DateTime.Now;
         shift.CreatedByStaffId = admin.Id;
@@ -369,7 +375,10 @@ public sealed class StaffScheduleService
         int slotIntervalMinutes,
         int ignoreAppointmentId = 0)
     {
-        if (endsAt <= startsAt || slotIntervalMinutes <= 0) return null;
+        if (slotIntervalMinutes != AppointmentShiftPolicy.AppointmentDurationMinutes ||
+            endsAt != startsAt.AddMinutes(AppointmentShiftPolicy.AppointmentDurationMinutes) ||
+            !AppointmentShiftPolicy.IsBookableAppointmentStart(startsAt.TimeOfDay) ||
+            AppointmentShiftPolicy.GetShiftForAppointmentStart(startsAt.TimeOfDay) == null) return null;
 
         var staff = connection.Table<UserAccount>().ToList()
             .Where(account => string.Equals(account.Role, role, StringComparison.OrdinalIgnoreCase) &&
@@ -404,6 +413,51 @@ public sealed class StaffScheduleService
             if (!hasConflict) return employee.Id;
         }
         return null;
+    }
+
+    internal static bool IsActiveClinicStaff(SQLiteConnection connection, int staffId, string role)
+    {
+        var account = connection.Table<UserAccount>()
+            .FirstOrDefault(item => item.Id == staffId);
+        return account != null &&
+               string.Equals(account.Role, role, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(account.AccountStatus, "Active", StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(account.EmploymentStatus, "Active", StringComparison.OrdinalIgnoreCase) &&
+               account.EmailVerified;
+    }
+
+    internal static bool IsStaffAvailable(
+        SQLiteConnection connection,
+        int staffId,
+        string role,
+        DateTime startsAt,
+        DateTime endsAt,
+        int slotIntervalMinutes,
+        int ignoreAppointmentId = 0)
+    {
+        if (slotIntervalMinutes != AppointmentShiftPolicy.AppointmentDurationMinutes ||
+            endsAt != startsAt.AddMinutes(AppointmentShiftPolicy.AppointmentDurationMinutes) ||
+            !AppointmentShiftPolicy.IsBookableAppointmentStart(startsAt.TimeOfDay) ||
+            AppointmentShiftPolicy.GetShiftForAppointmentStart(startsAt.TimeOfDay) == null ||
+            !IsActiveClinicStaff(connection, staffId, role))
+        {
+            return false;
+        }
+
+        var appointments = connection.Table<Appointment>().ToList();
+        var allStaffShifts = connection.Table<StaffShift>().ToList();
+        var allRecurring = connection.Table<StaffRecurringSchedule>().ToList();
+        var allDays = connection.Table<StaffRecurringScheduleDay>().ToList();
+        var allLeave = connection.Table<StaffLeave>().ToList();
+
+        if (!HasScheduleCoverage(staffId, startsAt, endsAt, allRecurring, allDays, allStaffShifts, allLeave))
+            return false;
+
+        return !appointments.Any(appointment =>
+            appointment.Id != ignoreAppointmentId && appointment.AssignedStaffId == staffId &&
+            AppointmentOccupiesSlot(appointment.Status) &&
+            AppointmentService.GetVisitDateTime(appointment) < endsAt &&
+            AppointmentService.GetVisitDateTime(appointment).AddMinutes(slotIntervalMinutes) > startsAt);
     }
 
     public async Task<List<string>> GetWeeklyPreviewAsync(int staffId, DateTime weekStart)
@@ -520,6 +574,18 @@ public sealed class StaffScheduleService
             if (intervals[i].Start < intervals[j].End && intervals[i].End > intervals[j].Start)
                 return true;
         return false;
+    }
+
+    private static bool IsWithinClinicHours(TimeSpan start, TimeSpan end)
+    {
+        if (start < AppointmentShiftPolicy.MorningStart ||
+            end > AppointmentShiftPolicy.AfternoonEnd ||
+            end <= start)
+            return false;
+
+        // A full-day clinic schedule may span lunch; an individual shift cannot start or end in the break.
+        return !(start >= AppointmentShiftPolicy.BreakStart && start < AppointmentShiftPolicy.BreakEnd) &&
+               !(end > AppointmentShiftPolicy.BreakStart && end < AppointmentShiftPolicy.BreakEnd);
     }
 
     private static bool TryReadTime(string text, out TimeSpan time) =>

@@ -10,14 +10,14 @@
     <Grid RowDefinitions="Auto,5,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="#176B38" Padding="14,12" ColumnSpacing="12">
             <Button Text="‹" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
-                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="25" Padding="0" />
-            <Label Grid.Column="1" Text="{Binding PageHeading}" FontSize="20" FontAttributes="Bold"
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="{StaticResource Typography.Headline}" Padding="0" />
+            <Label Grid.Column="1" Text="{Binding PageHeading}" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold"
                    TextColor="#F4C400" VerticalTextAlignment="Center" />
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" />
         <ScrollView Grid.Row="2">
             <VerticalStackLayout Padding="18,16" Spacing="12">
-                <Label Text="Create and maintain individual clinic employee accounts." FontSize="14" TextColor="#667085" />
+                <Label Text="Create and maintain individual clinic employee accounts." FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                 <Label Text="Full name" FontAttributes="Bold" TextColor="#344054" />
                 <Entry Text="{Binding FullName}" Placeholder="Employee full name" BackgroundColor="White" />
                 <Label Text="Employee ID" FontAttributes="Bold" TextColor="#344054" />
@@ -37,7 +37,7 @@
                 <VerticalStackLayout IsVisible="{Binding IsCreatingStaff}" Spacing="8">
                     <Label Text="Initial password" FontAttributes="Bold" TextColor="#344054" />
                     <Entry Text="{Binding InitialPassword}" Placeholder="At least 8 characters" IsPassword="True" BackgroundColor="White" />
-                    <Label Text="This password is stored as a password hash. Give it to the employee securely." FontSize="12" TextColor="#667085" />
+                    <Label Text="This password is stored as a password hash. Give it to the employee securely." FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                 </VerticalStackLayout>
                 <Button Text="{Binding SaveButtonText}" Command="{Binding SaveCommand}"
                         BackgroundColor="#087A3D" TextColor="White" CornerRadius="12" HeightRequest="52" />

@@ -17,13 +17,13 @@
         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
             <Frame WidthRequest="48" HeightRequest="48" CornerRadius="24" Padding="0"
                    BorderColor="#2C9057" HasShadow="False" BackgroundColor="White">
-                <Label Text="&#128100;" FontSize="22" HorizontalOptions="Center"
+                <Label Text="&#128100;" FontSize="{StaticResource Typography.PageTitle}" HorizontalOptions="Center"
                        VerticalOptions="Center" TextColor="#087A3D"/>
             </Frame>
             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                <Label Text="Adelante, Doc!" FontSize="13" TextColor="#087A3D"/>
-                <Label Text="{Binding DoctorName}" FontSize="18" FontAttributes="Bold" TextColor="#087A3D"/>
-                <Label Text="DOCTOR" FontSize="11" FontAttributes="Bold" TextColor="#087A3D"/>
+                <Label Text="Adelante, Doc!" FontSize="{StaticResource Typography.Body}" TextColor="#087A3D"/>
+                <Label Text="{Binding DoctorName}" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#087A3D"/>
+                <Label Text="DOCTOR" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D"/>
             </VerticalStackLayout>
         </Grid>
     </Border>
@@ -32,19 +32,19 @@
 
                 <Border IsVisible="{Binding HasAnnouncement}" BackgroundColor="#FFF4C7"
                         Stroke="#E8CF5A" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="12">
-                    <Label Text="{Binding AnnouncementText}" FontSize="14" TextColor="#514A2C"/>
+                    <Label Text="{Binding AnnouncementText}" FontSize="{StaticResource Typography.Body}" TextColor="#514A2C"/>
                 </Border>
 
                 <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                     <VerticalStackLayout Spacing="3">
-                        <Label Text="Patients Ready for Consultation" FontSize="18"
+                        <Label Text="Patients Ready for Consultation" FontSize="{StaticResource Typography.Section}"
                                FontAttributes="Bold" TextColor="#17221B"/>
                         <Label 
-                               FontSize="12" TextColor="#647067"/>
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                     </VerticalStackLayout>
                     <Border Grid.Column="1" BackgroundColor="#E5F3EA" StrokeThickness="0"
                             StrokeShape="RoundRectangle 12" Padding="10,6" VerticalOptions="Start">
-                        <Label Text="{Binding ReadyForConsultationCount}" FontSize="14"
+                        <Label Text="{Binding ReadyForConsultationCount}" FontSize="{StaticResource Typography.Body}"
                                FontAttributes="Bold" TextColor="#087A3D"/>
                     </Border>
                 </Grid>
@@ -53,10 +53,10 @@
                         BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
                         StrokeShape="RoundRectangle 14" Padding="14">
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="No patients checked in yet" FontSize="14"
+                        <Label Text="No patients checked in yet" FontSize="{StaticResource Typography.Body}"
                                FontAttributes="Bold" TextColor="#17221B"/>
                         <Label Text="Appointments become available here after R.E.A.D.S. confirms the patient’s arrival."
-                               FontSize="12" TextColor="#647067"/>
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                     </VerticalStackLayout>
                 </Border>
 
@@ -68,19 +68,19 @@
                                     StrokeShape="RoundRectangle 14" Padding="14" Margin="0,0,0,10">
                                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                                       ColumnSpacing="10" RowSpacing="4">
-                                    <Label Grid.Row="0" Text="{Binding VisitLabel}" FontSize="12"
+                                    <Label Grid.Row="0" Text="{Binding VisitLabel}" FontSize="{StaticResource Typography.Caption}"
                                            FontAttributes="Bold" TextColor="#087A3D"/>
                                     <Border Grid.Row="0" Grid.Column="1" BackgroundColor="#E5F3EA"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="8,3">
-                                        <Label Text="{Binding VisitStatus}" FontSize="10"
+                                        <Label Text="{Binding VisitStatus}" FontSize="{StaticResource Typography.Caption}"
                                                FontAttributes="Bold" TextColor="#087A3D"/>
                                     </Border>
                                     <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding PatientName}"
-                                           FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
+                                           FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
                                     <Label Grid.Row="2" Grid.ColumnSpan="2"
                                            Text="{Binding ChiefComplaint, StringFormat='Reason: {0}'}"
-                                           FontSize="12" TextColor="#647067"/>
-                                    <Label Grid.Row="3" Grid.ColumnSpan="2" FontSize="12" TextColor="#879188">
+                                           FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
+                                    <Label Grid.Row="3" Grid.ColumnSpan="2" FontSize="{StaticResource Typography.Caption}" TextColor="#879188">
                                         <Label.FormattedText>
                                             <FormattedString>
                                                 <Span Text="Queue #"/>
@@ -104,7 +104,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <Label Text="Doctor Work Areas" FontSize="18" FontAttributes="Bold"
+                <Label Text="Doctor Work Areas" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                        TextColor="#17221B" Margin="0,4,0,0"/>
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
                     <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
@@ -119,10 +119,10 @@
                             <TapGestureRecognizer Command="{Binding GoToTodaysVisitsCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="&#128197;" FontSize="20" TextColor="#087A3D"/>
-                            <Label Text="Today's Schedule" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="&#128197;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"/>
+                            <Label Text="Today's Schedule" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="{Binding TodayVisitsCount, StringFormat='{0} appointments'}"
-                                   FontSize="11" TextColor="#647067"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
@@ -137,9 +137,9 @@
                             <TapGestureRecognizer Command="{Binding GoToPatientRecordsCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="&#128193;" FontSize="20" TextColor="#087A3D"/>
-                            <Label Text="Patient Records" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
-                            <Label Text="Consultation history" FontSize="12" TextColor="#647067"/>
+                            <Label Text="&#128193;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"/>
+                            <Label Text="Patient Records" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Consultation history" FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
@@ -154,9 +154,9 @@
                             <TapGestureRecognizer Command="{Binding GoToWriteRxCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="&#128138;" FontSize="20" TextColor="#087A3D"/>
-                            <Label Text="New Prescription" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
-                            <Label Text="Select a patient" FontSize="12" TextColor="#647067"/>
+                            <Label Text="&#128138;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"/>
+                            <Label Text="New Prescription" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Select a patient" FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
@@ -171,32 +171,32 @@
                             <TapGestureRecognizer Command="{Binding GoToCertificatesCommand}"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="&#128196;" FontSize="20" TextColor="#087A3D"/>
-                            <Label Text="Paper Certificate Reviews" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="&#128196;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"/>
+                            <Label Text="Paper Certificate Reviews" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="{Binding CertificateReviewCount, StringFormat='{0} completed requests'}"
-                                   FontSize="11" TextColor="#647067"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
                 <VerticalStackLayout IsVisible="{Binding HasCertRequests}" Spacing="9" Margin="0,2,0,0">
-                    <Label Text="Completed Visits — Certificate Review" FontSize="17"
+                    <Label Text="Completed Visits — Certificate Review" FontSize="{StaticResource Typography.Emphasis}"
                            FontAttributes="Bold" TextColor="#17221B"/>
                     <Label Text="Review the completed visit and records. Prepare and sign the paper certificate before marking it ready; the app only tracks the request."
-                           FontSize="12" TextColor="#647067"/>
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
                     <CollectionView ItemsSource="{Binding PendingCertRequests}" SelectionMode="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:CertRequestItem">
                                 <Border BackgroundColor="White" Stroke="#E8CF5A" StrokeThickness="1"
                                         StrokeShape="RoundRectangle 14" Padding="14" Margin="0,0,0,10">
                                     <VerticalStackLayout Spacing="5">
-                                        <Label Text="{Binding CertificateType}" FontSize="11"
+                                        <Label Text="{Binding CertificateType}" FontSize="{StaticResource Typography.Caption}"
                                                FontAttributes="Bold" TextColor="#087A3D"/>
-                                        <Label Text="{Binding PatientName}" FontSize="14"
+                                        <Label Text="{Binding PatientName}" FontSize="{StaticResource Typography.Body}"
                                                FontAttributes="Bold" TextColor="#17221B"/>
                                         <Label Text="{Binding Purpose, StringFormat='Purpose: {0}'}"
-                                               FontSize="12" TextColor="#647067"/>
-                                        <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#879188"/>
+                                               FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
+                                        <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#879188"/>
                                         <Button Text="Review Paper Request"
                                                 Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenIssueCertificateCommand}"
                                                 CommandParameter="{Binding .}"
@@ -216,29 +216,29 @@
                 Padding="0,9">
             <Grid ColumnDefinitions="*,*,*,*">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#8962;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center"/>
-                    <Label Text="Home" FontSize="11" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" HorizontalOptions="Center"/>
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="18" TextColor="#879188" HorizontalOptions="Center"/>
-                    <Label Text="Appointments" FontSize="11" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Section}" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" TextColor="#879188" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128276;" FontSize="18" TextColor="#879188" HorizontalOptions="Center"/>
-                    <Label Text="Notifications" FontSize="11" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="&#128276;" FontSize="{StaticResource Typography.Section}" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="Notifications" FontSize="{StaticResource Typography.Caption}" TextColor="#879188" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="18" TextColor="#879188" HorizontalOptions="Center"/>
-                    <Label Text="Profile" FontSize="11" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" TextColor="#879188" HorizontalOptions="Center"/>
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#879188" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Grid>
         </Border>

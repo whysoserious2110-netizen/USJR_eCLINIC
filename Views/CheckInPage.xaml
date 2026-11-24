@@ -14,12 +14,12 @@
                         StrokeShape="Rectangle" Padding="12,10">
                     <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="&#8592;"
-                                FontSize="21" TextColor="#087A3D"
+                                FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                 BackgroundColor="#F4C400" CornerRadius="9"
                                 WidthRequest="38" HeightRequest="38" Padding="0"
                                 Command="{Binding GoBackCommand}" />
                         <Label Grid.Column="1" Text="Patient Check-In"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                TextColor="#F4C400" VerticalOptions="Center" />
                     </Grid>
                 </Border>
@@ -27,7 +27,7 @@
             </Grid>
             <!-- Scan/search input -->
             <VerticalStackLayout Spacing="8">
-                <Label Text="Enter Student / Employee ID" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Enter Student / Employee ID" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,0" HeightRequest="52" HasShadow="False">
                     <Entry Placeholder="Enter or scan Student / Employee ID"
                        Text="{Binding ScannedId}"
@@ -42,75 +42,91 @@
             <!-- Not found -->
             <Frame IsVisible="{Binding ShowNotFound}" BackgroundColor="#FDECEC" BorderColor="#E05B5B" CornerRadius="14" Padding="18" HasShadow="False">
                 <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                    <Label Text="&#9888; Patient Not Found" FontAttributes="Bold" FontSize="16" TextColor="#E05B5B" HorizontalOptions="Center"/>
-                    <Label Text="No account matches this ID number." FontSize="13" TextColor="#8A3A3A" HorizontalOptions="Center"/>
+                    <Label Text="&#9888; Patient Not Found" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#E05B5B" HorizontalOptions="Center"/>
+                    <Label Text="No account matches this ID number." FontSize="{StaticResource Typography.Body}" TextColor="#8A3A3A" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- No approved appointment -->
             <Frame IsVisible="{Binding ShowNoApproved}" BackgroundColor="#FDF3E7" BorderColor="#D9A441" CornerRadius="14" Padding="18" HasShadow="False">
                 <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                    <Label Text="&#9888; No Approved Appointment" FontAttributes="Bold" FontSize="16" TextColor="#B8862B" HorizontalOptions="Center"/>
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E" HorizontalOptions="Center"/>
-                    <Label Text="There is no approved appointment for today." FontSize="13" TextColor="#8A6417" HorizontalOptions="Center"/>
+                    <Label Text="&#9888; No Approved Appointment" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#B8862B" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="There is no approved appointment for today." FontSize="{StaticResource Typography.Body}" TextColor="#8A6417" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Already checked in -->
             <Frame IsVisible="{Binding ShowAlreadyCheckedIn}" BackgroundColor="#EAF6F4" BorderColor="#0F9B8E" CornerRadius="14" Padding="18" HasShadow="False">
                 <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                    <Label Text="&#10003; Already Checked In" FontAttributes="Bold" FontSize="16" TextColor="#0F9B8E" HorizontalOptions="Center"/>
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E" HorizontalOptions="Center"/>
-                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
-                    <Label Text="Status: Waiting" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
-                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in at: {0}'}" FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                    <Label Text="&#10003; Already Checked In" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#0F9B8E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="{StaticResource Typography.Body}" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="Status: Waiting" FontSize="{StaticResource Typography.Body}" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in at: {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- Approved found -->
             <Frame IsVisible="{Binding ShowApprovedFound}" BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="18" HasShadow="False">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="PATIENT FOUND &#10003;" FontAttributes="Bold" FontSize="13" TextColor="#0F9B8E"/>
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="17" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientIdDisplay}" FontSize="13" TextColor="#6B7684"/>
+                    <Label Text="PATIENT FOUND &#10003;" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#0F9B8E"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientIdDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="#6B7684"/>
 
                     <BoxView HeightRequest="1" BackgroundColor="#EEF1F3" Margin="0,4,0,4"/>
 
-                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="13" TextColor="#12212E"/>
+                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
 
                     <VerticalStackLayout Spacing="2">
-                        <Label Text="Program" FontSize="11" TextColor="#9AA4AE"/>
-                        <Label Text="{Binding PatientProgram}" FontSize="13" TextColor="#12212E"/>
+                        <Label Text="Program" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding PatientProgram}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="2">
-                        <Label Text="Appointment" FontSize="11" TextColor="#9AA4AE"/>
-                        <Label Text="{Binding AppointmentService}" FontSize="13" TextColor="#12212E"/>
+                        <Label Text="Appointment" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding AppointmentService}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
 
                     <Grid ColumnDefinitions="*,*">
                         <VerticalStackLayout Grid.Column="0" Spacing="2">
-                            <Label Text="Date" FontSize="11" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding AppointmentDate}" FontSize="13" TextColor="#12212E"/>
+                            <Label Text="Date" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding AppointmentDate}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="Time" FontSize="11" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding AppointmentTime}" FontSize="13" TextColor="#12212E"/>
+                            <Label Text="Time" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding AppointmentTime}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                     </Grid>
 
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="ASSIGNED SHIFT" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
+                        <Label Text="{Binding AssignedShiftDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" />
+                    </VerticalStackLayout>
+
                     <Label Text="{Binding ArrivalGuidance}"
-                           IsVisible="{Binding IsLateArrival}"
-                           FontSize="12"
+                           IsVisible="{Binding HasArrivalGuidance}"
+                           FontSize="{StaticResource Typography.Caption}"
                            FontAttributes="Bold"
                            TextColor="#A87518"
                            BackgroundColor="#FFF6DC"
                            Padding="10,8"/>
-                    <Frame BackgroundColor="#D5F5EF" CornerRadius="10" Padding="10,4" HasShadow="False" HorizontalOptions="Start">
-                        <Label Text="&#10003; Confirmed appointment" FontSize="12" FontAttributes="Bold" TextColor="#0F9B8E"/>
+                    <Border IsVisible="{Binding RequiresReschedule}"
+                            BackgroundColor="#FFF0E8" Stroke="#F0B9A1" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10" Padding="11,9">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Reschedule Appointment"
+                                   FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#8A3B12" />
+                            <Label Text="The patient can open My Appointments and choose a new date and time. The new request must be approved by the clinic."
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#8A3B12" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Frame IsVisible="{Binding CanCheckIn}" BackgroundColor="#D5F5EF" CornerRadius="10" Padding="10,4" HasShadow="False" HorizontalOptions="Start">
+                        <Label Text="&#10003; Confirmed appointment" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#0F9B8E" />
                     </Frame>
 
                     <Button Text="CHECK IN PATIENT"
+                            IsVisible="{Binding CanCheckIn}"
                             Command="{Binding ConfirmCheckInCommand}"
                             BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold"
                             CornerRadius="20" HeightRequest="50" Margin="0,6,0,0"/>
@@ -120,13 +136,13 @@
             <!-- Success -->
             <Frame IsVisible="{Binding ShowCheckInSuccess}" BackgroundColor="#EAF6F4" BorderColor="#0F9B8E" CornerRadius="14" Padding="18" HasShadow="False">
                 <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
-                    <Label Text="&#10003; CHECK-IN SUCCESSFUL" FontAttributes="Bold" FontSize="16" TextColor="#0F9B8E" HorizontalOptions="Center"/>
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E" HorizontalOptions="Center"/>
-                    <Label Text="{Binding PatientIdDisplay}" FontSize="12" TextColor="#6B7684" HorizontalOptions="Center"/>
-                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="15" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" Margin="0,6,0,0"/>
-                    <Label Text="{Binding AppointmentService, StringFormat='Appointment: {0}'}" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
-                    <Label Text="Status: WAITING" FontSize="13" TextColor="#4A5B63" HorizontalOptions="Center"/>
-                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in: {0}'}" FontSize="12" TextColor="#9AA4AE" HorizontalOptions="Center"/>
+                    <Label Text="&#10003; CHECK-IN SUCCESSFUL" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#0F9B8E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" HorizontalOptions="Center"/>
+                    <Label Text="{Binding PatientIdDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684" HorizontalOptions="Center"/>
+                    <Label Text="{Binding QueueNumber, StringFormat='Queue Number: #{0}'}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#0F9B8E" HorizontalOptions="Center" Margin="0,6,0,0"/>
+                    <Label Text="{Binding AppointmentService, StringFormat='Appointment: {0}'}" FontSize="{StaticResource Typography.Body}" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="{Binding CheckInStatusDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="#4A5B63" HorizontalOptions="Center"/>
+                    <Label Text="{Binding CheckInTimeDisplay, StringFormat='Checked in: {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" HorizontalOptions="Center"/>
 
                     <Button Text="Scan Another Patient" Command="{Binding ScanAnotherCommand}"
                             BackgroundColor="White" BorderColor="#0F9B8E" BorderWidth="1" TextColor="#0F9B8E" FontAttributes="Bold"

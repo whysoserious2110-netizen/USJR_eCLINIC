@@ -23,6 +23,13 @@ public partial class ManageAppointmentsViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            PendingApprovals.Clear();
+            HasPending = false;
+            return;
+        }
+
         var pending = await Services.AppointmentService.Instance.GetPendingApprovalsAsync();
 
         PendingApprovals.Clear();
@@ -47,6 +54,12 @@ public partial class ManageAppointmentsViewModel : ObservableObject
     [RelayCommand]
     private async Task Approve(PendingApprovalItem item)
     {
+        if (Services.AuthService.Instance.CurrentUser?.Role != "R.E.A.D.S. Scholar")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only R.E.A.D.S. Scholars can approve general appointment requests.", "OK");
+            return;
+        }
+
         bool confirm = await Shell.Current.DisplayAlert("Approve Appointment?", $"Approve {item.PatientName}'s {item.ServiceType} appointment?", "Approve", "Cancel");
         if (!confirm) return;
 

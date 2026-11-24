@@ -20,6 +20,8 @@ public partial class DentalExaminationViewModel : ObservableObject
     [ObservableProperty] private string treatmentRendered = string.Empty;
     [ObservableProperty] private string dentalNotes = string.Empty;
     [ObservableProperty] private string careInstructions = string.Empty;
+    [ObservableProperty] private bool followUpRecommended;
+    [ObservableProperty] private DateTime recommendedFollowUpDate = DateTime.Today.AddDays(7);
 
     public string PatientInitials => string.Join(string.Empty,
         (PatientName ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -82,6 +84,15 @@ public partial class DentalExaminationViewModel : ObservableObject
             return;
         }
 
+        if (FollowUpRecommended && RecommendedFollowUpDate.Date < DateTime.Today)
+        {
+            await Shell.Current.DisplayAlert(
+                "Invalid follow-up date",
+                "Choose today or a future date for the recommended follow-up.",
+                "OK");
+            return;
+        }
+
         var record = new Models.DentalRecord
         {
             AppointmentId = _appointmentId,
@@ -92,6 +103,8 @@ public partial class DentalExaminationViewModel : ObservableObject
             TreatmentRendered = TreatmentRendered.Trim(),
             DentalNotes = DentalNotes.Trim(),
             CareInstructions = CareInstructions.Trim(),
+            FollowUpRecommended = FollowUpRecommended,
+            RecommendedFollowUpDate = FollowUpRecommended ? RecommendedFollowUpDate.Date : null,
             AttendingDentist = dentist.FullName
         };
 
@@ -111,6 +124,18 @@ public partial class DentalExaminationViewModel : ObservableObject
                 _patientEmail,
                 "Dental Examination Completed",
                 $"Dr. {dentist.FullName} completed your dental examination. Your dental record is linked to the appointment.");
+
+            if (FollowUpRecommended)
+            {
+                await Services.NotificationService.Instance.AddAsync(
+                    _patientEmail,
+                    "Dental Follow-Up Recommended",
+                    $"Dr. {dentist.FullName} recommended a dental follow-up" +
+                    (RecommendedFollowUpDate.Date == DateTime.Today
+                        ? " as soon as possible."
+                        : $" around {RecommendedFollowUpDate:MMM dd, yyyy}.") +
+                    " Open Request Appointment to choose a schedule.");
+            }
 
             var appointment = await Services.AppointmentService.Instance.GetByIdAsync(_appointmentId);
             if (appointment != null)

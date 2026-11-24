@@ -13,11 +13,11 @@
         <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                 StrokeShape="RoundRectangle 0" Padding="16,50,16,12">
             <Grid ColumnDefinitions="32,*" ColumnSpacing="8">
-                <Button Text="&#8592;" FontSize="21" TextColor="#087A3D"
+                <Button Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                         BackgroundColor="#F4C400" CornerRadius="8"
                         WidthRequest="28" HeightRequest="32" Padding="0"
                         Command="{Binding GoBackCommand}"/>
-                <Label Grid.Column="1" Text="Treated Patients" FontSize="17"
+                <Label Grid.Column="1" Text="Treated Patients" FontSize="{StaticResource Typography.Emphasis}"
                        FontAttributes="Bold" TextColor="#F4C400" VerticalOptions="Center"/>
             </Grid>
         </Border>
@@ -27,27 +27,27 @@
                         Margin="10,0,10,4">
             <CollectionView.Header>
                 <VerticalStackLayout Padding="0,8,0,9" Spacing="8">
-                    <Label Text="Find a patient to review dental history." FontSize="10" TextColor="#69776F"/>
+                    <Label Text="Find a patient to review dental history." FontSize="{StaticResource Typography.Caption}" TextColor="#69776F"/>
                     <VerticalStackLayout Spacing="3">
-                        <Label Text="Patient name or ID" FontSize="9" FontAttributes="Bold" TextColor="#17221B"/>
+                        <Label Text="Patient name or ID" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#17221B"/>
                         <Border BackgroundColor="White" Stroke="#2C9057" StrokeThickness="1"
                                 StrokeShape="RoundRectangle 8" Padding="4,0">
                             <SearchBar Placeholder="Search patient name or ID"
-                                       Text="{Binding SearchText}" FontSize="11"
+                                       Text="{Binding SearchText}" FontSize="{StaticResource Typography.Caption}"
                                        BackgroundColor="Transparent" HeightRequest="40"/>
                         </Border>
                     </VerticalStackLayout>
                     <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
-                        <Label Text="Search results" FontSize="12" FontAttributes="Bold" TextColor="#26332B"/>
-                        <Label Grid.Column="1" Text="{Binding ResultsSummary}" FontSize="9" TextColor="#69776F"
+                        <Label Text="Search results" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#26332B"/>
+                        <Label Grid.Column="1" Text="{Binding ResultsSummary}" FontSize="{StaticResource Typography.Caption}" TextColor="#69776F"
                                VerticalOptions="Center"/>
                     </Grid>
                 </VerticalStackLayout>
             </CollectionView.Header>
             <CollectionView.EmptyView>
                 <VerticalStackLayout Padding="18,34,18,20" Spacing="8" HorizontalOptions="Center">
-                    <Label Text="&#128203;" FontSize="32" HorizontalOptions="Center" TextColor="#9AA6B2"/>
-                    <Label Text="{Binding EmptyMessage}" FontSize="11" FontAttributes="Bold"
+                    <Label Text="&#128203;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#9AA6B2"/>
+                    <Label Text="{Binding EmptyMessage}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                            TextColor="#526057" HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
@@ -61,17 +61,17 @@
                                     BackgroundColor="#E7F4EC" StrokeThickness="0"
                                     StrokeShape="RoundRectangle 16" Padding="0" VerticalOptions="Start">
                                 <Grid>
-                                    <Label Text="{Binding Initials}" FontSize="9" FontAttributes="Bold"
+                                    <Label Text="{Binding Initials}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                            TextColor="#087A3D" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
                                            Aspect="AspectFill"/>
                                 </Grid>
                             </Border>
                             <Label Grid.Column="1" Text="{Binding FullName}" FontAttributes="Bold"
-                                   FontSize="10" TextColor="#17221B" LineBreakMode="TailTruncation"/>
-                            <Label Grid.Column="2" Text="&#8250;" FontSize="16" FontAttributes="Bold"
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#17221B" LineBreakMode="TailTruncation"/>
+                            <Label Grid.Column="2" Text="&#8250;" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold"
                                    TextColor="#087A3D" VerticalOptions="Center"/>
-                            <Label Grid.Row="1" Grid.Column="1" FontSize="8" TextColor="#69776F">
+                            <Label Grid.Row="1" Grid.Column="1" FontSize="{StaticResource Typography.Caption}" TextColor="#69776F">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding Role}"/>
@@ -81,11 +81,11 @@
                                 </Label.FormattedText>
                             </Label>
                             <Label Grid.Row="2" Grid.Column="1" Text="{Binding CourseYearDisplay}"
-                                   FontSize="8" TextColor="#69776F" LineBreakMode="TailTruncation"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#69776F" LineBreakMode="TailTruncation"/>
                             <Label Grid.Row="3" Grid.Column="1" Text="{Binding LastVisitDisplay}"
-                                   FontSize="8" TextColor="#69776F" MaxLines="1" LineBreakMode="TailTruncation"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#69776F" MaxLines="1" LineBreakMode="TailTruncation"/>
                             <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                                    Text="View dental record" FontSize="9" FontAttributes="Bold"
+                                    Text="View dental record" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                     TextColor="#087A3D" BackgroundColor="White" BorderColor="#DCE9E0"
                                     BorderWidth="1" CornerRadius="8" HeightRequest="34" Padding="10,0"
                                     Command="{Binding Source={x:Reference Root}, Path=BindingContext.OpenPatientCommand}"
@@ -103,26 +103,26 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToHomeCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#8962;" FontSize="17" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Home" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="1" HorizontalOptions="Center">
-                    <Label Text="&#128100;" FontSize="16" TextColor="#00A99A" HorizontalOptions="Center"/>
-                    <Label Text="Patients" FontSize="8" FontAttributes="Bold" TextColor="#00A99A" HorizontalOptions="Center"/>
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#00A99A" HorizontalOptions="Center"/>
+                    <Label Text="Patients" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#00A99A" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="1" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="16" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Appointments" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="1" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="16" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Profile" FontSize="8" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Grid>
         </Border>

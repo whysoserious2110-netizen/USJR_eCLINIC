@@ -10,12 +10,12 @@
 
     <Grid RowDefinitions="Auto,6,Auto,Auto,*" RowSpacing="0">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" BackgroundColor="#176B38" Padding="18,28,18,12">
-            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="28"
+            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="{StaticResource Typography.Headline}"
                     TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
                     HeightRequest="40" WidthRequest="40" CornerRadius="10" />
             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                <Label Text="{Binding ListTitle}" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="{Binding ListDescription}" FontSize="11" TextColor="White" />
+                <Label Text="{Binding ListTitle}" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="{Binding ListDescription}" FontSize="{StaticResource Typography.Caption}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6" />
@@ -29,16 +29,16 @@
         </Border>
 
         <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="16,10,16,0">
-            <Label Text="{Binding ListSectionTitle}" FontSize="13" FontAttributes="Bold" TextColor="#425466" />
-            <Label Grid.Column="1" Text="{Binding ResultCountText}" FontSize="12" TextColor="#72808D" />
+            <Label Text="{Binding ListSectionTitle}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#425466" />
+            <Label Grid.Column="1" Text="{Binding ResultCountText}" FontSize="{StaticResource Typography.Caption}" TextColor="#72808D" />
         </Grid>
 
         <CollectionView Grid.Row="4" Margin="16,0,16,12" ItemsSource="{Binding Patients}" SelectionMode="None">
             <CollectionView.EmptyView>
                 <VerticalStackLayout Padding="24,60,24,20" Spacing="8" HorizontalOptions="Center">
-                    <Label Text="{Binding EmptyTitle}" FontSize="18" FontAttributes="Bold"
+                    <Label Text="{Binding EmptyTitle}" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                            TextColor="#425466" HorizontalTextAlignment="Center" />
-                    <Label Text="{Binding EmptyMessage}" FontSize="13" TextColor="#72808D"
+                    <Label Text="{Binding EmptyMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#72808D"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
@@ -53,13 +53,13 @@
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                             <Border WidthRequest="46" HeightRequest="46" BackgroundColor="#FFF4C7"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 23" VerticalOptions="Center">
-                                <Label Text="&#128100;" FontSize="20" TextColor="#087A3D"
+                                <Label Text="&#128100;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center" />
                             </Border>
                             <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                                <Label Text="{Binding FullName}" FontSize="15" FontAttributes="Bold"
+                                <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                        TextColor="#172B3A" LineBreakMode="TailTruncation" />
-                                <Label FontSize="12" TextColor="#72808D">
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#72808D">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding Role}" />
@@ -69,7 +69,7 @@
                                     </Label.FormattedText>
                                 </Label>
                             </VerticalStackLayout>
-                            <Label Grid.Column="2" Text="›" FontSize="26" TextColor="#087A3D"
+                            <Label Grid.Column="2" Text="›" FontSize="{StaticResource Typography.Headline}" TextColor="#087A3D"
                                    VerticalOptions="Center" />
                         </Grid>
                     </Border>

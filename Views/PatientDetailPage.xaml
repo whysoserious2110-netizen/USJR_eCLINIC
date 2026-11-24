@@ -13,11 +13,11 @@
     <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,50,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+            <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                     TextColor="#087A3D" BackgroundColor="#F4C400"
                     CornerRadius="9" WidthRequest="40" HeightRequest="40"
                     Padding="0" Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1" Text="Patient Record Details" FontSize="18"
+            <Label Grid.Column="1" Text="Patient Record Details" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" TextColor="#F4C400"
                    VerticalOptions="Center" />
         </Grid>
@@ -28,19 +28,19 @@
             <!-- 1. Patient Information -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                    <Label Text="Patient Information" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
 
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                         <Frame Grid.Column="0" WidthRequest="56" HeightRequest="56" CornerRadius="28" Padding="0"
                                BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
                             <Grid>
-                                <Label Text="&#128100;" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                                <Label Text="&#128100;" FontSize="{StaticResource Typography.Headline}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
                                 <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
                             </Grid>
                         </Frame>
                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-                            <Label FontSize="12" TextColor="#9AA4AE">
+                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#12212E"/>
+                            <Label FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding PatientRole}"/>
@@ -54,9 +54,9 @@
 
                     <BoxView HeightRequest="1" BackgroundColor="#EEF1F3"/>
 
-                    <Label Text="{Binding PatientProgram}" FontSize="13" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientEmail2}" FontSize="13" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientMobile}" FontSize="13" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientProgram}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientEmail2}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientMobile}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                 </VerticalStackLayout>
             </Frame>
 
@@ -77,34 +77,34 @@
             <!-- 2. Medical History -->
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Medical History" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
+                    <Label Text="Medical History" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
                         <VerticalStackLayout Grid.Column="0" Spacing="4">
-                            <Label Text="Blood Type" FontSize="11" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding BloodType}" FontSize="13" TextColor="#12212E"/>
+                            <Label Text="Blood Type" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding BloodType}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="4">
-                            <Label Text="Allergies" FontSize="11" TextColor="#9AA4AE"/>
-                            <Label Text="{Binding Allergies}" FontSize="13" TextColor="#D9534F"/>
+                            <Label Text="Allergies" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                            <Label Text="{Binding Allergies}" FontSize="{StaticResource Typography.Body}" TextColor="#D9534F"/>
                         </VerticalStackLayout>
                     </Grid>
 
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Known Medical Conditions" FontSize="11" TextColor="#9AA4AE"/>
-                        <Label Text="{Binding MedicalConditions}" FontSize="13" TextColor="#12212E"/>
+                        <Label Text="Known Medical Conditions" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding MedicalConditions}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Current Medications" FontSize="11" TextColor="#9AA4AE"/>
-                        <Label Text="{Binding CurrentMedications}" FontSize="13" TextColor="#12212E"/>
+                        <Label Text="Current Medications" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                        <Label Text="{Binding CurrentMedications}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Frame>
 
             <!-- 3. Previous Consultation -->
-            <Label Text="Previous Consultation" FontSize="17" FontAttributes="Bold" TextColor="#12212E"/>
-            <Label Text="No consultations on file." FontSize="13" TextColor="#9AA4AE"
+            <Label Text="Previous Consultation" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#12212E"/>
+            <Label Text="No consultations on file." FontSize="{StaticResource Typography.Body}" TextColor="#9AA4AE"
                    IsVisible="{Binding HasConsultations, Converter={StaticResource BoolInverter}}"/>
 
             <CollectionView ItemsSource="{Binding Consultations}" IsVisible="{Binding HasConsultations}">
@@ -113,9 +113,9 @@
                         <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                                Padding="16" Margin="0,0,0,12" HasShadow="False">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
-                                <Label Text="{Binding ChiefComplaint}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Label Text="{Binding AttendingStaff, StringFormat='Attending: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding ChiefComplaint}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                                <Label Text="{Binding AttendingStaff, StringFormat='Attending: {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
@@ -123,8 +123,8 @@
             </CollectionView>
 
             <!-- 4. Diagnosis & Treatment -->
-            <Label Text="Diagnosis &amp; Treatment" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
-            <Label Text="No diagnosis or treatment records yet." FontSize="13" TextColor="#9AA4AE"
+            <Label Text="Diagnosis &amp; Treatment" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No diagnosis or treatment records yet." FontSize="{StaticResource Typography.Body}" TextColor="#9AA4AE"
                    IsVisible="{Binding HasConsultations, Converter={StaticResource BoolInverter}}"/>
 
             <CollectionView ItemsSource="{Binding Consultations}" IsVisible="{Binding HasConsultations}">
@@ -133,8 +133,8 @@
                         <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                                Padding="16" Margin="0,0,0,12" HasShadow="False">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
-                                <Label FontSize="12" TextColor="#6B7684">
+                                <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Diagnosis: " FontAttributes="Bold"/>
@@ -142,7 +142,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label FontSize="12" TextColor="#6B7684">
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Treatment: " FontAttributes="Bold"/>
@@ -150,7 +150,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Text="{Binding FollowUpNotes, StringFormat='Follow-up: {0}'}" FontSize="11" TextColor="#9AA4AE"
+                                <Label Text="{Binding FollowUpNotes, StringFormat='Follow-up: {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"
                                        IsVisible="{Binding FollowUpNotes, Converter={StaticResource StringNotEmpty}}"/>
                             </VerticalStackLayout>
                         </Frame>
@@ -159,8 +159,8 @@
             </CollectionView>
 
             <!-- 5. Prescription -->
-            <Label Text="Prescription" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
-            <Label Text="No prescriptions on file." FontSize="13" TextColor="#9AA4AE"
+            <Label Text="Prescription" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No prescriptions on file." FontSize="{StaticResource Typography.Body}" TextColor="#9AA4AE"
                    IsVisible="{Binding HasPrescriptions, Converter={StaticResource BoolInverter}}"/>
 
             <CollectionView ItemsSource="{Binding Prescriptions}" IsVisible="{Binding HasPrescriptions}">
@@ -170,13 +170,13 @@
                                Padding="16" Margin="0,0,0,12" HasShadow="False">
                             <VerticalStackLayout Spacing="6">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Grid.Column="0" Text="{Binding MedicineName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                                    <Label Grid.Column="0" Text="{Binding MedicineName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                                     <Frame Grid.Column="1" BackgroundColor="{Binding LabelColor}" CornerRadius="10" Padding="10,3" HasShadow="False">
-                                        <Label Text="{Binding LabelText}" FontSize="10" FontAttributes="Bold" TextColor="White"/>
+                                        <Label Text="{Binding LabelText}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="White"/>
                                     </Frame>
                                 </Grid>
-                                <Label Text="{Binding Dosage}" FontSize="12" TextColor="#6B7684"/>
-                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#C7CDD3"/>
+                                <Label Text="{Binding Dosage}" FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684"/>
+                                <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#C7CDD3"/>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>

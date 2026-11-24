@@ -15,10 +15,10 @@
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12"
               BackgroundColor="#087A3D" Padding="14,12">
             <Button Text="←" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
-                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="22" Padding="0" />
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="{StaticResource Typography.PageTitle}" Padding="0" />
             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                <Label Text="Account Approvals" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="Review Faculty and Non-Teaching ID submissions" FontSize="13" TextColor="White" />
+                <Label Text="Account Approvals" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Review Faculty and Non-Teaching ID submissions" FontSize="{StaticResource Typography.Body}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" />
@@ -27,16 +27,16 @@
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="16,16,16,8" Spacing="6">
                         <Label Text="Verify the submitted Employee ID against an authorized university record or physical ID before approval."
-                               FontSize="14" TextColor="#667085" />
+                               FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                         <Label Text="{Binding PendingApprovalsCount, StringFormat='{0} account(s) awaiting review'}"
-                               FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                               FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
                     </VerticalStackLayout>
                 </CollectionView.Header>
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="24" Spacing="7">
-                        <Label Text="All caught up" FontSize="19" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="All caught up" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#1F2933" />
                         <Label Text="There are no Faculty or Non-Teaching accounts waiting for ID review."
-                               FontSize="14" TextColor="#667085" />
+                               FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
@@ -46,15 +46,15 @@
                             <VerticalStackLayout Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="3">
-                                        <Label Text="{Binding FullName}" FontSize="17" FontAttributes="Bold" TextColor="#1F2933" />
-                                        <Label Text="{Binding Role}" FontSize="14" FontAttributes="Bold" TextColor="#087A3D" />
+                                        <Label Text="{Binding FullName}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#1F2933" />
+                                        <Label Text="{Binding Role}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="1" Text="Pending" FontSize="12" FontAttributes="Bold" TextColor="#8A6500"
+                                    <Label Grid.Column="1" Text="Pending" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#8A6500"
                                            BackgroundColor="#FFF5CC" Padding="8,5" VerticalOptions="Start" />
                                 </Grid>
-                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="14" TextColor="#344054" />
-                                <Label Text="{Binding Email}" FontSize="14" TextColor="#667085" />
-                                <Label Text="{Binding ProgramOrDepartment}" FontSize="13" TextColor="#667085" />
+                                <Label Text="{Binding IdNumber, StringFormat='Employee ID: {0}'}" FontSize="{StaticResource Typography.Body}" TextColor="#344054" />
+                                <Label Text="{Binding Email}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                                <Label Text="{Binding ProgramOrDepartment}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                                 <Image Source="{Binding FacultyIdImagePath, Converter={StaticResource ImagePathConv}}"
                                        HeightRequest="220" Aspect="AspectFit" BackgroundColor="#F7F8F6" />
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,2,0,0">

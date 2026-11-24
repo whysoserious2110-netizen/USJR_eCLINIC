@@ -15,12 +15,12 @@
                     StrokeShape="Rectangle" Padding="12,10">
                 <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                     <Button Grid.Column="0" Text="&#8592;"
-                            FontSize="21" TextColor="#087A3D"
+                            FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                             BackgroundColor="#F4C400" CornerRadius="9"
                             WidthRequest="38" HeightRequest="38" Padding="0"
                             Command="{Binding GoBackCommand}" />
                     <Label Grid.Column="1" Text="Patient Lookup"
-                           FontSize="18" FontAttributes="Bold"
+                           FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                            TextColor="#F4C400" VerticalOptions="Center" />
                 </Grid>
             </Border>
@@ -41,8 +41,8 @@
                 HeightRequest="46"/>
         <VerticalStackLayout IsVisible="{Binding HasSearched, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128269;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="Start typing a name or ID to search" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="&#128269;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="Start typing a name or ID to search" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
         <VerticalStackLayout IsVisible="{Binding HasSearched}"
@@ -52,8 +52,8 @@
                     <Setter Property="IsVisible" Value="False"/>
                 </DataTrigger>
             </VerticalStackLayout.Triggers>
-            <Label Text="&#128101;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No patients found" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="&#128101;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No patients found" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
         <CollectionView ItemsSource="{Binding Patients}" IsVisible="{Binding HasPatients}">
@@ -68,13 +68,13 @@
                             <Frame Grid.Column="0" WidthRequest="44" HeightRequest="44" CornerRadius="22" Padding="0"
                                    BackgroundColor="#E2E6EA" HasShadow="False" IsClippedToBounds="True">
                                 <Grid>
-                                    <Label Text="&#128100;" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
+                                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Section}" HorizontalOptions="Center" VerticalOptions="Center" TextColor="#9AA4AE"/>
                                     <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}" Aspect="AspectFill"/>
                                 </Grid>
                             </Frame>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                                <Label FontSize="12" TextColor="#9AA4AE">
+                                <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                                <Label FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding Role}"/>

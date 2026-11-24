@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.RescheduleAppointmentPage"
+             x:DataType="vm:RescheduleAppointmentViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8FA">
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#F7F8FA">
+        <Grid Grid.Row="0" RowDefinitions="Auto,5" RowSpacing="0">
+            <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
+                    StrokeShape="Rectangle" Padding="16,42,16,12">
+                <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
+                            BackgroundColor="#F4C400" CornerRadius="9" WidthRequest="38"
+                            HeightRequest="38" Padding="0" Command="{Binding GoBackCommand}" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="Reschedule Appointment" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
+                               TextColor="#F4C400" />
+                        <Label Text="Choose a new available slot" FontSize="{StaticResource Typography.Caption}" TextColor="White" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+            <BoxView Grid.Row="1" Color="#F4C400" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Border IsVisible="{Binding HasLoadError}" BackgroundColor="#FFF0E8"
+                        Stroke="#F0B9A1" StrokeThickness="1" StrokeShape="RoundRectangle 12"
+                        Padding="14">
+                    <Label Text="{Binding LoadError}" FontSize="{StaticResource Typography.Body}" TextColor="#8A3B12" />
+                </Border>
+
+                <Border IsVisible="{Binding HasLoadError, Converter={StaticResource BoolInverter}}"
+                        BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14" Padding="15">
+                    <VerticalStackLayout Spacing="13">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="ORIGINAL APPOINTMENT" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
+                                   TextColor="#68756D" />
+                            <Label Text="{Binding OriginalSchedule}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
+                                   TextColor="#17221B" />
+                        </VerticalStackLayout>
+
+                        <Border BackgroundColor="#FFF8D8" Stroke="#E8CF5A" StrokeThickness="1"
+                                StrokeShape="RoundRectangle 10" Padding="11">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Why a new schedule is needed" FontSize="{StaticResource Typography.Caption}"
+                                       FontAttributes="Bold" TextColor="#785B00" />
+                                <Label Text="{Binding ReschedulingReason}" FontSize="{StaticResource Typography.Caption}" TextColor="#785B00" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="New appointment date" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
+                                   TextColor="#17221B" />
+                            <DatePicker Date="{Binding SelectedDate, Mode=TwoWay}"
+                                        MinimumDate="{Binding MinimumDate}"
+                                        Format="ddd, MMM d, yyyy"
+                                        TextColor="#24342B" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="New time and shift" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
+                                   TextColor="#17221B" />
+                            <Picker ItemsSource="{Binding SessionOptions}"
+                                    SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                                    Title="Choose a clinic shift"
+                                    TextColor="#24342B" />
+                            <Label Text="{Binding SelectedSessionHint}" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
+                                        Format="h:mm tt" TextColor="#24342B" />
+                            <Label Text="{Binding SelectedTimeDisplay, StringFormat='Selected appointment: {0}'}"
+                                   FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
+                            <Label Text="{Binding AvailabilityMessage}" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Additional reason (optional)" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
+                                   TextColor="#17221B" />
+                            <Editor Text="{Binding AdditionalReason}" Placeholder="Add a note for clinic staff"
+                                    AutoSize="TextChanges" MinimumHeightRequest="72" TextColor="#24342B" />
+                        </VerticalStackLayout>
+
+                        <Label Text="Your new appointment will be sent as Pending and must be approved by clinic staff. The original appointment and its shift will remain in your history."
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#526057" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="Submit New Schedule Request"
+                        IsVisible="{Binding HasLoadError, Converter={StaticResource BoolInverter}}"
+                        IsEnabled="{Binding CanSubmit}"
+                        Command="{Binding SubmitRescheduleCommand}"
+                        BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold"
+                        CornerRadius="12" HeightRequest="50" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

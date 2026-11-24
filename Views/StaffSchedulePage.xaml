@@ -6,122 +6,122 @@
              x:Class="USJR_eCLINIC.Views.StaffSchedulePage"
              x:Name="Root"
              x:DataType="vm:StaffScheduleViewModel"
-             Title="Employee Schedule"
+             Title="Weekly Schedule"
              BackgroundColor="#F7F8F6"
              NavigationPage.HasNavigationBar="False">
     <Grid RowDefinitions="Auto,5,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="#176B38" Padding="14,12" ColumnSpacing="12">
             <Button Text="‹" Command="{Binding GoBackCommand}" WidthRequest="42" HeightRequest="42"
-                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="25" Padding="0" />
+                    CornerRadius="12" BackgroundColor="#F4C400" TextColor="#087A3D" FontSize="{StaticResource Typography.Headline}" Padding="0" />
             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
-                <Label Text="Staff Schedule" FontSize="20" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="{Binding StaffDisplay}" FontSize="13" TextColor="White" />
+                <Label Text="Weekly Schedule" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="{Binding StaffDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" />
+
         <RefreshView Grid.Row="2" Command="{Binding LoadCommand}">
             <ScrollView>
                 <VerticalStackLayout Padding="14" Spacing="14">
-                   
-
                     <Border Padding="14" BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14">
-                        <VerticalStackLayout Spacing="10">
-                            <Label Text="Recurring weekly schedule" FontSize="19" FontAttributes="Bold" TextColor="#17212B" />
-                            <Label Text="Add each working day, choose its shift, and set its hours. Days you do not add are rest days."
-                                   FontSize="13" TextColor="#667085" />
-                            <Button Text="{Binding ScheduleEditorButtonText}" Command="{Binding ToggleScheduleEditorCommand}"
-                                    BackgroundColor="#087A3D" TextColor="White" CornerRadius="10" HeightRequest="46" />
-                            <VerticalStackLayout IsVisible="{Binding IsScheduleEditorExpanded}" Spacing="10">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                <VerticalStackLayout>
-                                    <Label Text="Effective from" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                                    <DatePicker Date="{Binding EffectiveStartDate}" />
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="End date (optional)" FontSize="13" FontAttributes="Bold" TextColor="#344054" VerticalOptions="Center" />
-                                        <Switch Grid.Column="1" IsToggled="{Binding HasEndDate}" OnColor="#087A3D" />
-                                    </Grid>
-                                    <DatePicker Date="{Binding EffectiveEndDate}" IsEnabled="{Binding HasEndDate}" />
-                                </VerticalStackLayout>
-                            </Grid>
-                            <Label Text="Working day" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                            <Picker ItemsSource="{Binding DayNames}" SelectedItem="{Binding SelectedDayName}" />
-                            <Label Text="Shift" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                            <Picker ItemsSource="{Binding ShiftTypes}" SelectedItem="{Binding SelectedShiftType}" />
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                <VerticalStackLayout>
-                                    <Label Text="Start time" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                                    <TimePicker Time="{Binding SelectedDayStartsAt}" />
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1">
-                                    <Label Text="End time" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                                    <TimePicker Time="{Binding SelectedDayEndsAt}" />
-                                </VerticalStackLayout>
-                            </Grid>
-                            <Button Text="{Binding DayActionText}" Command="{Binding AddOrUpdateWorkDayCommand}"
-                                    BackgroundColor="#E6F4EC" TextColor="#087A3D" BorderColor="#087A3D" BorderWidth="1"
+                        <VerticalStackLayout Spacing="12">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Workdays and hours" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#17212B" />
+                                <Label Text="Turn on each day this employee works. Sundays are off."
+                                       FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                            </VerticalStackLayout>
+
+                            <Button Text="Copy first working day to all workdays"
+                                    Command="{Binding CopyFirstWorkingDayToAllWorkdaysCommand}"
+                                    BackgroundColor="#FFF4C2" TextColor="#087A3D"
                                     CornerRadius="10" HeightRequest="44" />
-                            <Label Text="{Binding WorkingDaysEmptyMessage}" FontSize="13" TextColor="#667085" />
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding ConfiguredDays}" Spacing="7">
+
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding WeekDays}" Spacing="8">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate x:DataType="vm:WeekdayScheduleEditor">
-                                        <Border Padding="10" BackgroundColor="#F7F8F6" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10">
-                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
-                                                <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                                    <Label Text="{Binding DayName}" FontSize="14" FontAttributes="Bold" TextColor="#17212B" />
-                                                    <Label Text="{Binding ShiftType}" FontSize="12" TextColor="#087A3D" />
-                                                    <Label Text="{Binding HoursDisplay}" FontSize="12" TextColor="#667085" />
+                                        <Border Padding="11" BackgroundColor="#F7F8F6" Stroke="#E1E8E2" StrokeShape="RoundRectangle 12">
+                                            <VerticalStackLayout Spacing="9">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                                        <Label Text="{Binding DayName}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17212B" />
+                                                        <Label Text="{Binding DayStateText}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
+                                                    </VerticalStackLayout>
+                                                    <Switch Grid.Column="1" IsToggled="{Binding IsWorkingDay}"
+                                                            OnColor="#087A3D" VerticalOptions="Center" />
+                                                </Grid>
+
+                                                <VerticalStackLayout IsVisible="{Binding IsWorkingDay}" Spacing="8">
+                                                    <VerticalStackLayout Spacing="3">
+                                                        <Label Text="Shift" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#344054" />
+                                                        <Picker ItemsSource="{Binding ShiftTypes}" SelectedItem="{Binding ShiftType}"
+                                                                BackgroundColor="White" />
+                                                    </VerticalStackLayout>
+                                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                                        <VerticalStackLayout Spacing="3">
+                                                            <Label Text="Start" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#344054" />
+                                                            <TimePicker Time="{Binding StartsAt}" />
+                                                        </VerticalStackLayout>
+                                                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                                            <Label Text="End" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#344054" />
+                                                            <TimePicker Time="{Binding EndsAt}" />
+                                                        </VerticalStackLayout>
+                                                    </Grid>
                                                 </VerticalStackLayout>
-                                                <Button Grid.Column="1" Text="Edit" Command="{Binding Source={x:Reference Root}, Path=BindingContext.EditWorkDayCommand}"
-                                                        CommandParameter="{Binding .}" BackgroundColor="#FFF4C2" TextColor="#087A3D" CornerRadius="8" VerticalOptions="Center" />
-                                                <Button Grid.Column="2" Text="Remove" Command="{Binding Source={x:Reference Root}, Path=BindingContext.RemoveWorkDayCommand}"
-                                                        CommandParameter="{Binding .}" BackgroundColor="#FDE8E7" TextColor="#B42318" CornerRadius="8" VerticalOptions="Center" />
-                                            </Grid>
+                                            </VerticalStackLayout>
                                         </Border>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
-                            <Entry Text="{Binding ChangeNote}" Placeholder="Change note (optional, for history)" />
+
+                            <Button Text="{Binding ChangeNoteButtonText}" Command="{Binding ToggleChangeNoteCommand}"
+                                    BackgroundColor="#EAF4ED" TextColor="#087A3D"
+                                    CornerRadius="9" HeightRequest="40" />
+                            <Entry Text="{Binding ChangeNote}" Placeholder="Note (optional)"
+                                   IsVisible="{Binding IsChangeNoteExpanded}" />
+
                             <Button Text="Save Weekly Schedule" Command="{Binding SaveRecurringCommand}"
                                     BackgroundColor="#087A3D" TextColor="White" CornerRadius="10" HeightRequest="48" />
-                            </VerticalStackLayout>
                         </VerticalStackLayout>
                     </Border>
 
                     <Border Padding="14" BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14">
                         <VerticalStackLayout Spacing="9">
-                            <Label Text="Leave and unavailability" FontSize="18" FontAttributes="Bold" TextColor="#17212B" />
-                            <Label Text="Approved periods block new appointment assignments for every affected day." FontSize="13" TextColor="#667085" />
-                            <Label Text="Leave type" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
-                            <Picker ItemsSource="{Binding LeaveTypes}" SelectedItem="{Binding SelectedLeaveType}" />
+                            <Label Text="Time off" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#17212B" />
+                            <Label Text="Time off prevents new appointment assignments during those dates."
+                                   FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                            <Label Text="Type" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#344054" />
+                            <Picker ItemsSource="{Binding LeaveTypes}" SelectedItem="{Binding SelectedLeaveType}"
+                                    BackgroundColor="#F7F8F6" />
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                                 <VerticalStackLayout>
-                                    <Label Text="From" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
+                                    <Label Text="From" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#344054" />
                                     <DatePicker Date="{Binding LeaveStartDate}" />
                                 </VerticalStackLayout>
                                 <VerticalStackLayout Grid.Column="1">
-                                    <Label Text="Through" FontSize="13" FontAttributes="Bold" TextColor="#344054" />
+                                    <Label Text="Through" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#344054" />
                                     <DatePicker Date="{Binding LeaveEndDate}" />
                                 </VerticalStackLayout>
                             </Grid>
                             <Entry Text="{Binding LeaveReason}" Placeholder="Reason (optional)" />
-                            <Button Text="Save Unavailable Period" Command="{Binding AddLeaveCommand}"
+                            <Button Text="Save Time Off" Command="{Binding AddLeaveCommand}"
                                     BackgroundColor="#087A3D" TextColor="White" CornerRadius="10" HeightRequest="46" />
-                            <Label Text="{Binding LeaveEmptyMessage}" FontSize="13" TextColor="#667085" />
+                            <Label Text="{Binding LeaveEmptyMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
                             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Leaves}" Spacing="6">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate x:DataType="models:StaffLeave">
                                         <Border Padding="10" BackgroundColor="#F7F8F6" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10">
                                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                                 <VerticalStackLayout Spacing="3">
-                                                    <Label Text="{Binding LeaveType}" FontSize="14" FontAttributes="Bold" TextColor="#17212B" />
-                                                    <Label Text="{Binding StartDate, StringFormat='{0:MMM d, yyyy}'}" FontSize="12" TextColor="#344054" />
-                                                    <Label Text="{Binding EndDate, StringFormat='Through {0:MMM d, yyyy}'}" FontSize="12" TextColor="#344054" />
-                                                    <Label Text="{Binding Reason}" FontSize="12" TextColor="#667085" />
-                                                    <Label Text="{Binding CreatedByName, StringFormat='Recorded by {0}'}" FontSize="11" TextColor="#667085" />
-                                                    <Label Text="{Binding ModifiedByName, StringFormat='Updated by {0}'}" IsVisible="{Binding ModifiedByName, Converter={StaticResource StringNotEmpty}}" FontSize="11" TextColor="#667085" />
-                                                    <Label Text="CANCELLED · retained in history" IsVisible="{Binding IsCancelled}" FontSize="11" TextColor="#667085" />
+                                                    <Label Text="{Binding LeaveType}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17212B" />
+                                                    <Label Text="{Binding StartDate, StringFormat='{0:MMM d, yyyy}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#344054" />
+                                                    <Label Text="{Binding EndDate, StringFormat='Through {0:MMM d, yyyy}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#344054" />
+                                                    <Label Text="{Binding Reason}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
+                                                    <Label Text="{Binding CreatedByName, StringFormat='Recorded by {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
+                                                    <Label Text="{Binding ModifiedByName, StringFormat='Updated by {0}'}"
+                                                           IsVisible="{Binding ModifiedByName, Converter={StaticResource StringNotEmpty}}"
+                                                           FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
+                                                    <Label Text="CANCELLED · retained in history" IsVisible="{Binding IsCancelled}"
+                                                           FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                                                 </VerticalStackLayout>
                                                 <Button Grid.Column="1" Text="Cancel" IsVisible="{Binding IsApproved}"
                                                         Command="{Binding Source={x:Reference Root}, Path=BindingContext.CancelLeaveCommand}"
@@ -138,32 +138,26 @@
                     <Border Padding="14" BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14">
                         <VerticalStackLayout Spacing="9">
                             <Button Text="{Binding HistorySectionTitle}" Command="{Binding ToggleHistoryCommand}"
-                                    BackgroundColor="Transparent" TextColor="#17212B" FontSize="18"
-                                    FontAttributes="Bold" HorizontalOptions="Fill" Padding="0" />
+                                    BackgroundColor="#EAF4ED" TextColor="#17212B" FontSize="{StaticResource Typography.Emphasis}"
+                                    FontAttributes="Bold" HorizontalOptions="Fill" Padding="10,8" />
                             <VerticalStackLayout IsVisible="{Binding IsHistoryExpanded}" Spacing="9">
-                            <Label Text="Changes are versioned with effective dates and administrator attribution. Historical appointment assignments stay unchanged."
-                                   FontSize="13" TextColor="#667085" />
-                            <Label Text="{Binding HistoryEmptyMessage}" FontSize="13" TextColor="#667085" />
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecurringHistory}" Spacing="7">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:RecurringScheduleHistoryEntry">
-                                        <Border Padding="10" BackgroundColor="#F7F8F6" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10">
-                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <Label Text="Older schedule changes are kept here for reference."
+                                       FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                                <Label Text="{Binding HistoryEmptyMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#667085" />
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecurringHistory}" Spacing="7">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:RecurringScheduleHistoryEntry">
+                                            <Border Padding="10" BackgroundColor="#F7F8F6" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10">
                                                 <VerticalStackLayout Spacing="4">
-                                                    <Label Text="{Binding EffectivePeriod}" FontSize="14" FontAttributes="Bold" TextColor="#17212B" />
-                                                    <Label Text="{Binding StatusText}" FontSize="12" TextColor="#087A3D" />
-                                                    <Label Text="{Binding Pattern}" FontSize="12" TextColor="#344054" />
-                                                    <Label Text="{Binding AuditText}" FontSize="11" TextColor="#667085" />
+                                                    <Label Text="{Binding EffectivePeriod}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17212B" />
+                                                    <Label Text="{Binding StatusText}" FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D" />
+                                                    <Label Text="{Binding Pattern}" FontSize="{StaticResource Typography.Caption}" TextColor="#344054" />
+                                                    <Label Text="{Binding AuditText}" FontSize="{StaticResource Typography.Caption}" TextColor="#667085" />
                                                 </VerticalStackLayout>
-                                                <Button Grid.Column="1" Text="Deactivate" IsVisible="{Binding IsActive}"
-                                                        Command="{Binding Source={x:Reference Root}, Path=BindingContext.DeactivateRecurringCommand}"
-                                                        CommandParameter="{Binding .}" BackgroundColor="#FDE8E7" TextColor="#B42318"
-                                                        CornerRadius="8" VerticalOptions="Center" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
                     </Border>

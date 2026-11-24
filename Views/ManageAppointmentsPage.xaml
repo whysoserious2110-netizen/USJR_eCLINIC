@@ -14,24 +14,24 @@
                         StrokeShape="RoundRectangle 12" Padding="12,10">
                     <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="&#8592;"
-                                FontSize="21" TextColor="#087A3D"
+                                FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                 BackgroundColor="#F4C400" CornerRadius="9"
                                 WidthRequest="38" HeightRequest="38" Padding="0"
                                 Command="{Binding GoBackCommand}" />
                         <Label Grid.Column="1" Text="Manage Appointments"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                TextColor="#F4C400" VerticalOptions="Center" />
                     </Grid>
                 </Border>
                 <BoxView HeightRequest="5" Color="#F4C400" />
             </VerticalStackLayout>
 
-        <Label Text="Pending appointments awaiting approval." FontSize="12" TextColor="#9AA4AE" FontAttributes="Italic"/>
+        <Label Text="Pending appointments awaiting approval." FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" FontAttributes="Italic"/>
 
         <VerticalStackLayout IsVisible="{Binding HasPending, Converter={StaticResource BoolInverter}}"
                               VerticalOptions="Center" Margin="0,60,0,0" Spacing="10">
-            <Label Text="&#128197;" FontSize="40" HorizontalOptions="Center" TextColor="#C7CDD3"/>
-            <Label Text="No pending appointments" FontSize="15" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
+            <Label Text="&#128197;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#C7CDD3"/>
+            <Label Text="No pending appointments" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#6B7684" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
         <CollectionView ItemsSource="{Binding PendingApprovals}" IsVisible="{Binding HasPending}">
@@ -40,8 +40,8 @@
                     <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                            Padding="16" Margin="0,0,0,12" HasShadow="False">
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
-                            <Label FontSize="12" TextColor="#6B7684">
+                            <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                            <Label FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding ServiceType}"/>
@@ -50,7 +50,7 @@
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
-                            <Label FontSize="11" TextColor="#9AA4AE">
+                            <Label FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE">
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding DateDisplay}"/>

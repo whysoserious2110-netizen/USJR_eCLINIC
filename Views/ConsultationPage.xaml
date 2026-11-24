@@ -13,11 +13,11 @@
     <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,50,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+            <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                     TextColor="#087A3D" BackgroundColor="#F4C400"
                     CornerRadius="9" WidthRequest="40" HeightRequest="40"
                     Padding="0" Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1" Text="Medical Consultation" FontSize="18"
+            <Label Grid.Column="1" Text="Medical Consultation" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" TextColor="#F4C400"
                    VerticalOptions="Center" />
         </Grid>
@@ -25,12 +25,12 @@
     <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="7" />
 </Grid>
 
-            <Label Text="Review the recorded vital signs, document findings, then complete the visit. You may add a prescription for this same patient before saving." FontSize="12" TextColor="#647067"/>
+            <Label Text="Review the recorded vital signs, document findings, then complete the visit. You may add a prescription for this same patient before saving." FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
 
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
                 <VerticalStackLayout Spacing="2">
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="16" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientRole}" FontSize="12" TextColor="#0F9B8E"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Emphasis}" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientRole}" FontSize="{StaticResource Typography.Caption}" TextColor="#0F9B8E"/>
                 </VerticalStackLayout>
             </Frame>
 
@@ -44,11 +44,11 @@
 
                     <Label Text="Today's Vitals &amp; Nursing Assessment"
                FontAttributes="Bold"
-               FontSize="14"
+               FontSize="{StaticResource Typography.Body}"
                TextColor="#12212E"/>
 
                     <Label Text="No vital signs have been recorded for this appointment."
-               FontSize="12"
+               FontSize="{StaticResource Typography.Caption}"
                TextColor="#D9534F"
                IsVisible="{Binding HasVitals, Converter={StaticResource BoolInverter}}"/>
 
@@ -62,55 +62,55 @@
 
                             <VerticalStackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Blood Pressure"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#9AA4AE"/>
 
                                 <Label Text="{Binding BloodPressure}"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#12212E"/>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Temperature"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#9AA4AE"/>
 
                                 <Label Text="{Binding Temperature}"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#12212E"/>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Grid.Row="1" Grid.Column="0">
                                 <Label Text="Heart Rate"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#9AA4AE"/>
 
                                 <Label Text="{Binding PulseRate}"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#12212E"/>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Grid.Row="1" Grid.Column="1">
                                 <Label Text="Respiratory Rate"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#9AA4AE"/>
 
                                 <Label Text="{Binding RespiratoryRate}"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#12212E"/>
                             </VerticalStackLayout>
 
                             <VerticalStackLayout Grid.Row="2" Grid.Column="0">
                                 <Label Text="Oxygen Saturation"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#9AA4AE"/>
 
                                 <Label Text="{Binding OxygenSaturation}"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#12212E"/>
                             </VerticalStackLayout>
@@ -122,25 +122,25 @@
 
                         <VerticalStackLayout Spacing="3">
                             <Label Text="Initial Assessment"
-                       FontSize="11"
+                       FontSize="{StaticResource Typography.Caption}"
                        TextColor="#9AA4AE"/>
 
                             <Label Text="{Binding InitialAssessment}"
-                       FontSize="13"
+                       FontSize="{StaticResource Typography.Body}"
                        TextColor="#12212E"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="3">
                             <Label Text="Nursing Notes"
-                       FontSize="11"
+                       FontSize="{StaticResource Typography.Caption}"
                        TextColor="#9AA4AE"/>
 
                             <Label Text="{Binding NursingNotes}"
-                       FontSize="13"
+                       FontSize="{StaticResource Typography.Body}"
                        TextColor="#12212E"/>
                         </VerticalStackLayout>
 
-                        <Label FontSize="11"
+                        <Label FontSize="{StaticResource Typography.Caption}"
                    TextColor="#9AA4AE">
 
                             <Label.FormattedText>
@@ -162,28 +162,36 @@
             </Frame>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Chief Complaint" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Chief Complaint" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
                     <Editor Text="{Binding ChiefComplaint}" HeightRequest="60"/>
                 </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Diagnosis" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Diagnosis" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
                     <Editor Placeholder="Enter diagnosis" Text="{Binding Diagnosis}" HeightRequest="60"/>
                 </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Treatment" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Treatment" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
                     <Editor Placeholder="Enter treatment given" Text="{Binding Treatment}" HeightRequest="80"/>
                 </Frame>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="6">
-                <Label Text="Follow-Up Notes (optional)" FontSize="13" FontAttributes="Bold" TextColor="#12212E"/>
+                <Label Text="Follow-Up Recommendation" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#12212E"/>
+                <HorizontalStackLayout Spacing="8">
+                    <CheckBox IsChecked="{Binding FollowUpRecommended}" />
+                    <Label Text="Recommend a medical follow-up appointment"
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#526057" VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+                <DatePicker Date="{Binding RecommendedFollowUpDate}"
+                            IsVisible="{Binding FollowUpRecommended}" />
+                <Label Text="Follow-Up Instructions (optional)" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#526057"/>
                 <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="12" Padding="14,10" HasShadow="False">
                     <Editor Placeholder="Any follow-up instructions" Text="{Binding FollowUpNotes}" HeightRequest="60"/>
                 </Frame>

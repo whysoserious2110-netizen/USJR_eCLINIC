@@ -8,12 +8,12 @@
 
     <Grid RowDefinitions="Auto,6,*">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" BackgroundColor="#176B38" Padding="18,42,18,15">
-            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="28"
+            <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="{StaticResource Typography.Headline}"
                     TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
                     HeightRequest="40" WidthRequest="40" CornerRadius="10" />
             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                <Label Text="Vital Signs &amp; Nursing Notes" FontSize="19" FontAttributes="Bold" TextColor="#F4C400" />
-                <Label Text="Nurse triage · checked-in visit" FontSize="12" TextColor="White" />
+                <Label Text="Vital Signs &amp; Nursing Notes" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#F4C400" />
+                <Label Text="Nurse triage · checked-in visit" FontSize="{StaticResource Typography.Caption}" TextColor="White" />
             </VerticalStackLayout>
         </Grid>
         <BoxView Grid.Row="1" Color="#F4C400" HeightRequest="6" />
@@ -22,58 +22,58 @@
 
             <Frame BackgroundColor="#D5F5EF" CornerRadius="12" Padding="14" HasShadow="False">
                 <VerticalStackLayout Spacing="3">
-                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="15" TextColor="#12212E"/>
-                    <Label Text="{Binding PatientIdentityText}" FontSize="12" TextColor="#0F766E"/>
+                    <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
+                    <Label Text="{Binding PatientIdentityText}" FontSize="{StaticResource Typography.Caption}" TextColor="#0F766E"/>
                 </VerticalStackLayout>
             </Frame>
 
             <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14" Padding="16" HasShadow="False">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Record Vital Signs" FontAttributes="Bold" FontSize="14" TextColor="#12212E"/>
+                    <Label Text="Record Vital Signs" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}" TextColor="#12212E"/>
                     <Label Text="Blood pressure, heart rate, and temperature are required. Enter other measurements when available."
-                           FontSize="11" TextColor="#6B7684"/>
+                           FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
                         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
-                            <Label Text="Blood Pressure" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Blood Pressure" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="120/80" Text="{Binding BloodPressure}"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
-                            <Label Text="Heart Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Heart Rate" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="78 bpm" Text="{Binding HeartRate}"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
-                            <Label Text="Temperature" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Temperature" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="36.8°C" Text="{Binding Temperature}"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
-                            <Label Text="Respiratory Rate" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Respiratory Rate" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="16/min" Text="{Binding RespiratoryRate}"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="4">
-                            <Label Text="O2 Saturation" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="O2 Saturation" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="98%" Text="{Binding OxygenSaturation}"/>
                         </VerticalStackLayout>
                     </Grid>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <VerticalStackLayout Grid.Column="0" Spacing="4">
-                            <Label Text="Height" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Height" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="170 cm" Text="{Binding Height}"/>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="4">
-                            <Label Text="Weight" FontSize="11" TextColor="#9AA4AE"/>
+                            <Label Text="Weight" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             <Entry Placeholder="65 kg" Text="{Binding Weight}"/>
                         </VerticalStackLayout>
                     </Grid>
 
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Initial Assessment" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="Initial Assessment" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                         <Editor Placeholder="Patient's presenting condition..." Text="{Binding InitialAssessment}" HeightRequest="70"/>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Nursing Notes" FontSize="11" TextColor="#9AA4AE"/>
+                        <Label Text="Nursing Notes" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                         <Editor Placeholder="Additional nursing observations..." Text="{Binding NursingNotes}" HeightRequest="70"/>
                     </VerticalStackLayout>
 
@@ -84,8 +84,8 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Label Text="History" FontSize="17" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
-            <Label Text="No vitals recorded yet." FontSize="13" TextColor="#9AA4AE"
+            <Label Text="History" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#12212E" Margin="0,6,0,0"/>
+            <Label Text="No vitals recorded yet." FontSize="{StaticResource Typography.Body}" TextColor="#9AA4AE"
                    IsVisible="{Binding HasHistory, Converter={StaticResource BoolInverter}}"/>
 
             <CollectionView ItemsSource="{Binding History}" IsVisible="{Binding HasHistory}">
@@ -94,8 +94,8 @@
                         <Frame BackgroundColor="White" BorderColor="#E2E6EA" CornerRadius="14"
                                Padding="16" Margin="0,0,0,12" HasShadow="False">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#9AA4AE"/>
-                                <Label FontSize="13" TextColor="#12212E">
+                                <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
+                                <Label FontSize="{StaticResource Typography.Body}" TextColor="#12212E">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="BP: "/>
@@ -107,8 +107,8 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Text="{Binding NursingNotes}" FontSize="12" TextColor="#6B7684"/>
-                                <Label Text="{Binding RecordedBy, StringFormat='Recorded by: {0}'}" FontSize="11" TextColor="#9AA4AE"/>
+                                <Label Text="{Binding NursingNotes}" FontSize="{StaticResource Typography.Caption}" TextColor="#6B7684"/>
+                                <Label Text="{Binding RecordedBy, StringFormat='Recorded by: {0}'}" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE"/>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>

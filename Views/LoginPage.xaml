@@ -47,11 +47,11 @@
                                          Spacing="0"
                                          VerticalOptions="Center">
                         <Label Text="USJ-R"
-                               FontSize="27"
+                               FontSize="{StaticResource Typography.Headline}"
                                FontAttributes="Bold"
                                TextColor="White" />
                         <Label Text="e-Clinic"
-                               FontSize="20"
+                               FontSize="{StaticResource Typography.PageTitle}"
                                FontAttributes="Bold"
                                TextColor="#F4C400" />
                     </VerticalStackLayout>
@@ -83,7 +83,7 @@
                 <VerticalStackLayout Spacing="0">
                     <Label HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
-                           FontSize="25"
+                           FontSize="{StaticResource Typography.Headline}"
                            FontAttributes="Bold"
                            Margin="0,0,0,6">
                         <Label.FormattedText>
@@ -103,19 +103,19 @@
                     </Grid>
 
                     <Label Text="Welcome back!"
-                           FontSize="20"
+                           FontSize="{StaticResource Typography.PageTitle}"
                            FontAttributes="Bold"
                            TextColor="#17221B"
                            HorizontalTextAlignment="Center" />
 
                     <Label Text="Log in to manage your medical records online"
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#66716B"
                            HorizontalTextAlignment="Center"
                            Margin="0,3,0,12" />
 
                     <Label Text="Email or Student/Employee ID"
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            FontAttributes="Bold"
                            TextColor="#24352B"
                            Margin="0,0,0,4" />
@@ -140,7 +140,7 @@
                                    Keyboard="Text"
                                    BackgroundColor="Transparent"
                                    TextColor="#24342B"
-                                   FontSize="14"
+                                   FontSize="{StaticResource Typography.Body}"
                                    VerticalOptions="Center"
                                    IsReadOnly="{Binding HasRememberedAccount}"
                                    ReturnType="Next" />
@@ -148,7 +148,7 @@
                     </Border>
 
                     <Label Text="Password"
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            FontAttributes="Bold"
                            TextColor="#24352B"
                            IsVisible="{Binding IsPasswordEntryVisible}"
@@ -174,13 +174,13 @@
                                    IsPassword="{Binding IsPasswordHidden}"
                                    BackgroundColor="Transparent"
                                    TextColor="#24342B"
-                                   FontSize="14"
+                                   FontSize="{StaticResource Typography.Body}"
                                    VerticalOptions="Center"
                                    ReturnType="Done"
                                    ReturnCommand="{Binding LogInCommand}" />
                             <Label Grid.Column="2"
                                    Text="{Binding ShowHideText}"
-                                   FontSize="12"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    FontAttributes="Bold"
                                    TextColor="#087A3D"
                                    VerticalOptions="Center"
@@ -206,7 +206,7 @@
                                       WidthRequest="23"
                                       VerticalOptions="Center" />
                             <Label Text="{Binding RememberMeLabel}"
-                                   FontSize="12"
+                                   FontSize="{StaticResource Typography.Caption}"
                                    TextColor="#59665E"
                                    VerticalOptions="Center" />
                         </HorizontalStackLayout>
@@ -214,7 +214,7 @@
                         <Label Grid.Column="1"
                                Text="Forgot Password?"
                                IsVisible="{Binding IsPasswordEntryVisible}"
-                               FontSize="12"
+                               FontSize="{StaticResource Typography.Caption}"
                                FontAttributes="Bold"
                                TextColor="#087A3D"
                                VerticalOptions="Center"
@@ -231,7 +231,7 @@
                             IsEnabled="{Binding IsLoggingIn, Converter={StaticResource BoolInverter}}"
                             Background="{StaticResource LoginButtonBrush}"
                             TextColor="White"
-                            FontSize="16"
+                            FontSize="{StaticResource Typography.Emphasis}"
                             FontAttributes="Bold"
                             CornerRadius="15"
                             HeightRequest="49" />
@@ -243,7 +243,7 @@
 
                     <Label Text="Use another account"
                            IsVisible="{Binding HasRememberedAccount}"
-                           FontSize="13"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#087A3D"
                            HorizontalOptions="Center"
@@ -263,7 +263,7 @@
                                  VerticalOptions="Center" />
                         <Label Grid.Column="1"
                                Text="or"
-                               FontSize="13"
+                               FontSize="{StaticResource Typography.Body}"
                                TextColor="#66716B"
                                VerticalOptions="Center" />
                         <BoxView Grid.Column="2"
@@ -278,7 +278,7 @@
                             TextColor="#005B3B"
                             BorderColor="#005B3B"
                             BorderWidth="1.3"
-                            FontSize="15"
+                            FontSize="{StaticResource Typography.Body}"
                             FontAttributes="Bold"
                             CornerRadius="26"
                             HeightRequest="48" />

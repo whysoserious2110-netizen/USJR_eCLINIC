@@ -28,6 +28,10 @@ public class MedicalRecordService
                     connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN AppointmentId INTEGER NOT NULL DEFAULT 0");
                 if (!columns.Any(column => column.Name.Equals("AttendingStaffId", StringComparison.OrdinalIgnoreCase)))
                     connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN AttendingStaffId INTEGER NOT NULL DEFAULT 0");
+                if (!columns.Any(column => column.Name.Equals("FollowUpRecommended", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN FollowUpRecommended INTEGER NOT NULL DEFAULT 0");
+                if (!columns.Any(column => column.Name.Equals("RecommendedFollowUpDate", StringComparison.OrdinalIgnoreCase)))
+                    connection.Execute("ALTER TABLE ConsultationRecord ADD COLUMN RecommendedFollowUpDate DATETIME NULL");
             });
             _initialized = true;
         }
@@ -74,6 +78,14 @@ public class MedicalRecordService
             .Where(record => record.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(record => record.ConsultationDate)
             .ToList();
+    }
+
+    public async Task<ConsultationRecord?> GetByAppointmentIdAsync(int appointmentId)
+    {
+        await EnsureInitializedAsync();
+        return await _db.Table<ConsultationRecord>()
+            .Where(record => record.AppointmentId == appointmentId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task AddAsync(ConsultationRecord record)

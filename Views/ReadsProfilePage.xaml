@@ -14,12 +14,12 @@
                         StrokeShape="Rectangle" Padding="12,10">
                     <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="&#8592;"
-                                FontSize="21" TextColor="#087A3D"
+                                FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                 BackgroundColor="#F4C400" CornerRadius="9"
                                 WidthRequest="38" HeightRequest="38" Padding="0"
                                 Command="{Binding GoBackCommand}" />
                         <Label Grid.Column="1" Text="READS Scholar Profile"
-                               FontSize="18" FontAttributes="Bold"
+                               FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                TextColor="#F4C400" VerticalOptions="Center" />
                     </Grid>
                 </Border>
@@ -35,7 +35,7 @@
                        IsClippedToBounds="True">
                     <Grid>
                         <Label Text="&#128100;"
-                               FontSize="36"
+                               FontSize="{StaticResource Typography.Display}"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                TextColor="#9AA4AE" />
@@ -45,7 +45,7 @@
                 </Frame>
 
                 <Label Text="Change photo"
-                       FontSize="12"
+                       FontSize="{StaticResource Typography.Caption}"
                        FontAttributes="Bold"
                        TextColor="#0F9B8E">
                     <Label.GestureRecognizers>
@@ -54,7 +54,7 @@
                 </Label>
 
                 <Label Text="{Binding FullName}"
-                       FontSize="18"
+                       FontSize="{StaticResource Typography.Section}"
                        FontAttributes="Bold"
                        TextColor="#12212E"
                        HorizontalOptions="Center" />
@@ -64,7 +64,7 @@
                        CornerRadius="12"
                        HasShadow="False">
                     <Label Text="R.E.A.D.S. Scholar"
-                           FontSize="11"
+                           FontSize="{StaticResource Typography.Caption}"
                            FontAttributes="Bold"
                            TextColor="#0F9B8E" />
                 </Frame>
@@ -78,50 +78,50 @@
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Student Information"
                            FontAttributes="Bold"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            TextColor="#12212E" />
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Full Name" FontSize="11" TextColor="#9AA4AE" />
+                        <Label Text="Full Name" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
                         <Entry Text="{Binding FullName}"
                                IsEnabled="{Binding IsEditing}"
-                               FontSize="14"
+                               FontSize="{StaticResource Typography.Body}"
                                TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Student ID" FontSize="11" TextColor="#9AA4AE" />
-                        <Label Text="{Binding StudentId}" FontSize="14" TextColor="#12212E" />
+                        <Label Text="Student ID" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
+                        <Label Text="{Binding StudentId}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
                         <Label Text="Student Program &amp; Year"
-                               FontSize="11"
+                               FontSize="{StaticResource Typography.Caption}"
                                TextColor="#9AA4AE" />
                         <Entry Text="{Binding StudentProgramAndYear}"
                                IsEnabled="{Binding IsEditing}"
                                Placeholder="e.g., BS Computer Science - 3rd Year"
-                               FontSize="14"
+                               FontSize="{StaticResource Typography.Body}"
                                TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Clinic Work Assignment" FontSize="11" TextColor="#9AA4AE" />
-                        <Label Text="{Binding ClinicAssignment}" FontSize="14" TextColor="#12212E" />
+                        <Label Text="Clinic Work Assignment" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
+                        <Label Text="{Binding ClinicAssignment}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Email" FontSize="11" TextColor="#9AA4AE" />
-                        <Label Text="{Binding Email}" FontSize="14" TextColor="#12212E" />
+                        <Label Text="Email" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
+                        <Label Text="{Binding Email}" FontSize="{StaticResource Typography.Body}" TextColor="#12212E" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Mobile Number" FontSize="11" TextColor="#9AA4AE" />
+                        <Label Text="Mobile Number" FontSize="{StaticResource Typography.Caption}" TextColor="#9AA4AE" />
                         <Entry Text="{Binding MobileNumber}"
                                IsEnabled="{Binding IsEditing}"
                                Placeholder="+63 9XX XXX XXXX"
                                Keyboard="Telephone"
-                               FontSize="14"
+                               FontSize="{StaticResource Typography.Body}"
                                TextColor="#12212E" />
                     </VerticalStackLayout>
                 </VerticalStackLayout>
@@ -135,13 +135,13 @@
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Clinic Role"
                            FontAttributes="Bold"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            TextColor="#12212E" />
                     <Label Text="Student working at the university clinic."
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            TextColor="#0F9B8E" />
                     <Label Text="This profile is for the scholar's student and clinic-work information."
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#4A5B63" />
                 </VerticalStackLayout>
             </Frame>

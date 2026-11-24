@@ -182,9 +182,7 @@ public partial class ProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        // Keep the saved session when Remember Me was selected so the account
-        // can be recognized on the login page for one-tap sign-in.
-        Services.AuthService.Instance.Logout();
+        await Services.SecureSessionService.Instance.SignOutAsync();
         await Shell.Current.Navigation.PopToRootAsync();
     }
 

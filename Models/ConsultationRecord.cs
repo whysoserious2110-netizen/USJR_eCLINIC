@@ -15,6 +15,8 @@ public class ConsultationRecord
     public string Diagnosis { get; set; } = string.Empty;
     public string Treatment { get; set; } = string.Empty;
     public string FollowUpNotes { get; set; } = string.Empty;
+    public bool FollowUpRecommended { get; set; }
+    public DateTime? RecommendedFollowUpDate { get; set; }
     public string AttendingStaff { get; set; } = string.Empty; // filled in by Doctor later
 
     public string BloodPressure { get; set; } = string.Empty;

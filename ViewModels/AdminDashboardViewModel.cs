@@ -130,8 +130,7 @@ public partial class AdminDashboardViewModel : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        await Services.SecureSessionService.Instance.ClearSessionAsync();
-        Services.AuthService.Instance.Logout();
+        await Services.SecureSessionService.Instance.SignOutAsync();
         await Shell.Current.Navigation.PopToRootAsync();
     }
 
@@ -182,7 +181,9 @@ public partial class StaffSchedulesViewModel : ObservableObject
         ? "No active clinic staff accounts are available."
         : string.Empty;
 
-    public StaffSchedulesViewModel() => _ = LoadAsync();
+    public StaffSchedulesViewModel() { }
+
+    public Task RefreshAsync() => Load();
 
     [RelayCommand]
     private async Task Load()
@@ -221,5 +222,4 @@ public partial class StaffSchedulesViewModel : ObservableObject
     [RelayCommand]
     private async Task GoBack() => await Shell.Current.Navigation.PopAsync();
 
-    private async Task LoadAsync() => await Load();
 }

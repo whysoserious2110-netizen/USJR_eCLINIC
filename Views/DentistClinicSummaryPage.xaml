@@ -11,10 +11,10 @@
         <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
                 StrokeShape="RoundRectangle 0" Padding="18,42,18,12">
             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="27"
+                <Button Text="‹" Command="{Binding GoBackCommand}" FontSize="{StaticResource Typography.Headline}"
                         TextColor="#087A3D" BackgroundColor="#F4C400" Padding="0"
                         HeightRequest="38" WidthRequest="38" CornerRadius="10" />
-                <Label Grid.Column="1" Text="Dental Clinic Summary" FontSize="17"
+                <Label Grid.Column="1" Text="Dental Clinic Summary" FontSize="{StaticResource Typography.Emphasis}"
                        FontAttributes="Bold" TextColor="#F4C400" VerticalOptions="Center" />
             </Grid>
         </Border>
@@ -22,7 +22,7 @@
 
         <ScrollView Grid.Row="2">
             <VerticalStackLayout Padding="16,18,16,24" Spacing="20">
-                <Label Text="{Binding DateDisplay}" FontSize="14" FontAttributes="Bold"
+                <Label Text="{Binding DateDisplay}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                        TextColor="#17221B" Margin="4,0,0,0" />
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding StatusItems}" Spacing="24">
@@ -37,11 +37,11 @@
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="*,68" ColumnSpacing="0">
                                     <Grid BackgroundColor="#DDE7E1" Padding="12,8">
-                                        <Label Text="{Binding Title}" FontSize="17" TextColor="{Binding LabelColor}"
+                                        <Label Text="{Binding Title}" FontSize="{StaticResource Typography.Emphasis}" TextColor="{Binding LabelColor}"
                                                VerticalOptions="Center" LineBreakMode="TailTruncation" />
                                     </Grid>
                                     <Grid Grid.Column="1" BackgroundColor="#2C9057">
-                                        <Label Text="{Binding Count}" FontSize="25" TextColor="#F4C400"
+                                        <Label Text="{Binding Count}" FontSize="{StaticResource Typography.Headline}" TextColor="#F4C400"
                                                HorizontalOptions="Center" VerticalOptions="Center" />
                                     </Grid>
                                 </Grid>
@@ -59,30 +59,30 @@
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToHomeCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="⌂" FontSize="19" TextColor="#8FA2B6" HorizontalOptions="Center" />
-                    <Label Text="Home" FontSize="9" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="⌂" FontSize="{StaticResource Typography.Section}" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#8FA2B6" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToPatientsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="♧" FontSize="18" TextColor="#8FA2B6" HorizontalOptions="Center" />
-                    <Label Text="Patients" FontSize="9" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="♧" FontSize="{StaticResource Typography.Section}" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="Patients" FontSize="{StaticResource Typography.Caption}" TextColor="#8FA2B6" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="▦" FontSize="18" TextColor="#00A99A" HorizontalOptions="Center" />
-                    <Label Text="Appointments" FontSize="9" FontAttributes="Bold"
+                    <Label Text="▦" FontSize="{StaticResource Typography.Section}" TextColor="#00A99A" HorizontalOptions="Center" />
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                            TextColor="#00A99A" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}" />
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="♙" FontSize="18" TextColor="#8FA2B6" HorizontalOptions="Center" />
-                    <Label Text="Profile" FontSize="9" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="♙" FontSize="{StaticResource Typography.Section}" TextColor="#8FA2B6" HorizontalOptions="Center" />
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#8FA2B6" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </Border>

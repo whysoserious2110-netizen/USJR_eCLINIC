@@ -23,6 +23,13 @@ public partial class DentalRecordListItem : ObservableObject
     public string Procedure { get; set; } = "Dental visit";
     public string StatusDisplay { get; set; } = "Completed";
     public string FollowUpDisplay { get; set; } = "No follow-up visit booked.";
+    public bool FollowUpRecommended { get; set; }
+    public DateTime? RecommendedFollowUpDate { get; set; }
+    public bool HasFollowUpRecommendation => FollowUpRecommended;
+    public string FollowUpRecommendationDisplay =>
+        RecommendedFollowUpDate.HasValue
+            ? $"A dental follow-up was recommended around {RecommendedFollowUpDate.Value:MMM d, yyyy}."
+            : "A dental follow-up was recommended.";
     public string PageTitle { get; set; } = "Dental Record Details";
     public bool IsDentist { get; set; }
     public string SecondTabLabel => IsDentist ? "Patients" : "Appointments";
@@ -109,8 +116,10 @@ public partial class DentalRecordsViewModel : ObservableObject
             .Where(appointment =>
                 appointment.PatientEmail.Equals(user.Email, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(appointment.SubService, "Dental Follow-up", StringComparison.OrdinalIgnoreCase) &&
-                appointment.VisitDate.Date >= DateTime.Today &&
-                (appointment.Status is "Pending" or "Confirmed" or "CheckedIn" or "VitalsRecorded"))
+                (appointment.Status == "Reschedule Requested"
+                    ? appointment.ProposedVisitDate.HasValue && appointment.ProposedVisitDate.Value.Date >= DateTime.Today
+                    : appointment.VisitDate.Date >= DateTime.Today) &&
+                (appointment.Status is "Pending" or "Confirmed" or "Reschedule Requested" or "CheckedIn" or "VitalsRecorded"))
             .OrderBy(appointment => appointment.VisitDate)
             .ToList();
 
@@ -120,7 +129,9 @@ public partial class DentalRecordsViewModel : ObservableObject
             var appointment = record.AppointmentId > 0
                 ? await Services.AppointmentService.Instance.GetByIdAsync(record.AppointmentId)
                 : null;
-            Records.Add(CreateListItem(record, user, appointment, followUps.FirstOrDefault(), false));
+            var linkedFollowUp = followUps.FirstOrDefault(followUp =>
+                followUp.OriginalAppointmentId == record.AppointmentId);
+            Records.Add(CreateListItem(record, user, appointment, linkedFollowUp, false));
         }
 
         HasRecords = Records.Count > 0;
@@ -152,7 +163,11 @@ public partial class DentalRecordsViewModel : ObservableObject
             StatusDisplay = "Completed",
             FollowUpDisplay = followUp == null
                 ? "No follow-up visit booked."
-                : $"Booked follow-up on {followUp.VisitDate:MMMM d, yyyy} at {followUp.VisitTime}.",
+                : followUp.Status == "Reschedule Requested" && followUp.ProposedVisitDate.HasValue
+                    ? $"Schedule suggested for {followUp.ProposedVisitDate.Value:MMMM d, yyyy} at {followUp.ProposedVisitTime}; awaiting your response."
+                    : $"Booked follow-up on {followUp.VisitDate:MMMM d, yyyy} at {followUp.VisitTime}.",
+            FollowUpRecommended = record.FollowUpRecommended,
+            RecommendedFollowUpDate = record.RecommendedFollowUpDate,
             PageTitle = isDentist ? "View Dental Record" : "Dental Record Details",
             IsDentist = isDentist,
             ExamFindings = record.ExamFindings,

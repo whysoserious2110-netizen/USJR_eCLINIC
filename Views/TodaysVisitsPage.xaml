@@ -12,11 +12,11 @@
     <Border Grid.Row="0" BackgroundColor="#176B38" StrokeThickness="0"
             StrokeShape="Rectangle" Padding="18,44,18,14">
         <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
-            <Button Grid.Column="0" Text="&#8592;" FontSize="21"
+            <Button Grid.Column="0" Text="&#8592;" FontSize="{StaticResource Typography.PageTitle}"
                     TextColor="#087A3D" BackgroundColor="#F4C400"
                     CornerRadius="9" WidthRequest="40" HeightRequest="40"
                     Padding="0" Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1" Text="Today's Schedule" FontSize="18"
+            <Label Grid.Column="1" Text="Today's Schedule" FontSize="{StaticResource Typography.Section}"
                    FontAttributes="Bold" TextColor="#F4C400"
                    VerticalOptions="Center" />
         </Grid>
@@ -25,12 +25,12 @@
 </Grid>
 
         <Label Text="All medical appointments are listed here. Only checked-in patients can be opened for consultation."
-               FontSize="12" TextColor="#647067"/>
+               FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
 
         <VerticalStackLayout IsVisible="{Binding HasVisits, Converter={StaticResource BoolInverter}}"
                              VerticalOptions="Center" Margin="0,45,0,0" Spacing="8">
-            <Label Text="&#128197;" FontSize="38" HorizontalOptions="Center" TextColor="#9BA89E"/>
-            <Label Text="No appointments scheduled today" FontSize="15" FontAttributes="Bold"
+            <Label Text="&#128197;" FontSize="{StaticResource Typography.Display}" HorizontalOptions="Center" TextColor="#9BA89E"/>
+            <Label Text="No appointments scheduled today" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                    TextColor="#647067" HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
@@ -41,18 +41,18 @@
                             StrokeShape="RoundRectangle 14" Padding="13" Margin="0,0,0,10">
                         <VerticalStackLayout Spacing="6">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="14"
+                                <Label Text="{Binding PatientName}" FontAttributes="Bold" FontSize="{StaticResource Typography.Body}"
                                        TextColor="#17221B" VerticalOptions="Center"/>
                                 <Border Grid.Column="1" BackgroundColor="{Binding StatusColor}"
                                         StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="8,3">
-                                    <Label Text="{Binding Status}" FontSize="10" FontAttributes="Bold"
+                                    <Label Text="{Binding Status}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                            TextColor="White"/>
                                 </Border>
                             </Grid>
-                            <Label Text="{Binding PatientRole}" FontSize="11" TextColor="#879188"/>
+                            <Label Text="{Binding PatientRole}" FontSize="{StaticResource Typography.Caption}" TextColor="#879188"/>
                             <Label Text="{Binding ChiefComplaint, StringFormat='Reason: {0}'}"
-                                   FontSize="12" TextColor="#647067"/>
-                            <Label Text="{Binding TimeDisplay}" FontSize="11" TextColor="#879188"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#647067"/>
+                            <Label Text="{Binding TimeDisplay}" FontSize="{StaticResource Typography.Caption}" TextColor="#879188"/>
 
                             <Button IsVisible="{Binding CanConsult}"
                                     Text="Start Consultation"
@@ -62,7 +62,7 @@
                                     FontAttributes="Bold" CornerRadius="10" HeightRequest="42"
                                     Margin="0,4,0,0"/>
                             <Label IsVisible="{Binding CanConsult, Converter={StaticResource BoolInverter}}"
-                                   Text="{Binding ActionMessage}" FontSize="11" TextColor="#8A6A1B"
+                                   Text="{Binding ActionMessage}" FontSize="{StaticResource Typography.Caption}" TextColor="#8A6A1B"
                                    Margin="0,2,0,0"/>
                         </VerticalStackLayout>
                     </Border>

@@ -9,6 +9,9 @@ public class ChipBgConverter : IValueConverter
         if (value is bool isSelected)
             return isSelected ? Color.FromArgb("#D5F5EF") : Colors.White;
 
+        if (parameter == null && value is string selectedValue)
+            return string.IsNullOrWhiteSpace(selectedValue) ? Colors.White : Color.FromArgb("#F4C400");
+
         return IsMatchingService(value, parameter)
             ? Color.FromArgb("#F4C400")
             : Colors.White;

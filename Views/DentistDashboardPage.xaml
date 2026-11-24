@@ -21,20 +21,20 @@
                                 Stroke="#2C9057" StrokeThickness="2"
                                 StrokeShape="RoundRectangle 22" Padding="1">
                             <Grid>
-                                <Label Text="&#128100;" FontSize="20" TextColor="#91A0AC"
+                                <Label Text="&#128100;" FontSize="{StaticResource Typography.PageTitle}" TextColor="#91A0AC"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                                 <Image Source="{Binding ProfileImagePath, Converter={StaticResource ImagePathConv}}"
                                        Aspect="AspectFill"/>
                             </Grid>
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                            <Label Text="Adelante, Josesian Dentist!" FontSize="13" TextColor="#087A3D"/>
-                            <Label Text="{Binding DentistName}" FontSize="18" FontAttributes="Bold"
+                            <Label Text="Adelante, Josesian Dentist!" FontSize="{StaticResource Typography.Body}" TextColor="#087A3D"/>
+                            <Label Text="{Binding DentistName}" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                    TextColor="#087A3D" LineBreakMode="TailTruncation"/>
                             <Border BackgroundColor="#E5F3EA" StrokeThickness="0"
                                     StrokeShape="RoundRectangle 7" Padding="6,2"
                                     HorizontalOptions="Start">
-                                <Label Text="DENTIST" FontSize="11" FontAttributes="Bold" TextColor="#087A3D"/>
+                                <Label Text="DENTIST" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D"/>
                             </Border>
                         </VerticalStackLayout>
                     </Grid>
@@ -44,8 +44,8 @@
                 <Border BackgroundColor="#FFF3CD" Stroke="#F4C400" StrokeThickness="0.5"
                         StrokeShape="RoundRectangle 10" Padding="10">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                        <Label Text="&#9432;" FontSize="15" TextColor="#A66B00" VerticalOptions="Start"/>
-                        <Label Grid.Column="1" Text="{Binding AnnouncementText}" FontSize="14"
+                        <Label Text="&#9432;" FontSize="{StaticResource Typography.Body}" TextColor="#A66B00" VerticalOptions="Start"/>
+                        <Label Grid.Column="1" Text="{Binding AnnouncementText}" FontSize="{StaticResource Typography.Body}"
                                TextColor="#66551F" VerticalOptions="Center"/>
                     </Grid>
                 </Border>
@@ -57,14 +57,14 @@
                         <TapGestureRecognizer Command="{Binding GoToClinicSummaryCommand}"/>
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <Label Text="Today's Dental Clinic Summary" FontSize="18"
+                        <Label Text="Today's Dental Clinic Summary" FontSize="{StaticResource Typography.Section}"
                                FontAttributes="Bold" TextColor="#17221B" VerticalOptions="Center"/>
-                        <Label Grid.Column="1" Text="&#8250;" FontSize="22" FontAttributes="Bold"
+                        <Label Grid.Column="1" Text="&#8250;" FontSize="{StaticResource Typography.PageTitle}" FontAttributes="Bold"
                                TextColor="#087A3D" VerticalOptions="Center"/>
                     </Grid>
                 </Border>
 
-                <Label Text="Dental Quick Actions" FontSize="18" FontAttributes="Bold"
+                <Label Text="Dental Quick Actions" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                        TextColor="#17221B" Margin="0,2,0,0"/>
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                     <Border Grid.Row="0" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
@@ -81,12 +81,12 @@
                         <VerticalStackLayout Spacing="4">
                             <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128197;" FontSize="18" TextColor="#087A3D"
+                                <Label Text="&#128197;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Today's Visit" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Today's Visit" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="{Binding ActiveVisitCount, StringFormat='{0} Active Visits'}"
-                                   FontSize="12" TextColor="#087A3D"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="0" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
@@ -103,12 +103,12 @@
                         <VerticalStackLayout Spacing="4">
                             <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128276;" FontSize="18" TextColor="#087A3D"
+                                <Label Text="&#128276;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Follow Up Patients" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Follow Up Patients" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
                             <Label Text="{Binding FollowUpVisitCount, StringFormat='{0} Upcoming Visits'}"
-                                   FontSize="12" TextColor="#91A0AC"/>
+                                   FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="0" BackgroundColor="White" Stroke="#DCE5DD"
@@ -125,11 +125,11 @@
                         <VerticalStackLayout Spacing="4">
                             <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128269;" FontSize="18" TextColor="#087A3D"
+                                <Label Text="&#128269;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Patient Search" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
-                            <Label Text="Dental appointment patients" FontSize="12" TextColor="#91A0AC"/>
+                            <Label Text="Patient Search" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Dental appointment patients" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC"/>
                         </VerticalStackLayout>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Stroke="#DCE5DD"
@@ -146,21 +146,21 @@
                         <VerticalStackLayout Spacing="4">
                             <Border WidthRequest="27" HeightRequest="27" BackgroundColor="#E5F3EA"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="0">
-                                <Label Text="&#128196;" FontSize="18" TextColor="#087A3D"
+                                <Label Text="&#128196;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Certificate Review" FontSize="15" FontAttributes="Bold" TextColor="#17221B"/>
-                            <Label Text="Review Dental Requests" FontSize="12" TextColor="#91A0AC"/>
+                            <Label Text="Certificate Review" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#17221B"/>
+                            <Label Text="Review Dental Requests" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC"/>
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
 
                 <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
-                    <Label Text="Ready for Dental Examination" FontSize="18" FontAttributes="Bold"
+                    <Label Text="Ready for Dental Examination" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                            TextColor="#17221B" VerticalOptions="Center"/>
                     <Border Grid.Column="1" BackgroundColor="#E5F3EA" StrokeThickness="0"
                             StrokeShape="RoundRectangle 8" Padding="7,2">
-                        <Label Text="{Binding ReadyForDentistCount}" FontSize="14"
+                        <Label Text="{Binding ReadyForDentistCount}" FontSize="{StaticResource Typography.Body}"
                                FontAttributes="Bold" TextColor="#087A3D"/>
                     </Border>
                 </Grid>
@@ -168,7 +168,7 @@
                 <Border IsVisible="{Binding HasQueueItems, Converter={StaticResource BoolInverter}}"
                         BackgroundColor="White" Stroke="#DCE5DD" StrokeThickness="1"
                         StrokeShape="RoundRectangle 14" Padding="13">
-                    <Label Text="{Binding ReadyQueueEmptyMessage}" FontSize="14" TextColor="#647067"/>
+                    <Label Text="{Binding ReadyQueueEmptyMessage}" FontSize="{StaticResource Typography.Body}" TextColor="#647067"/>
                 </Border>
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding DentalQueue}" Spacing="7">
@@ -186,18 +186,18 @@
                                     <Border Grid.RowSpan="3" WidthRequest="42" HeightRequest="42"
                                             BackgroundColor="#E5F3EA" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 10">
-                                        <Label Text="{Binding TimeDisplay}" FontSize="12" FontAttributes="Bold"
+                                        <Label Text="{Binding TimeDisplay}" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold"
                                                TextColor="#087A3D" HorizontalOptions="Center"
                                                VerticalOptions="Center" HorizontalTextAlignment="Center"/>
                                     </Border>
-                                    <Label Grid.Column="1" Text="{Binding PatientDisplayName}" FontSize="15"
+                                    <Label Grid.Column="1" Text="{Binding PatientDisplayName}" FontSize="{StaticResource Typography.Body}"
                                            FontAttributes="Bold" TextColor="#17221B"
                                            LineBreakMode="TailTruncation"/>
-                                    <Label Grid.Column="2" Text="&#8250;" FontSize="18" FontAttributes="Bold"
+                                    <Label Grid.Column="2" Text="&#8250;" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold"
                                            TextColor="#087A3D" VerticalOptions="Center"/>
-                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding ReasonDisplay}" FontSize="13" TextColor="#647067" MaxLines="1"
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding ReasonDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="#647067" MaxLines="1"
                                            LineBreakMode="TailTruncation"/>
-                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding LocationDisplay}" FontSize="13" TextColor="#91A0AC" MaxLines="1"
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding LocationDisplay}" FontSize="{StaticResource Typography.Body}" TextColor="#91A0AC" MaxLines="1"
                                            LineBreakMode="TailTruncation"/>
                                 </Grid>
                             </Border>
@@ -212,29 +212,29 @@
                 Padding="4,7" StrokeShape="RoundRectangle 0">
             <Grid ColumnDefinitions="*,*,*,*">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
-                    <Label Text="&#8962;" FontSize="18" TextColor="#087A3D" HorizontalOptions="Center"/>
-                    <Label Text="Home" FontSize="11" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    <Label Text="&#8962;" FontSize="{StaticResource Typography.Section}" TextColor="#087A3D" HorizontalOptions="Center"/>
+                    <Label Text="Home" FontSize="{StaticResource Typography.Caption}" TextColor="#087A3D" FontAttributes="Bold" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToAppointmentsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128197;" FontSize="17" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Appointments" FontSize="11" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#128197;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Appointments" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128276;" FontSize="17" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Notifications" FontSize="11" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#128276;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Notifications" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
                     <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
                     </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="&#128100;" FontSize="17" TextColor="#91A0AC" HorizontalOptions="Center"/>
-                    <Label Text="Profile" FontSize="11" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="&#128100;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#91A0AC" HorizontalOptions="Center"/>
+                    <Label Text="Profile" FontSize="{StaticResource Typography.Caption}" TextColor="#91A0AC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Grid>
         </Border>

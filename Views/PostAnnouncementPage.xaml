@@ -13,14 +13,14 @@
                         StrokeShape="Rectangle" Padding="12,10">
                     <Grid ColumnDefinitions="42,*" ColumnSpacing="10">
                         <Button Grid.Column="0" Text="&#8592;"
-                                FontSize="21" TextColor="#087A3D"
+                                FontSize="{StaticResource Typography.PageTitle}" TextColor="#087A3D"
                                 BackgroundColor="#F4C400" CornerRadius="9"
                                 WidthRequest="38" HeightRequest="38" Padding="0"
                                 Command="{Binding GoBackCommand}" />
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                            <Label Text="Post Announcement" FontSize="18"
+                            <Label Text="Post Announcement" FontSize="{StaticResource Typography.Section}"
                                    FontAttributes="Bold" TextColor="#F4C400" />
-                            <Label Text="Clinic update" FontSize="11" TextColor="#E9F3EC" />
+                            <Label Text="Clinic update" FontSize="{StaticResource Typography.Caption}" TextColor="#E9F3EC" />
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
@@ -33,18 +33,18 @@
                     StrokeShape="RoundRectangle 14">
                 <VerticalStackLayout Spacing="4">
                     <Label Text="Posted by the R.E.A.D.S. Scholar"
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            FontAttributes="Bold"
                            TextColor="#087F75" />
                     <Label 
-                           FontSize="12"
+                           FontSize="{StaticResource Typography.Caption}"
                            TextColor="#42615F" />
                 </VerticalStackLayout>
             </Border>
 
             <VerticalStackLayout Spacing="8">
                 <Label Text="Who should see this?"
-                       FontSize="14"
+                       FontSize="{StaticResource Typography.Body}"
                        FontAttributes="Bold"
                        TextColor="#172B3A" />
                 <Border BackgroundColor="White"
@@ -61,7 +61,7 @@
 
             <VerticalStackLayout Spacing="8">
                 <Label Text="Announcement message"
-                       FontSize="14"
+                       FontSize="{StaticResource Typography.Body}"
                        FontAttributes="Bold"
                        TextColor="#172B3A" />
                 <Border BackgroundColor="White"

@@ -206,9 +206,46 @@ public partial class RecordVitalsViewModel : ObservableObject
             }
 
             await LoadHistoryAsync();
+            var clinicianDisplay = "the assigned clinician";
+            var assignmentPending = true;
+            try
+            {
+                var appointment = await Services.AppointmentService.Instance.GetByIdAsync(_appointmentId);
+                var clinicalType = appointment == null
+                    ? null
+                    : Services.AppointmentService.GetClinicalType(appointment);
+                var expectedRole = clinicalType switch
+                {
+                    "Medical" => "Doctor",
+                    "Dental" => "Dentist",
+                    _ => "clinician"
+                };
+
+                clinicianDisplay = $"the {expectedRole}";
+                if (appointment?.AssignedStaffId is int assignedStaffId)
+                {
+                    var assignedClinician = await Services.AuthService.Instance
+                        .GetAccountByDatabaseIdAsync(assignedStaffId);
+                    if (assignedClinician != null)
+                    {
+                        clinicianDisplay = $"{assignedClinician.Role} {assignedClinician.FullName}";
+                        assignmentPending = false;
+                    }
+                }
+            }
+            catch
+            {
+                // The vitals are already saved; keep the success confirmation reliable.
+            }
+
+            var confirmationMessage =
+                $"Vitals and nursing notes were recorded. This patient is now marked ready for {clinicianDisplay}.";
+            if (assignmentPending)
+                confirmationMessage += " The clinician assignment is pending or could not be loaded.";
+
             await Shell.Current.DisplayAlert(
                 "Triage saved",
-                "Vitals and nursing notes were recorded. This patient is now marked ready for the Doctor.",
+                confirmationMessage,
                 "OK");
         }
         catch

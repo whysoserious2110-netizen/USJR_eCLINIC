@@ -21,7 +21,7 @@
                             StrokeShape="RoundRectangle 34"
                             HorizontalOptions="Center">
                         <Label Text="&#x2713;"
-                               FontSize="38"
+                               FontSize="{StaticResource Typography.Display}"
                                FontAttributes="Bold"
                                TextColor="#087A3D"
                                HorizontalTextAlignment="Center"
@@ -29,7 +29,7 @@
                     </Border>
 
                     <Label Text="Account Created Successfully!"
-                           FontSize="23"
+                           FontSize="{StaticResource Typography.PageTitle}"
                            FontAttributes="Bold"
                            TextColor="White"
                            HorizontalTextAlignment="Center"
@@ -37,7 +37,7 @@
                            LineBreakMode="WordWrap" />
 
                     <Label Text="Your account is ready. You can now sign in to your USJ-R e-Clinic account."
-                           FontSize="14"
+                           FontSize="{StaticResource Typography.Body}"
                            TextColor="#F2FFF7"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Center"
@@ -65,12 +65,12 @@
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 16"
                                 VerticalOptions="Start">
-                            <Label Text="&#x25CF;" FontSize="16" TextColor="#087A3D"
+                            <Label Text="&#x25CF;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label Text="Full Name" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="FullNameValue" FontSize="15" FontAttributes="Bold"
+                            <Label Text="Full Name" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="FullNameValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -79,12 +79,12 @@
                     <Grid ColumnDefinitions="42,*" Padding="0,12">
                         <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF8D6"
                                 StrokeThickness="0" StrokeShape="RoundRectangle 16" VerticalOptions="Start">
-                            <Label Text="#" FontSize="17" FontAttributes="Bold" TextColor="#087A3D"
+                            <Label Text="#" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label x:Name="IdLabel" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="IdValue" FontSize="15" FontAttributes="Bold"
+                            <Label x:Name="IdLabel" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="IdValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -93,12 +93,12 @@
                     <Grid ColumnDefinitions="42,*" Padding="0,12">
                         <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF8D6"
                                 StrokeThickness="0" StrokeShape="RoundRectangle 16" VerticalOptions="Start">
-                            <Label Text="&#x25C6;" FontSize="16" TextColor="#087A3D"
+                            <Label Text="&#x25C6;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label Text="University Role" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="RoleValue" FontSize="15" FontAttributes="Bold"
+                            <Label Text="University Role" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="RoleValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -107,12 +107,12 @@
                     <Grid ColumnDefinitions="42,*" Padding="0,12">
                         <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF8D6"
                                 StrokeThickness="0" StrokeShape="RoundRectangle 16" VerticalOptions="Start">
-                            <Label Text="&#x25A6;" FontSize="16" TextColor="#087A3D"
+                            <Label Text="&#x25A6;" FontSize="{StaticResource Typography.Emphasis}" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label Text="Program / Department" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="ProgramValue" FontSize="15" FontAttributes="Bold"
+                            <Label Text="Program / Department" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="ProgramValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -121,12 +121,12 @@
                     <Grid ColumnDefinitions="42,*" Padding="0,12">
                         <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF8D6"
                                 StrokeThickness="0" StrokeShape="RoundRectangle 16" VerticalOptions="Start">
-                            <Label Text="@" FontSize="16" FontAttributes="Bold" TextColor="#087A3D"
+                            <Label Text="@" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label Text="Email Address" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="EmailValue" FontSize="15" FontAttributes="Bold"
+                            <Label Text="Email Address" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="EmailValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -135,12 +135,12 @@
                     <Grid ColumnDefinitions="42,*" Padding="0,12">
                         <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF8D6"
                                 StrokeThickness="0" StrokeShape="RoundRectangle 16" VerticalOptions="Start">
-                            <Label Text="&#x2713;" FontSize="17" FontAttributes="Bold" TextColor="#087A3D"
+                            <Label Text="&#x2713;" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#087A3D"
                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Border>
                         <VerticalStackLayout Grid.Column="1" Spacing="3">
-                            <Label Text="Account Status" FontSize="12" TextColor="#68756D" />
-                            <Label x:Name="AccountStatusValue" FontSize="15" FontAttributes="Bold"
+                            <Label Text="Account Status" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                            <Label x:Name="AccountStatusValue" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold"
                                    TextColor="#17221B" LineBreakMode="WordWrap" />
                         </VerticalStackLayout>
                     </Grid>
@@ -151,7 +151,7 @@
                     Clicked="OnContinueClicked"
                     BackgroundColor="#087A3D"
                     TextColor="White"
-                    FontSize="16"
+                    FontSize="{StaticResource Typography.Emphasis}"
                     FontAttributes="Bold"
                     CornerRadius="16"
                     HeightRequest="54"

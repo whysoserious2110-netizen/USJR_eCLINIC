@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:USJR_eCLINIC.ViewModels"
+             x:Class="USJR_eCLINIC.Views.FollowUpReviewPage"
+             x:Name="Root"
+             x:DataType="vm:FollowUpReviewViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F7F8F6">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" RowDefinitions="Auto,5" BackgroundColor="#176B38">
+            <Grid ColumnDefinitions="44,*" Padding="14,38,14,12" ColumnSpacing="10">
+                <Button Text="&#8592;" Command="{Binding GoBackCommand}"
+                        BackgroundColor="#F4C400" TextColor="#087A3D"
+                        CornerRadius="10" WidthRequest="40" HeightRequest="40" Padding="0" />
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label Text="Review Follow-Up" FontSize="{StaticResource Typography.Section}" FontAttributes="Bold" TextColor="#F4C400" />
+                    <Label Text="Review the previous visit and requested schedule" FontSize="{StaticResource Typography.Caption}" TextColor="White" />
+                </VerticalStackLayout>
+            </Grid>
+            <BoxView Grid.Row="1" HeightRequest="5" Color="#F4C400" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsPageAvailable}">
+            <VerticalStackLayout Padding="16" Spacing="12">
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14" Padding="14">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="PATIENT" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#667085" />
+                        <Label Text="{Binding PatientName}" FontSize="{StaticResource Typography.Emphasis}" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="{Binding ClinicType, StringFormat='{0} Follow-Up'}" FontSize="{StaticResource Typography.Body}" TextColor="#087A3D" />
+                        <Label Text="{Binding RequestReason, StringFormat='Reason: {0}'}" FontSize="{StaticResource Typography.Body}" TextColor="#526057" />
+                        <Label Text="{Binding FollowUpInstructions, StringFormat='Clinician instructions: {0}'}"
+                               IsVisible="{Binding FollowUpInstructions, Converter={StaticResource StringNotEmpty}}"
+                               FontSize="{StaticResource Typography.Caption}" TextColor="#526057" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#F3F8F4" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14" Padding="14">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="PREVIOUS VISIT" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" />
+                        <Label Text="{Binding PreviousVisitDetails}" FontSize="{StaticResource Typography.Body}" TextColor="#1F2933" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14" Padding="14">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="REQUESTED SCHEDULE" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#667085" />
+                        <Label Text="{Binding RequestedDate}" FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#1F2933" />
+                        <Label Text="{Binding RequestedTime}" FontSize="{StaticResource Typography.Body}" TextColor="#526057" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Stroke="#DCE5DD" StrokeShape="RoundRectangle 14" Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="SUGGEST ANOTHER SCHEDULE" FontSize="{StaticResource Typography.Caption}" FontAttributes="Bold" TextColor="#087A3D" />
+                        <DatePicker Date="{Binding SuggestedDate}" MinimumDate="{Binding MinimumDate}" />
+                        <Picker ItemsSource="{Binding SessionOptions}"
+                                SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                                Title="Choose a clinic shift" />
+                        <Label Text="{Binding SelectedSessionHint}" FontSize="{StaticResource Typography.Caption}" TextColor="#68756D" />
+                        <TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
+                                    Format="h:mm tt" />
+                        <Label Text="{Binding SelectedTimeDisplay, StringFormat='Selected time: {0}'}"
+                               FontSize="{StaticResource Typography.Body}" FontAttributes="Bold" TextColor="#087A3D" />
+                        <Label Text="{Binding AvailabilityMessage}" FontSize="{StaticResource Typography.Caption}" TextColor="#B54708" />
+                        <Editor Placeholder="Instructions or reason for the suggested time (optional)"
+                                Text="{Binding ReviewRemarks}" AutoSize="TextChanges" HeightRequest="70" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="Approve Requested Schedule" Command="{Binding ApproveCommand}"
+                        BackgroundColor="#087A3D" TextColor="White" FontAttributes="Bold" CornerRadius="12" HeightRequest="48" />
+                <Button Text="Send Suggested Schedule" Command="{Binding SuggestScheduleCommand}"
+                        IsEnabled="{Binding CanSuggestSchedule}"
+                        BackgroundColor="#F4C400" TextColor="#087A3D" FontAttributes="Bold" CornerRadius="12" HeightRequest="48" />
+                <Button Text="Decline Follow-Up" Command="{Binding DeclineCommand}"
+                        BackgroundColor="#FDE8E7" TextColor="#B42318" FontAttributes="Bold" CornerRadius="12" HeightRequest="48" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsPageAvailable, Converter={StaticResource BoolInverter}}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Padding="26" Spacing="10">
+            <Label Text="This follow-up request is no longer available to review." FontSize="{StaticResource Typography.Body}"
+                   TextColor="#526057" HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

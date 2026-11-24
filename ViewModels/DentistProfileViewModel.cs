@@ -125,7 +125,7 @@ public partial class DentistProfileViewModel : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        Services.AuthService.Instance.Logout();
+        await Services.SecureSessionService.Instance.SignOutAsync();
         await Shell.Current.Navigation.PopToRootAsync();
     }
 

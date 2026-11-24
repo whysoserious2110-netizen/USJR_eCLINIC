@@ -7,6 +7,8 @@ namespace USJR_eCLINIC.ViewModels;
 public partial class DoctorAppointmentItem : ObservableObject
 {
     public int AppointmentId { get; set; }
+    public bool IsFollowUp { get; set; }
+    public bool CanReviewFollowUp { get; set; }
     public string PatientEmail { get; set; } = string.Empty;
     public string PatientName { get; set; } = string.Empty;
     public string PatientRole { get; set; } = string.Empty;
@@ -44,7 +46,11 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
         if (doctor?.Role != "Doctor")
             return;
         var appointments = (await Services.AppointmentService.Instance.GetAllForServiceAsync("Medical"))
-            .Where(appointment => !appointment.AssignedStaffId.HasValue || appointment.AssignedStaffId == doctor.Id)
+            .Where(appointment =>
+                appointment.Status != "Reschedule Requested" &&
+                (!appointment.AssignedStaffId.HasValue ||
+                 appointment.AssignedStaffId == doctor.Id ||
+                 (Services.AppointmentService.IsFollowUpAppointment(appointment) && appointment.Status == "Pending")))
             .ToList();
         _all.Clear();
 
@@ -57,6 +63,8 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
                 PatientEmail = appt.PatientEmail,
                 PatientName = patient?.FullName ?? appt.PatientEmail,
                 PatientRole = patient?.Role ?? string.Empty,
+                IsFollowUp = Services.AppointmentService.IsFollowUpAppointment(appt),
+                CanReviewFollowUp = Services.AppointmentService.IsFollowUpAppointment(appt) && appt.Status == "Pending",
                 VisitDate = appt.VisitDate,
                 DateDisplay = appt.VisitDate.ToString("MMM dd, yyyy"),
                 TimeDisplay = appt.VisitTime,
@@ -138,6 +146,21 @@ public partial class DoctorAppointmentsViewModel : ObservableObject
 
         await Shell.Current.Navigation.PushAsync(new Views.ConsultationPage(
             item.AppointmentId, item.PatientEmail, item.PatientName, item.PatientRole, item.ChiefComplaint));
+    }
+
+    [RelayCommand]
+    private async Task ReviewFollowUp(DoctorAppointmentItem item)
+    {
+        if (item == null || !item.CanReviewFollowUp)
+            return;
+
+        if (Services.AuthService.Instance.CurrentUser?.Role != "Doctor")
+        {
+            await Shell.Current.DisplayAlert("Access denied", "Only a Doctor can review medical follow-up requests.", "OK");
+            return;
+        }
+
+        await Shell.Current.Navigation.PushAsync(new Views.FollowUpReviewPage(item.AppointmentId));
     }
 
     [RelayCommand]

@@ -14,6 +14,8 @@ public partial class ConsultationViewModel : ObservableObject
     [ObservableProperty] private string diagnosis = string.Empty;
     [ObservableProperty] private string treatment = string.Empty;
     [ObservableProperty] private string followUpNotes = string.Empty;
+    [ObservableProperty] private bool followUpRecommended;
+    [ObservableProperty] private DateTime recommendedFollowUpDate = DateTime.Today.AddDays(7);
     [ObservableProperty] private string bloodPressure = string.Empty;
     [ObservableProperty] private string temperature = string.Empty;
     [ObservableProperty] private string pulseRate = string.Empty;
@@ -96,6 +98,15 @@ public partial class ConsultationViewModel : ObservableObject
             return;
         }
 
+        if (FollowUpRecommended && RecommendedFollowUpDate.Date < DateTime.Today)
+        {
+            await Shell.Current.DisplayAlert(
+                "Invalid follow-up date",
+                "Choose today or a future date for the recommended follow-up.",
+                "OK");
+            return;
+        }
+
         var appointment = await Services.AppointmentService.Instance.GetByIdAsync(_appointmentId);
         if (appointment == null ||
             !appointment.PatientEmail.Equals(_patientEmail, StringComparison.OrdinalIgnoreCase) ||
@@ -119,6 +130,8 @@ public partial class ConsultationViewModel : ObservableObject
             Diagnosis = Diagnosis.Trim(),
             Treatment = Treatment.Trim(),
             FollowUpNotes = FollowUpNotes.Trim(),
+            FollowUpRecommended = FollowUpRecommended,
+            RecommendedFollowUpDate = FollowUpRecommended ? RecommendedFollowUpDate.Date : null,
             AttendingStaff = doctor.FullName,
             BloodPressure = BloodPressure,
             Temperature = Temperature,
@@ -142,6 +155,18 @@ public partial class ConsultationViewModel : ObservableObject
             _patientEmail,
             "Consultation Completed",
             $"Dr. {doctor.FullName} completed your consultation. Your medical record has been updated.");
+
+        if (FollowUpRecommended)
+        {
+            await Services.NotificationService.Instance.AddAsync(
+                _patientEmail,
+                "Medical Follow-Up Recommended",
+                $"Dr. {doctor.FullName} recommended a medical follow-up" +
+                (RecommendedFollowUpDate.Date == DateTime.Today
+                    ? " as soon as possible."
+                    : $" around {RecommendedFollowUpDate:MMM dd, yyyy}.") +
+                " Open Request Appointment to choose a schedule.");
+        }
 
         await Shell.Current.DisplayAlert("Visit completed", "The consultation and medical record have been saved.", "OK");
         await Shell.Current.Navigation.PopAsync();

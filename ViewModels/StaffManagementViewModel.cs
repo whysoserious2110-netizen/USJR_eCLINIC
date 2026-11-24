@@ -74,13 +74,6 @@ public partial class StaffManagementViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ManageSchedule(UserAccount? staff)
-    {
-        if (staff != null)
-            await Shell.Current.Navigation.PushAsync(new Views.StaffSchedulePage(staff));
-    }
-
-    [RelayCommand]
     private async Task ToggleActive(UserAccount? staff)
     {
         if (staff == null) return;
@@ -189,6 +182,7 @@ public partial class WeekdayScheduleEditor : ObservableObject
     public string DayName { get; }
     public ObservableCollection<string> ShiftTypes { get; } = new(Services.StaffScheduleService.ShiftTypes);
     public string HoursDisplay => $"{StartsAt:hh\\:mm}–{EndsAt:hh\\:mm}" + (EndsAt <= StartsAt ? " next day" : string.Empty);
+    public string DayStateText => IsWorkingDay ? "Working" : "Day off";
 
     [ObservableProperty] private bool isWorkingDay;
     [ObservableProperty] private TimeSpan startsAt = new(8, 0, 0);
@@ -208,13 +202,13 @@ public partial class WeekdayScheduleEditor : ObservableObject
     {
         switch (value)
         {
-            case "Morning": StartsAt = new(7, 0, 0); EndsAt = new(15, 0, 0); break;
-            case "Afternoon": StartsAt = new(13, 0, 0); EndsAt = new(21, 0, 0); break;
-            case "Night": StartsAt = new(22, 0, 0); EndsAt = new(6, 0, 0); break;
+            case "Morning": StartsAt = new(7, 0, 0); EndsAt = new(12, 0, 0); break;
+            case "Afternoon": StartsAt = new(13, 0, 0); EndsAt = new(19, 0, 0); break;
         }
         OnPropertyChanged(nameof(HoursDisplay));
     }
 
+    partial void OnIsWorkingDayChanged(bool value) => OnPropertyChanged(nameof(DayStateText));
     partial void OnStartsAtChanged(TimeSpan value) => OnPropertyChanged(nameof(HoursDisplay));
     partial void OnEndsAtChanged(TimeSpan value) => OnPropertyChanged(nameof(HoursDisplay));
 }
@@ -232,85 +226,68 @@ public sealed class RecurringScheduleHistoryEntry
 public partial class StaffScheduleViewModel : ObservableObject
 {
     private readonly UserAccount _staff;
-    private bool _daysInitialized;
 
     public ObservableCollection<WeekdayScheduleEditor> WeekDays { get; } = new();
-    public ObservableCollection<string> DayNames { get; } = new(new[]
-        { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" });
-    public ObservableCollection<WeekdayScheduleEditor> ConfiguredDays { get; } = new();
-    public ObservableCollection<string> ShiftTypes { get; } = new(Services.StaffScheduleService.ShiftTypes);
     public ObservableCollection<string> LeaveTypes { get; } = new(Services.StaffScheduleService.LeaveTypes);
     public ObservableCollection<StaffLeave> Leaves { get; } = new();
     public ObservableCollection<RecurringScheduleHistoryEntry> RecurringHistory { get; } = new();
 
-    [ObservableProperty] private DateTime effectiveStartDate = DateTime.Today;
-    [ObservableProperty] private DateTime effectiveEndDate = DateTime.Today;
-    [ObservableProperty] private bool hasEndDate;
     [ObservableProperty] private string changeNote = string.Empty;
-    [ObservableProperty] private string selectedDayName = "Monday";
-    [ObservableProperty] private string selectedShiftType = "Custom";
-    [ObservableProperty] private TimeSpan selectedDayStartsAt = new(8, 0, 0);
-    [ObservableProperty] private TimeSpan selectedDayEndsAt = new(17, 0, 0);
-    [ObservableProperty] private string dayActionText = "Add Working Day";
+    [ObservableProperty] private bool isChangeNoteExpanded;
     [ObservableProperty] private DateTime leaveStartDate = DateTime.Today;
     [ObservableProperty] private DateTime leaveEndDate = DateTime.Today;
-    [ObservableProperty] private string selectedLeaveType = "Unavailable";
+    [ObservableProperty] private string selectedLeaveType = "Vacation Leave";
     [ObservableProperty] private string leaveReason = string.Empty;
     [ObservableProperty] private bool isBusy;
-    [ObservableProperty] private string historyEmptyMessage = string.Empty;
-    [ObservableProperty] private bool isScheduleEditorExpanded;
     [ObservableProperty] private bool isHistoryExpanded;
 
     public string StaffName => _staff.FullName;
     public string StaffRole => _staff.Role;
     public string StaffDisplay => $"{_staff.FullName} · {_staff.Role}";
-    public string ScheduleEditorButtonText => IsScheduleEditorExpanded
-        ? "Close Schedule Editor"
-        : RecurringHistory.Any(item => item.IsActive) ? "Update Selected Schedule" : "Set Weekly Schedule";
+    public string ChangeNoteButtonText => IsChangeNoteExpanded ? "Hide note" : "Add a note (optional)";
     public string HistorySectionTitle => $"Weekly Schedule History ({RecurringHistory.Count}) {(IsHistoryExpanded ? "▲" : "▼")}";
-    public string WorkingDaysEmptyMessage => ConfiguredDays.Count == 0 ? "No working days selected yet. Select a day, choose its shift and hours, then add it." : string.Empty;
-    public string LeaveEmptyMessage => Leaves.Count == 0 ? "No leave or unavailable periods have been recorded." : string.Empty;
+    public string HistoryEmptyMessage => RecurringHistory.Count == 0 ? "No schedule history yet." : string.Empty;
+    public string LeaveEmptyMessage => Leaves.Count == 0 ? "No time off has been recorded." : string.Empty;
 
     public StaffScheduleViewModel(UserAccount staff)
     {
         _staff = staff;
-        InitializeWeekDays();
+        foreach (var day in new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                                    DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday })
+            WeekDays.Add(new WeekdayScheduleEditor(day, false, new(8, 0, 0), new(17, 0, 0)));
     }
 
     public Task RefreshAsync() => Load();
 
-    partial void OnSelectedDayNameChanged(string value) => LoadSelectedDayIntoEditor();
-
-    partial void OnIsScheduleEditorExpandedChanged(bool value) => OnPropertyChanged(nameof(ScheduleEditorButtonText));
+    partial void OnIsChangeNoteExpandedChanged(bool value) => OnPropertyChanged(nameof(ChangeNoteButtonText));
     partial void OnIsHistoryExpandedChanged(bool value) => OnPropertyChanged(nameof(HistorySectionTitle));
 
     [RelayCommand]
-    private void ToggleScheduleEditor() => IsScheduleEditorExpanded = !IsScheduleEditorExpanded;
+    private void ToggleChangeNote() => IsChangeNoteExpanded = !IsChangeNoteExpanded;
 
     [RelayCommand]
     private void ToggleHistory() => IsHistoryExpanded = !IsHistoryExpanded;
 
-    partial void OnSelectedShiftTypeChanged(string value)
+    [RelayCommand]
+    private async Task CopyFirstWorkingDayToAllWorkdays()
     {
-        switch (value)
+        var source = WeekDays.FirstOrDefault(day => day.IsWorkingDay);
+        if (source == null)
         {
-            case "Morning": SelectedDayStartsAt = new(7, 0, 0); SelectedDayEndsAt = new(15, 0, 0); break;
-            case "Afternoon": SelectedDayStartsAt = new(13, 0, 0); SelectedDayEndsAt = new(21, 0, 0); break;
-            case "Night": SelectedDayStartsAt = new(22, 0, 0); SelectedDayEndsAt = new(6, 0, 0); break;
+            await Shell.Current.DisplayAlert("No working day", "Choose a shift for at least one day first.", "OK");
+            return;
         }
-    }
 
-    private void InitializeWeekDays()
-    {
-        if (_daysInitialized) return;
-        _daysInitialized = true;
-        foreach (var day in new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
-                                   DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday })
+        var shiftType = source.ShiftType;
+        var startsAt = source.StartsAt;
+        var endsAt = source.EndsAt;
+        foreach (var day in WeekDays)
         {
-            WeekDays.Add(new WeekdayScheduleEditor(day, false, new(8, 0, 0), new(17, 0, 0)));
+            day.ShiftType = shiftType;
+            day.StartsAt = startsAt;
+            day.EndsAt = endsAt;
+            day.IsWorkingDay = true;
         }
-        RefreshConfiguredDays();
-        LoadSelectedDayIntoEditor();
     }
 
     [RelayCommand]
@@ -335,8 +312,7 @@ public partial class StaffScheduleViewModel : ObservableObject
                 var restDays = daySettings.Where(day => !day.IsWorkingDay)
                     .Select(day => ((DayOfWeek)day.DayOfWeek).ToString()[..3] + " rest").ToList();
                 var endText = schedule.EffectiveEndDate.HasValue ? schedule.EffectiveEndDate.Value.ToString("MMM d, yyyy") : "No end date";
-                var status = !schedule.IsActive ? "Inactive / superseded" :
-                    schedule.EffectiveStartDate.Date > DateTime.Today ? "Scheduled" : "Active";
+                var status = schedule.IsActive ? "Current" : "Replaced";
                 historyEntries.Add(new RecurringScheduleHistoryEntry
                 {
                     Id = schedule.Id,
@@ -351,31 +327,34 @@ public partial class StaffScheduleViewModel : ObservableObject
             }
             RecurringHistory.Clear();
             foreach (var entry in historyEntries) RecurringHistory.Add(entry);
-            HistoryEmptyMessage = RecurringHistory.Count == 0 ? "No weekly schedule history yet. Save a recurring schedule once to configure future weeks." : string.Empty;
-            OnPropertyChanged(nameof(ScheduleEditorButtonText));
+            OnPropertyChanged(nameof(HistoryEmptyMessage));
             OnPropertyChanged(nameof(HistorySectionTitle));
 
             var selected = history.FirstOrDefault(item => item.IsActive && item.EffectiveStartDate.Date <= DateTime.Today &&
                                                           (!item.EffectiveEndDate.HasValue || item.EffectiveEndDate.Value.Date >= DateTime.Today))
                            ?? history.FirstOrDefault(item => item.IsActive && item.EffectiveStartDate.Date > DateTime.Today);
+
+            foreach (var editor in WeekDays)
+            {
+                editor.IsWorkingDay = false;
+                editor.ShiftType = "Custom";
+                editor.StartsAt = new(8, 0, 0);
+                editor.EndsAt = new(17, 0, 0);
+            }
+
             if (selected != null)
             {
-                EffectiveStartDate = selected.EffectiveStartDate.Date < DateTime.Today ? DateTime.Today : selected.EffectiveStartDate.Date;
-                HasEndDate = selected.EffectiveEndDate.HasValue;
-                if (selected.EffectiveEndDate.HasValue) EffectiveEndDate = selected.EffectiveEndDate.Value.Date;
                 var savedDays = await service.GetDaysForScheduleAsync(selected.Id);
                 foreach (var editor in WeekDays)
                 {
                     var savedDay = savedDays.FirstOrDefault(day => day.DayOfWeek == editor.DayOfWeek);
                     if (savedDay == null) continue;
-                    editor.IsWorkingDay = editor.DayOfWeek != (int)DayOfWeek.Sunday && savedDay.IsWorkingDay;
-                    editor.ShiftType = savedDay.ShiftType;
+                    editor.IsWorkingDay = savedDay.IsWorkingDay;
+                    editor.ShiftType = savedDay.ShiftType == "Night" ? "Custom" : savedDay.ShiftType;
                     if (TimeSpan.TryParse(savedDay.StartTime, out var start)) editor.StartsAt = start;
                     if (TimeSpan.TryParse(savedDay.EndTime, out var end)) editor.EndsAt = end;
                 }
             }
-            RefreshConfiguredDays();
-            LoadSelectedDayIntoEditor();
             OnPropertyChanged(nameof(LeaveEmptyMessage));
         }
         finally { IsBusy = false; }
@@ -384,14 +363,14 @@ public partial class StaffScheduleViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveRecurring()
     {
-        if (ConfiguredDays.Count == 0)
+        if (!WeekDays.Any(day => day.IsWorkingDay))
         {
-            await Shell.Current.DisplayAlert("Choose workdays", "Select at least one working day, or leave this employee without an active weekly schedule.", "OK");
+            await Shell.Current.DisplayAlert("Choose workdays", "Turn on at least one day before saving the weekly schedule.", "OK");
             return;
         }
-        if (ConfiguredDays.Any(day => day.StartsAt == day.EndsAt))
+        if (WeekDays.Any(day => day.IsWorkingDay && day.StartsAt == day.EndsAt))
         {
-            await Shell.Current.DisplayAlert("Check shift hours", "A working day must have different start and end times. Night shifts may end after midnight.", "OK");
+            await Shell.Current.DisplayAlert("Check shift hours", "Each working day needs different start and end times.", "OK");
             return;
         }
 
@@ -404,78 +383,26 @@ public partial class StaffScheduleViewModel : ObservableObject
             EndTime = day.EndsAt.ToString(@"hh\:mm", System.Globalization.CultureInfo.InvariantCulture),
             ShiftType = day.ShiftType
         }).ToList();
+        rows.Add(new StaffRecurringScheduleDay
+        {
+            StaffId = _staff.Id,
+            DayOfWeek = (int)DayOfWeek.Sunday,
+            IsWorkingDay = false,
+            StartTime = "00:00",
+            EndTime = "00:00",
+            ShiftType = "Custom"
+        });
         var saved = await Services.StaffScheduleService.Instance.SaveRecurringScheduleAsync(
-            _staff.Id, EffectiveStartDate, HasEndDate ? EffectiveEndDate : null, rows, ChangeNote);
+            _staff.Id, DateTime.Today, null, rows, ChangeNote);
         await Shell.Current.DisplayAlert(saved ? "Weekly schedule saved" : "Schedule not saved",
-            saved ? "This weekly pattern will be applied automatically to future appointment dates. The previous version remains in schedule history." :
-                    "Check the effective dates and each selected shift. The end date must not be earlier than the start date.", "OK");
+            saved ? "The clinic will use this weekly schedule when checking appointment availability." :
+                    "Keep morning shifts within 7:00 AM–12:00 PM, afternoon shifts within 1:00–7:00 PM, and custom hours within clinic hours. A shift cannot start or end during the 12:00–1:00 PM break, and working days cannot overlap.", "OK");
         if (saved)
         {
             ChangeNote = string.Empty;
-            IsScheduleEditorExpanded = false;
+            IsChangeNoteExpanded = false;
             await Load();
         }
-    }
-
-    [RelayCommand]
-    private async Task AddOrUpdateWorkDay()
-    {
-        if (SelectedDayStartsAt == SelectedDayEndsAt)
-        {
-            await Shell.Current.DisplayAlert("Check shift hours", "Choose different start and end times. Night shifts may end after midnight.", "OK");
-            return;
-        }
-        var selected = WeekDays.First(day => day.DayName == SelectedDayName);
-        selected.IsWorkingDay = true;
-        selected.ShiftType = SelectedShiftType;
-        selected.StartsAt = SelectedDayStartsAt;
-        selected.EndsAt = SelectedDayEndsAt;
-        RefreshConfiguredDays();
-        DayActionText = "Update Selected Day";
-    }
-
-    [RelayCommand]
-    private void EditWorkDay(WeekdayScheduleEditor? day)
-    {
-        if (day == null) return;
-        SelectedDayName = day.DayName;
-        LoadSelectedDayIntoEditor();
-    }
-
-    [RelayCommand]
-    private void RemoveWorkDay(WeekdayScheduleEditor? day)
-    {
-        if (day == null) return;
-        day.IsWorkingDay = false;
-        RefreshConfiguredDays();
-        if (day.DayName == SelectedDayName) LoadSelectedDayIntoEditor();
-    }
-
-    private void LoadSelectedDayIntoEditor()
-    {
-        var selected = WeekDays.FirstOrDefault(day => day.DayName == SelectedDayName);
-        if (selected == null) return;
-        if (selected.IsWorkingDay)
-        {
-            SelectedShiftType = selected.ShiftType;
-            SelectedDayStartsAt = selected.StartsAt;
-            SelectedDayEndsAt = selected.EndsAt;
-            DayActionText = "Update Selected Day";
-        }
-        else
-        {
-            SelectedShiftType = "Custom";
-            SelectedDayStartsAt = new(8, 0, 0);
-            SelectedDayEndsAt = new(17, 0, 0);
-            DayActionText = "Add Working Day";
-        }
-    }
-
-    private void RefreshConfiguredDays()
-    {
-        ConfiguredDays.Clear();
-        foreach (var day in WeekDays.Where(item => item.IsWorkingDay)) ConfiguredDays.Add(day);
-        OnPropertyChanged(nameof(WorkingDaysEmptyMessage));
     }
 
     [RelayCommand]
@@ -489,9 +416,9 @@ public partial class StaffScheduleViewModel : ObservableObject
             LeaveType = SelectedLeaveType,
             Reason = LeaveReason.Trim()
         });
-        await Shell.Current.DisplayAlert(saved ? "Unavailable period saved" : "Could not save period",
-            saved ? "The employee will not receive new appointment assignments during this approved period." :
-                "Check the date range and leave type. Approved periods for the same employee cannot overlap.", "OK");
+        await Shell.Current.DisplayAlert(saved ? "Time off saved" : "Could not save time off",
+            saved ? "The employee will not receive new appointment assignments during this period." :
+                "Check the dates and type. Time off periods for the same employee cannot overlap.", "OK");
         if (saved)
         {
             LeaveReason = string.Empty;
@@ -500,18 +427,10 @@ public partial class StaffScheduleViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task DeactivateRecurring(RecurringScheduleHistoryEntry? schedule)
-    {
-        if (schedule == null || !schedule.IsActive ||
-            !await Shell.Current.DisplayAlert("Deactivate this weekly version?", "It will remain in history and will no longer be used for appointment availability.", "Deactivate", "Cancel")) return;
-        if (await Services.StaffScheduleService.Instance.DeactivateRecurringScheduleAsync(schedule.Id)) await Load();
-    }
-
-    [RelayCommand]
     private async Task CancelLeave(StaffLeave? leave)
     {
         if (leave == null || leave.Status != "Approved" ||
-            !await Shell.Current.DisplayAlert("Cancel this unavailable period?", $"{leave.LeaveType}: {leave.StartDate:MMM d}–{leave.EndDate:MMM d, yyyy}", "Cancel period", "Keep")) return;
+            !await Shell.Current.DisplayAlert("Cancel this time off?", $"{leave.LeaveType}: {leave.StartDate:MMM d}–{leave.EndDate:MMM d, yyyy}", "Cancel time off", "Keep")) return;
         if (await Services.StaffScheduleService.Instance.CancelLeaveAsync(leave.Id)) await Load();
     }
 

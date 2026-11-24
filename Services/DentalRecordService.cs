@@ -39,6 +39,16 @@ public class DentalRecordService
                 await _db.ExecuteAsync(
                     "ALTER TABLE DentalRecord ADD COLUMN AttendingDentistId INTEGER NOT NULL DEFAULT 0");
             }
+            if (!columns.Any(column => column.Name.Equals("FollowUpRecommended", StringComparison.OrdinalIgnoreCase)))
+            {
+                await _db.ExecuteAsync(
+                    "ALTER TABLE DentalRecord ADD COLUMN FollowUpRecommended INTEGER NOT NULL DEFAULT 0");
+            }
+            if (!columns.Any(column => column.Name.Equals("RecommendedFollowUpDate", StringComparison.OrdinalIgnoreCase)))
+            {
+                await _db.ExecuteAsync(
+                    "ALTER TABLE DentalRecord ADD COLUMN RecommendedFollowUpDate DATETIME NULL");
+            }
 
             _initialized = true;
         }
@@ -85,6 +95,14 @@ public class DentalRecordService
             .Where(record => record.PatientEmail.Equals(patientEmail, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(record => record.VisitDate)
             .ToList();
+    }
+
+    public async Task<DentalRecord?> GetByAppointmentIdAsync(int appointmentId)
+    {
+        await EnsureInitializedAsync();
+        return await _db.Table<DentalRecord>()
+            .Where(record => record.AppointmentId == appointmentId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task AddAsync(DentalRecord record)

@@ -21,10 +21,24 @@ public partial class CheckInViewModel : ObservableObject
     [ObservableProperty] private string patientIdDisplay = string.Empty;
     [ObservableProperty] private string patientProgram = string.Empty;
     [ObservableProperty] private bool isLateArrival;
+    [ObservableProperty] private bool canCheckIn;
+    [ObservableProperty] private bool requiresReschedule;
     [ObservableProperty] private string arrivalGuidance = string.Empty;
+    [ObservableProperty] private string assignedShiftDisplay = string.Empty;
     [ObservableProperty] private string appointmentService = string.Empty;
     [ObservableProperty] private string appointmentDate = string.Empty;
     [ObservableProperty] private string appointmentTime = string.Empty;
+
+    public bool HasArrivalGuidance => !string.IsNullOrWhiteSpace(ArrivalGuidance);
+    public string CheckInStatusDisplay => IsLateArrival
+        ? "Status: WAITING · LATE CHECK-IN"
+        : "Status: WAITING · ON TIME";
+
+    partial void OnArrivalGuidanceChanged(string value) =>
+        OnPropertyChanged(nameof(HasArrivalGuidance));
+
+    partial void OnIsLateArrivalChanged(bool value) =>
+        OnPropertyChanged(nameof(CheckInStatusDisplay));
 
     // Already-checked-in / success display
     [ObservableProperty] private int queueNumber;
@@ -95,33 +109,41 @@ public partial class CheckInViewModel : ObservableObject
         AppointmentService = string.IsNullOrWhiteSpace(approved.ReasonOrPurpose) ? approved.SubService : approved.ReasonOrPurpose;
         AppointmentDate = approved.VisitDate.ToString("MMMM dd, yyyy");
         AppointmentTime = approved.VisitTime;
-        IsLateArrival = Services.AppointmentService.GetVisitDateTime(approved) < DateTime.Now;
-        var clinicClosing = await Services.ClinicScheduleService.Instance.GetClinicClosingDateTimeAsync(
-            approved.VisitDate,
-            approved.ServiceType,
-            approved.SubService);
-        ArrivalGuidance = IsLateArrival
-            ? $"Late arrival. ID check-in is available until {(clinicClosing?.ToString("h:mm tt") ?? "clinic closing")} today."
-            : "Please confirm the patient is present before checking them in.";
+        AssignedShiftDisplay = string.IsNullOrWhiteSpace(approved.AssignedShift)
+            ? "Shift not assigned"
+            : $"{approved.AssignedShift} Shift";
+
+        var eligibility = await Services.AppointmentService.Instance
+            .GetCheckInEligibilityAsync(approved.Id);
+        CanCheckIn = eligibility.Success;
+        RequiresReschedule = eligibility.RequiresReschedule;
+        IsLateArrival = eligibility.IsLate;
+        ArrivalGuidance = eligibility.Message;
         ShowApprovedFound = true;
     }
 
     [RelayCommand]
     private async Task ConfirmCheckIn()
     {
-        var appt = await Services.AppointmentService.Instance.CheckInAsync(_currentAppointmentId);
-        if (appt == null)
+        var result = await Services.AppointmentService.Instance
+            .CheckInWithPolicyAsync(_currentAppointmentId);
+        if (!result.Success || result.Appointment == null)
         {
-            ShowApprovedFound = false;
+            CanCheckIn = false;
+            RequiresReschedule = result.RequiresReschedule;
+            ArrivalGuidance = result.Message;
+            IsLateArrival = result.IsLate;
             await Shell.Current.DisplayAlert(
                 "Check-In Unavailable",
-                "This appointment is no longer eligible for check-in. Search for the patient again to see the latest status.",
+                result.Message,
                 "OK");
             return;
         }
 
-        QueueNumber = appt.QueueNumber ?? 0;
-        CheckInTimeDisplay = appt.CheckInTime?.ToString("h:mm tt") ?? string.Empty;
+        QueueNumber = result.Appointment.QueueNumber ?? 0;
+        CheckInTimeDisplay = result.Appointment.CheckInTime?.ToString("h:mm tt") ?? string.Empty;
+        IsLateArrival = result.IsLate;
+        ArrivalGuidance = result.Message;
 
         ShowApprovedFound = false;
         ShowCheckInSuccess = true;
@@ -137,7 +159,10 @@ public partial class CheckInViewModel : ObservableObject
     private void ResetResultState()
     {
         IsLateArrival = false;
+        CanCheckIn = false;
+        RequiresReschedule = false;
         ArrivalGuidance = string.Empty;
+        AssignedShiftDisplay = string.Empty;
         ShowNotFound = false;
         ShowNoApproved = false;
         ShowAlreadyCheckedIn = false;

@@ -1,5 +1,5 @@
-﻿{
-  "slotIntervalMinutes": 30,
+{
+  "slotIntervalMinutes": 60,
   "holidays": [
     "2026-08-06",
     "2026-08-19",
